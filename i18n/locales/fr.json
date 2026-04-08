@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "homeTitle": "Accueil",
+    "homeDescription": "The Commonwealth School — maternelle d’Abidjan."
+  },
+  "header": {
+    "navAria": "Navigation principale",
+    "home": "Accueil",
+    "about": "À propos",
+    "values": "Nos Valeurs",
+    "partnership": "Partenariat",
+    "register": "Inscription",
+    "contact": "Contactez-nous",
+    "parentSpace": "Ouvrir votre espace parent",
+    "langToEn": "Passer en anglais",
+    "langToFr": "Passer en français"
+  },
+  "footer": {
+    "social": "Réseaux sociaux",
+    "navHome": "Accueil",
+    "navAbout": "À propos",
+    "navPartnerships": "Partenariats",
+    "navContact": "Contactez-nous"
+  },
+  "home": {
+    "hero": {
+      "subtitle": "Maternelle d’Abidjan",
+      "tagline": "Courage. Curiosité. Collaboration.",
+      "cta": "Inscrivez votre enfant"
+    },
+    "partnership": {
+      "title": "Une vision commune",
+      "body": "L’école Commonwealth allie l’excellence à l’approche finlandaise de l’éducation préscolaire afin de créer une pédagogie innovante et émergente.",
+      "cta": "Découvrir",
+      "imgAlt": "Partenariat"
+    },
+    "about": {
+      "title": "À propos",
+      "p1": "Curabitur tempor quis eros tempus lacinia. Nam bibendum pellentesque quam a convallis. Sed ut vulputate nisi. Integer in felis sed leo vestibulum venenatis. Suspendisse quis arcu sem. Aenean feugiat ex eu vestibulum vestibulum. Morbi a eleifend magna. Nam metus lacus, porttitor eu mauris a, blandit ultrices nibh. Mauris sit amet magna non ligula vestibulum eleifend. Nulla varius volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem.",
+      "p2": "condimentum ullamcorper quis venenatis nisi. Proin vitae facilisis nisi, ac posuere leo. volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem."
+    },
+    "values": {
+      "title": "Nos valeurs",
+      "intro": "Commonwealth School s’inspire à la fois de l’excellence internationale et de l’héritage culturel africain. Son identité conjugue le message de résilience de la fougère avec une vision moderne d’une éducation intégrale et humaine. Elle célèbre la diversité, la force du collectif et le pouvoir d’apprendre ensemble, formant des citoyens ancrés, confiants et bienveillants.",
+      "courageTitle": "Courage",
+      "courageBody": "Pour oser, affronter les défis et grandir avec confiance.",
+      "curiosityTitle": "Curiosité",
+      "curiosityBody": "Pour s’émerveiller, questionner et apprendre avec joie.",
+      "collabTitle": "Collaboration",
+      "collabBody": "Pour avancer ensemble dans le respect, le partage et la solidarité."
+    },
+    "gallery": {
+      "title": "Galerie photos"
+    }
+  }
+}

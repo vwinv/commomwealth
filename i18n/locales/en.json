@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "homeTitle": "Home",
+    "homeDescription": "The Commonwealth School — preschool in Abidjan."
+  },
+  "header": {
+    "navAria": "Main navigation",
+    "home": "Home",
+    "about": "About",
+    "values": "Our values",
+    "partnership": "Partnership",
+    "register": "Apply",
+    "contact": "Contact us",
+    "parentSpace": "Parent portal",
+    "langToEn": "Switch to English",
+    "langToFr": "Switch to French"
+  },
+  "footer": {
+    "social": "Social media",
+    "navHome": "Home",
+    "navAbout": "About",
+    "navPartnerships": "Partnerships",
+    "navContact": "Contact us"
+  },
+  "home": {
+    "hero": {
+      "subtitle": "Preschool of Abidjan",
+      "tagline": "Courage. Curiosity. Collaboration.",
+      "cta": "Enroll your child"
+    },
+    "partnership": {
+      "title": "A shared vision",
+      "body": "Commonwealth School combines excellence with the Finnish approach to early childhood education to build an innovative, forward-looking pedagogy.",
+      "cta": "Learn more",
+      "imgAlt": "Partnership"
+    },
+    "about": {
+      "title": "About",
+      "p1": "Curabitur tempor quis eros tempus lacinia. Nam bibendum pellentesque quam a convallis. Sed ut vulputate nisi. Integer in felis sed leo vestibulum venenatis. Suspendisse quis arcu sem. Aenean feugiat ex eu vestibulum vestibulum. Morbi a eleifend magna. Nam metus lacus, porttitor eu mauris a, blandit ultrices nibh. Mauris sit amet magna non ligula vestibulum eleifend. Nulla varius volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem.",
+      "p2": "condimentum ullamcorper quis venenatis nisi. Proin vitae facilisis nisi, ac posuere leo. volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem."
+    },
+    "values": {
+      "title": "Our values",
+      "intro": "Commonwealth School draws on both international excellence and African cultural heritage. Its identity combines the fern’s message of resilience with a modern vision of holistic, human education. It celebrates diversity, the strength of community, and learning together—raising grounded, confident, and caring citizens.",
+      "courageTitle": "Courage",
+      "courageBody": "To dare, face challenges, and grow with confidence.",
+      "curiosityTitle": "Curiosity",
+      "curiosityBody": "To wonder, ask questions, and learn with joy.",
+      "collabTitle": "Collaboration",
+      "collabBody": "To move forward together with respect, sharing, and solidarity."
+    },
+    "gallery": {
+      "title": "Photo gallery"
+    }
+  }
+}
