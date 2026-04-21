@@ -55,7 +55,17 @@
           </div>
 
           <div class="flex items-end justify-start lg:justify-end">
-            <div class="text-xs text-white/60">Copyright © {{ year }} MEGA</div>
+            <div class="text-xs text-white/60">
+              Copyright © {{ year }}
+              <a
+                href="https://www.mega-sn.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-semibold text-white hover:underline"
+              >
+                MEGA
+              </a>
+            </div>
           </div>
         </div>
       </div>

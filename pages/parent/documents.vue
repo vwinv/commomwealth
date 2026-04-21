@@ -2,75 +2,65 @@
   <div>
     <h1 class="mb-2 text-3xl font-bold text-brandBlue">Documents</h1>
     <p class="mb-8 text-sm text-slate-500">
-      Ressources associées aux niveaux de vos enfants, et documents utiles de l'ecole.
+      Documents à destination de votre famille : ceux liés aux niveaux de vos enfants et les ressources générales de l’école.
     </p>
 
-    <div v-if="pending" class="text-sm text-slate-500">Chargement…</div>
-    <div v-else class="space-y-6">
-      <section class="rounded-3xl border border-[#bdd7ef] bg-white p-4 shadow-sm sm:p-5">
-        <h2 class="mb-4 text-3xl font-semibold text-slate-900">Administrative</h2>
-        <div class="grid gap-3 sm:grid-cols-3">
-          <article v-for="card in adminCards" :key="card.key" class="rounded-2xl bg-[#d9eaf7] p-5 text-center">
-            <div class="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white text-brandBlue">
-              <ParentDocCardIcon :name="card.icon" />
-            </div>
-            <p class="font-semibold text-slate-900">{{ card.title }}</p>
-            <button
-              type="button"
-              class="mt-2 text-sm font-semibold text-brandBlue hover:underline"
-              @click="downloadOne(card.group)"
-            >
-              Télécharger
-            </button>
-          </article>
-        </div>
+    <div class="space-y-8">
+      <!-- Bloc toujours visible : Administratifs -->
+      <section class="rounded-3xl border border-[#bdd7ef] bg-white p-4 shadow-sm sm:p-6">
+        <h2 class="mb-4 text-3xl font-semibold text-slate-900">Administratifs</h2>
+        <div v-if="pending" class="text-sm text-slate-500">Chargement…</div>
+        <template v-else>
+          <ul v-if="adminDocs.length" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <li v-for="doc in adminDocs" :key="doc.id">
+              <a
+                :href="resolveDocumentUrl(doc.url)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex h-full flex-col rounded-2xl border border-sky-100 bg-[#d9eaf7] p-4 text-center transition hover:border-brandBlue/40 hover:shadow-sm"
+              >
+                <span class="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white text-brandBlue">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <path d="M14 2v6h6" />
+                  </svg>
+                </span>
+                <span class="flex-1 text-sm font-semibold leading-snug text-slate-900">{{ doc.title }}</span>
+                <span class="mt-3 text-sm font-semibold text-brandBlue">Ouvrir →</span>
+              </a>
+            </li>
+          </ul>
+          <p v-else class="text-sm text-slate-500">Aucun document administratif pour le moment.</p>
+        </template>
       </section>
 
-      <section class="rounded-3xl border border-[#bdd7ef] bg-white p-4 shadow-sm sm:p-5">
+      <!-- Bloc toujours visible : Scolaire -->
+      <section class="rounded-3xl border border-[#bdd7ef] bg-white p-4 shadow-sm sm:p-6">
         <h2 class="mb-4 text-3xl font-semibold text-slate-900">Scolaire</h2>
-        <div class="grid gap-3 sm:grid-cols-3">
-          <article v-for="card in schoolCards" :key="card.key" class="rounded-2xl bg-[#d9eaf7] p-5 text-center">
-            <div class="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white text-brandBlue">
-              <ParentDocCardIcon :name="card.icon" />
-            </div>
-            <p class="font-semibold text-slate-900">{{ card.title }}</p>
-            <button
-              type="button"
-              class="mt-2 text-sm font-semibold text-brandBlue hover:underline"
-              @click="card.action === 'view' ? viewGroup(card.group, card.title) : downloadOne(card.group)"
-            >
-              {{ card.action === 'view' ? 'Voir' : 'Télécharger' }}
-            </button>
-          </article>
-        </div>
+        <div v-if="pending" class="text-sm text-slate-500">Chargement…</div>
+        <template v-else>
+          <ul v-if="schoolDocs.length" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <li v-for="doc in schoolDocs" :key="doc.id">
+              <a
+                :href="resolveDocumentUrl(doc.url)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex h-full flex-col rounded-2xl border border-sky-100 bg-[#d9eaf7] p-4 text-center transition hover:border-brandBlue/40 hover:shadow-sm"
+              >
+                <span class="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white text-brandBlue">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+                  </svg>
+                </span>
+                <span class="flex-1 text-sm font-semibold leading-snug text-slate-900">{{ doc.title }}</span>
+                <span class="mt-3 text-sm font-semibold text-brandBlue">Ouvrir →</span>
+              </a>
+            </li>
+          </ul>
+          <p v-else class="text-sm text-slate-500">Aucun document scolaire pour le moment.</p>
+        </template>
       </section>
-    </div>
-
-    <div v-if="modal.open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div class="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
-        <h3 class="text-lg font-semibold text-slate-900">{{ modal.title }}</h3>
-        <p v-if="modal.message" class="mt-2 text-sm text-slate-600">{{ modal.message }}</p>
-
-        <ul v-if="modal.docs.length" class="mt-4 space-y-2">
-          <li v-for="doc in modal.docs" :key="doc.id" class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 px-3 py-2">
-            <span class="text-sm text-slate-700">{{ doc.title }}</span>
-            <a
-              :href="doc.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-sm font-semibold text-brandBlue hover:underline"
-            >
-              Ouvrir
-            </a>
-          </li>
-        </ul>
-
-        <div class="mt-5 flex justify-end">
-          <button type="button" class="rounded-lg bg-brandBlue px-4 py-2 text-sm font-semibold text-white" @click="closeModal">
-            Fermer
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -83,90 +73,28 @@ definePageMeta({
   middleware: ['parent'],
 });
 
-type ApiDoc = { id: string; title: string; url: string };
+type ApiDoc = { id: string; title: string; url: string; kind?: 'SCHOOL' | 'ADMIN' };
 
 const { authFetch } = useParentAuth();
-
-type GroupKey = 'rules' | 'brochure' | 'magazine' | 'supplies' | 'schedule' | 'vacances';
-type IconName = 'supplies' | 'schedule' | 'holidays';
-
-type DocCard = {
-  key: string;
-  title: string;
-  group: GroupKey;
-  icon: IconName;
-  action: 'download' | 'view';
-};
+const { resolveDocumentUrl } = useParentDocumentUrl();
 
 const apiDocs = ref<ApiDoc[]>([]);
 const pending = ref(true);
-const modal = ref<{ open: boolean; title: string; message: string; docs: ApiDoc[] }>({
-  open: false,
-  title: '',
-  message: '',
-  docs: [],
-});
 
-const adminCards: DocCard[] = [
-  { key: 'rules', title: "Règlement de l'établissement", group: 'rules', icon: 'schedule', action: 'download' },
-  { key: 'brochure', title: 'Brochure', group: 'brochure', icon: 'supplies', action: 'download' },
-  { key: 'magazine', title: 'Magazine', group: 'magazine', icon: 'holidays', action: 'download' },
-];
-
-const schoolCards: DocCard[] = [
-  { key: 'supplies', title: 'Liste des fournitures', group: 'supplies', icon: 'supplies', action: 'view' },
-  { key: 'schedule', title: 'Horaire scolaire', group: 'schedule', icon: 'schedule', action: 'download' },
-  { key: 'vacances', title: 'Vacances', group: 'vacances', icon: 'holidays', action: 'view' },
-];
-
-function normalize(s: string) {
-  return s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+function rowKind(d: ApiDoc): 'SCHOOL' | 'ADMIN' {
+  return d.kind === 'ADMIN' ? 'ADMIN' : 'SCHOOL';
 }
 
-function docsForGroup(group: GroupKey) {
-  return apiDocs.value.filter((d) => {
-    const t = normalize(d.title);
-    if (group === 'rules') return t.includes('reglement') || t.includes('administratif');
-    if (group === 'brochure') return t.includes('brochure');
-    if (group === 'magazine') return t.includes('magazine');
-    if (group === 'supplies') return t.includes('fourniture') || t.includes('liste');
-    if (group === 'schedule') return t.includes('horaire') || t.includes('emploi du temps');
-    return t.includes('vacance') || t.includes('calendrier');
-  });
-}
-
-function closeModal() {
-  modal.value = { open: false, title: '', message: '', docs: [] };
-}
-
-function openMissingModal() {
-  modal.value = {
-    open: true,
-    title: 'Document non disponible',
-    message: 'Aucun document n’est disponible pour le moment dans cette catégorie.',
-    docs: [],
-  };
-}
-
-function downloadOne(group: GroupKey) {
-  const docs = docsForGroup(group);
-  if (!docs.length) return openMissingModal();
-  window.open(docs[0]!.url, '_blank', 'noopener,noreferrer');
-}
-
-function viewGroup(group: GroupKey, title: string) {
-  const docs = docsForGroup(group);
-  if (!docs.length) return openMissingModal();
-  modal.value = {
-    open: true,
-    title,
-    message: 'Choisissez un document à ouvrir.',
-    docs,
-  };
-}
+const adminDocs = computed(() =>
+  apiDocs.value
+    .filter((d) => rowKind(d) === 'ADMIN')
+    .sort((a, b) => a.title.localeCompare(b.title, 'fr')),
+);
+const schoolDocs = computed(() =>
+  apiDocs.value
+    .filter((d) => rowKind(d) === 'SCHOOL')
+    .sort((a, b) => a.title.localeCompare(b.title, 'fr')),
+);
 
 onMounted(async () => {
   pending.value = true;

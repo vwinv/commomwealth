@@ -3,8 +3,11 @@ export {}
 declare global {
   const abortNavigation: typeof import('../../node_modules/nuxt/dist/app/composables/router').abortNavigation
   const addRouteMiddleware: typeof import('../../node_modules/nuxt/dist/app/composables/router').addRouteMiddleware
+  const buildParentInvoiceHtml: typeof import('../../utils/parentInvoiceHtml').buildParentInvoiceHtml
+  const buildParentReceiptHtml: typeof import('../../utils/parentReceiptHtml').buildParentReceiptHtml
   const callOnce: typeof import('../../node_modules/nuxt/dist/app/composables/once').callOnce
   const cancelIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback').cancelIdleCallback
+  const checkAdminAccessToken: typeof import('../../utils/admin-token').checkAdminAccessToken
   const clearError: typeof import('../../node_modules/nuxt/dist/app/composables/error').clearError
   const clearNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData').clearNuxtData
   const clearNuxtState: typeof import('../../node_modules/nuxt/dist/app/composables/state').clearNuxtState
@@ -28,6 +31,9 @@ declare global {
   const definePayloadReviver: typeof import('../../node_modules/nuxt/dist/app/composables/payload').definePayloadReviver
   const effect: typeof import('../../node_modules/vue').effect
   const effectScope: typeof import('../../node_modules/vue').effectScope
+  const extractInvoicePdfParts: typeof import('../../utils/parentInvoiceHtml').extractInvoicePdfParts
+  const formatPaymentModeFromTransactionRef: typeof import('../../utils/parentReceiptHtml').formatPaymentModeFromTransactionRef
+  const formatXofFromCents: typeof import('../../utils/parentInvoiceHtml').formatXofFromCents
   const getAppManifest: typeof import('../../node_modules/nuxt/dist/app/composables/manifest').getAppManifest
   const getCurrentInstance: typeof import('../../node_modules/vue').getCurrentInstance
   const getCurrentScope: typeof import('../../node_modules/vue').getCurrentScope
@@ -37,6 +43,7 @@ declare global {
   const inject: typeof import('../../node_modules/vue').inject
   const injectHead: typeof import('../../node_modules/nuxt/dist/app/composables/head').injectHead
   const isNuxtError: typeof import('../../node_modules/nuxt/dist/app/composables/error').isNuxtError
+  const isPaidParentInvoiceSource: typeof import('../../composables/useParentSchoolInvoice').isPaidParentInvoiceSource
   const isPrerendered: typeof import('../../node_modules/nuxt/dist/app/composables/payload').isPrerendered
   const isProxy: typeof import('../../node_modules/vue').isProxy
   const isReactive: typeof import('../../node_modules/vue').isReactive
@@ -47,6 +54,8 @@ declare global {
   const isVue3: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi').isVue3
   const loadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload').loadPayload
   const markRaw: typeof import('../../node_modules/vue').markRaw
+  const matriculeFromEnrollmentId: typeof import('../../utils/parentInvoiceHtml').matriculeFromEnrollmentId
+  const monthEndDateFr: typeof import('../../utils/parentInvoiceHtml').monthEndDateFr
   const navigateTo: typeof import('../../node_modules/nuxt/dist/app/composables/router').navigateTo
   const nextTick: typeof import('../../node_modules/vue').nextTick
   const onActivated: typeof import('../../node_modules/vue').onActivated
@@ -67,6 +76,7 @@ declare global {
   const onUnmounted: typeof import('../../node_modules/vue').onUnmounted
   const onUpdated: typeof import('../../node_modules/vue').onUpdated
   const onWatcherCleanup: typeof import('../../node_modules/vue').onWatcherCleanup
+  const parseMedicalTags: typeof import('../../utils/parentReceiptHtml').parseMedicalTags
   const prefetchComponents: typeof import('../../node_modules/nuxt/dist/app/composables/preload').prefetchComponents
   const preloadComponents: typeof import('../../node_modules/nuxt/dist/app/composables/preload').preloadComponents
   const preloadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload').preloadPayload
@@ -82,6 +92,7 @@ declare global {
   const reloadNuxtApp: typeof import('../../node_modules/nuxt/dist/app/composables/chunk').reloadNuxtApp
   const requestIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback').requestIdleCallback
   const resolveComponent: typeof import('../../node_modules/vue').resolveComponent
+  const schoolTrimesterFromMonth: typeof import('../../utils/parentInvoiceHtml').schoolTrimesterFromMonth
   const setInterval: typeof import('../../node_modules/nuxt/dist/app/compat/interval').setInterval
   const setPageLayout: typeof import('../../node_modules/nuxt/dist/app/composables/router').setPageLayout
   const setResponseStatus: typeof import('../../node_modules/nuxt/dist/app/composables/ssr').setResponseStatus
@@ -89,12 +100,15 @@ declare global {
   const shallowReadonly: typeof import('../../node_modules/vue').shallowReadonly
   const shallowRef: typeof import('../../node_modules/vue').shallowRef
   const showError: typeof import('../../node_modules/nuxt/dist/app/composables/error').showError
+  const stableInvoiceNumber: typeof import('../../utils/parentInvoiceHtml').stableInvoiceNumber
+  const stableReceiptNumber: typeof import('../../utils/parentReceiptHtml').stableReceiptNumber
   const toRaw: typeof import('../../node_modules/vue').toRaw
   const toRef: typeof import('../../node_modules/vue').toRef
   const toRefs: typeof import('../../node_modules/vue').toRefs
   const toValue: typeof import('../../node_modules/vue').toValue
   const triggerRef: typeof import('../../node_modules/vue').triggerRef
   const tryUseNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt').tryUseNuxtApp
+  const tuitionAnnualDueDateFr: typeof import('../../utils/parentInvoiceHtml').tuitionAnnualDueDateFr
   const unref: typeof import('../../node_modules/vue').unref
   const updateAppConfig: typeof import('../../node_modules/nuxt/dist/app/config').updateAppConfig
   const useAppConfig: typeof import('../../node_modules/nuxt/dist/app/config').useAppConfig
@@ -123,8 +137,10 @@ declare global {
   const useModel: typeof import('../../node_modules/vue').useModel
   const useNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt').useNuxtApp
   const useNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData').useNuxtData
-  const useNuxtDevTools: typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools').useNuxtDevTools
+  const useNuxtDevTools: typeof import('../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools').useNuxtDevTools
   const useParentAuth: typeof import('../../composables/useParentAuth').useParentAuth
+  const useParentDocumentUrl: typeof import('../../composables/useParentDocumentUrl').useParentDocumentUrl
+  const useParentSchoolInvoice: typeof import('../../composables/useParentSchoolInvoice').useParentSchoolInvoice
   const usePreviewMode: typeof import('../../node_modules/nuxt/dist/app/composables/preview').usePreviewMode
   const useRequestEvent: typeof import('../../node_modules/nuxt/dist/app/composables/ssr').useRequestEvent
   const useRequestFetch: typeof import('../../node_modules/nuxt/dist/app/composables/ssr').useRequestFetch
@@ -195,6 +211,21 @@ declare global {
   // @ts-ignore
   export type { Component, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from '../../node_modules/vue'
   import('../../node_modules/vue')
+  // @ts-ignore
+  export type { AdminLoginResult } from '../../composables/useAuth'
+  import('../../composables/useAuth')
+  // @ts-ignore
+  export type { BillingContactDto, TuitionChargeInvoiceDto, MonthlyInstallmentInvoiceDto, LegacyPaymentInvoiceDto, ParentInvoiceSource, ParentInvoiceDocument, ParentReceiptDocument } from '../../composables/useParentSchoolInvoice'
+  import('../../composables/useParentSchoolInvoice')
+  // @ts-ignore
+  export type { AdminTokenCheck } from '../../utils/admin-token'
+  import('../../utils/admin-token')
+  // @ts-ignore
+  export type { ParentInvoiceLine, ParentInvoiceHtmlInput } from '../../utils/parentInvoiceHtml'
+  import('../../utils/parentInvoiceHtml')
+  // @ts-ignore
+  export type { ParentReceiptLine, ParentReceiptHtmlInput } from '../../utils/parentReceiptHtml'
+  import('../../utils/parentReceiptHtml')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -202,8 +233,11 @@ declare module 'vue' {
   interface ComponentCustomProperties {
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
+    readonly buildParentInvoiceHtml: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['buildParentInvoiceHtml']>
+    readonly buildParentReceiptHtml: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['buildParentReceiptHtml']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
+    readonly checkAdminAccessToken: UnwrapRef<typeof import('../../utils/admin-token')['checkAdminAccessToken']>
     readonly clearError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['clearError']>
     readonly clearNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['clearNuxtData']>
     readonly clearNuxtState: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/state')['clearNuxtState']>
@@ -227,6 +261,9 @@ declare module 'vue' {
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
     readonly effect: UnwrapRef<typeof import('../../node_modules/vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('../../node_modules/vue')['effectScope']>
+    readonly extractInvoicePdfParts: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['extractInvoicePdfParts']>
+    readonly formatPaymentModeFromTransactionRef: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['formatPaymentModeFromTransactionRef']>
+    readonly formatXofFromCents: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['formatXofFromCents']>
     readonly getAppManifest: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/manifest')['getAppManifest']>
     readonly getCurrentInstance: UnwrapRef<typeof import('../../node_modules/vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('../../node_modules/vue')['getCurrentScope']>
@@ -236,6 +273,7 @@ declare module 'vue' {
     readonly inject: UnwrapRef<typeof import('../../node_modules/vue')['inject']>
     readonly injectHead: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/head')['injectHead']>
     readonly isNuxtError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['isNuxtError']>
+    readonly isPaidParentInvoiceSource: UnwrapRef<typeof import('../../composables/useParentSchoolInvoice')['isPaidParentInvoiceSource']>
     readonly isPrerendered: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['isPrerendered']>
     readonly isProxy: UnwrapRef<typeof import('../../node_modules/vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('../../node_modules/vue')['isReactive']>
@@ -246,6 +284,8 @@ declare module 'vue' {
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
     readonly markRaw: UnwrapRef<typeof import('../../node_modules/vue')['markRaw']>
+    readonly matriculeFromEnrollmentId: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['matriculeFromEnrollmentId']>
+    readonly monthEndDateFr: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['monthEndDateFr']>
     readonly navigateTo: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['navigateTo']>
     readonly nextTick: UnwrapRef<typeof import('../../node_modules/vue')['nextTick']>
     readonly onActivated: UnwrapRef<typeof import('../../node_modules/vue')['onActivated']>
@@ -266,6 +306,7 @@ declare module 'vue' {
     readonly onUnmounted: UnwrapRef<typeof import('../../node_modules/vue')['onUnmounted']>
     readonly onUpdated: UnwrapRef<typeof import('../../node_modules/vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('../../node_modules/vue')['onWatcherCleanup']>
+    readonly parseMedicalTags: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['parseMedicalTags']>
     readonly prefetchComponents: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preload')['prefetchComponents']>
     readonly preloadComponents: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preload')['preloadComponents']>
     readonly preloadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['preloadPayload']>
@@ -281,6 +322,7 @@ declare module 'vue' {
     readonly reloadNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']>
     readonly requestIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']>
     readonly resolveComponent: UnwrapRef<typeof import('../../node_modules/vue')['resolveComponent']>
+    readonly schoolTrimesterFromMonth: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['schoolTrimesterFromMonth']>
     readonly setInterval: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/interval')['setInterval']>
     readonly setPageLayout: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['setPageLayout']>
     readonly setResponseStatus: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['setResponseStatus']>
@@ -288,12 +330,15 @@ declare module 'vue' {
     readonly shallowReadonly: UnwrapRef<typeof import('../../node_modules/vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('../../node_modules/vue')['shallowRef']>
     readonly showError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['showError']>
+    readonly stableInvoiceNumber: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['stableInvoiceNumber']>
+    readonly stableReceiptNumber: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['stableReceiptNumber']>
     readonly toRaw: UnwrapRef<typeof import('../../node_modules/vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('../../node_modules/vue')['toRef']>
     readonly toRefs: UnwrapRef<typeof import('../../node_modules/vue')['toRefs']>
     readonly toValue: UnwrapRef<typeof import('../../node_modules/vue')['toValue']>
     readonly triggerRef: UnwrapRef<typeof import('../../node_modules/vue')['triggerRef']>
     readonly tryUseNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['tryUseNuxtApp']>
+    readonly tuitionAnnualDueDateFr: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['tuitionAnnualDueDateFr']>
     readonly unref: UnwrapRef<typeof import('../../node_modules/vue')['unref']>
     readonly updateAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/config')['updateAppConfig']>
     readonly useAppConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/config')['useAppConfig']>
@@ -322,8 +367,10 @@ declare module 'vue' {
     readonly useModel: UnwrapRef<typeof import('../../node_modules/vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
-    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
+    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly useParentAuth: UnwrapRef<typeof import('../../composables/useParentAuth')['useParentAuth']>
+    readonly useParentDocumentUrl: UnwrapRef<typeof import('../../composables/useParentDocumentUrl')['useParentDocumentUrl']>
+    readonly useParentSchoolInvoice: UnwrapRef<typeof import('../../composables/useParentSchoolInvoice')['useParentSchoolInvoice']>
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly useRequestEvent: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']>
     readonly useRequestFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestFetch']>

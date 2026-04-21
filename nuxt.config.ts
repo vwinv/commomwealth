@@ -2,6 +2,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const nuxtPathsShim = join(__dirname, 'shims/nuxt-internal-paths.mjs');
+const nitroInternalShim = join(__dirname, 'shims/nuxt-internal-nitro.mjs');
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-04-07',
@@ -41,6 +43,12 @@ export default defineNuxtConfig({
     public: {
       // API Nest (voir backend `PORT`, défaut 3001 — Nuxt utilise souvent 3000)
       apiBase: 'http://localhost:3001/api',
+      schoolDisplayName: 'Commonwealth School',
+      schoolContactEmail: 'contact@commonwealth-school.com',
+      schoolAdministrationEmail: 'administration@commonwealth-school.com',
+      schoolEmergencyPhone: '(219) 555-0114',
+      schoolPaymentModes:
+        "Virement bancaire · Wave · Orange Money · Espèces (caisse de l'école)",
     },
   },
   vite: {
@@ -60,7 +68,48 @@ export default defineNuxtConfig({
       alias: {
         // Vite analyse quand même `import("#app-manifest")` dans nuxt/dist ; le stub évite l’erreur en dev.
         '#app-manifest': join(__dirname, 'stubs/app-manifest.mjs'),
+        '#internal/nuxt/paths': nuxtPathsShim,
+        '#internal/nitro': nitroInternalShim,
       },
+    },
+  },
+  hooks: {
+    /**
+     * Le build SSR de Nuxt laisse `#internal/nuxt/paths` en `external` Rollup : Node doit alors le résoudre
+     * via `package.json#imports`, ce qui casse selon l’environnement. On retire l’external et on garde
+     * l’alias Vite pour que le shim soit bundlé dans `.nuxt/dist/server/server.mjs`.
+     */
+    'vite:extendConfig'(config, { isServer }) {
+      if (!isServer) return;
+
+      config.resolve ??= {};
+      const alias = config.resolve.alias;
+      if (Array.isArray(alias)) {
+        alias.push(
+          { find: '#internal/nuxt/paths', replacement: nuxtPathsShim },
+          { find: '#internal/nitro', replacement: nitroInternalShim },
+        );
+      } else if (alias && typeof alias === 'object') {
+        config.resolve.alias = {
+          ...alias,
+          '#internal/nuxt/paths': nuxtPathsShim,
+          '#internal/nitro': nitroInternalShim,
+        };
+      } else {
+        config.resolve.alias = {
+          '#internal/nuxt/paths': nuxtPathsShim,
+          '#internal/nitro': nitroInternalShim,
+        };
+      }
+
+      const external = config.build?.rollupOptions?.external;
+      if (Array.isArray(external)) {
+        const drop = new Set(['#internal/nuxt/paths', '#internal/nitro', '#internal/nitro/utils']);
+        config.build!.rollupOptions!.external = external.filter((e) => {
+          if (typeof e === 'string') return !drop.has(e);
+          return true;
+        });
+      }
     },
   },
   app: {

@@ -14,11 +14,15 @@ type HydrationStrategies = {
 type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }> & T
 
 interface _GlobalComponents {
-  BackofficeSidebar: typeof import("../../components/BackofficeSidebar.vue")['default']
+  AdminDashboardChart: typeof import("../../components/AdminDashboardChart.vue")['default']
+  AdminSidebar: typeof import("../../components/AdminSidebar.vue")['default']
+  AdminTopBar: typeof import("../../components/AdminTopBar.vue")['default']
   ParentDocCardIcon: typeof import("../../components/ParentDocCardIcon.vue")['default']
   RevealSection: typeof import("../../components/RevealSection.vue")['default']
   SiteFooter: typeof import("../../components/SiteFooter.vue")['default']
   SiteHeader: typeof import("../../components/SiteHeader.vue")['default']
+  ParentPayTuitionInline: typeof import("../../components/parent/PayTuitionInline.vue")['default']
+  ParentPayTuitionModal: typeof import("../../components/parent/PayTuitionModal.vue")['default']
   NuxtWelcome: typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   NuxtLayout: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   NuxtErrorBoundary: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -44,11 +48,15 @@ interface _GlobalComponents {
   Html: typeof import("../../node_modules/nuxt/dist/head/runtime/components")['Html']
   Body: typeof import("../../node_modules/nuxt/dist/head/runtime/components")['Body']
   NuxtIsland: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-island")['default']
-  LazyBackofficeSidebar: LazyComponent<typeof import("../../components/BackofficeSidebar.vue")['default']>
+  LazyAdminDashboardChart: LazyComponent<typeof import("../../components/AdminDashboardChart.vue")['default']>
+  LazyAdminSidebar: LazyComponent<typeof import("../../components/AdminSidebar.vue")['default']>
+  LazyAdminTopBar: LazyComponent<typeof import("../../components/AdminTopBar.vue")['default']>
   LazyParentDocCardIcon: LazyComponent<typeof import("../../components/ParentDocCardIcon.vue")['default']>
   LazyRevealSection: LazyComponent<typeof import("../../components/RevealSection.vue")['default']>
   LazySiteFooter: LazyComponent<typeof import("../../components/SiteFooter.vue")['default']>
   LazySiteHeader: LazyComponent<typeof import("../../components/SiteHeader.vue")['default']>
+  LazyParentPayTuitionInline: LazyComponent<typeof import("../../components/parent/PayTuitionInline.vue")['default']>
+  LazyParentPayTuitionModal: LazyComponent<typeof import("../../components/parent/PayTuitionModal.vue")['default']>
   LazyNuxtWelcome: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   LazyNuxtLayout: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   LazyNuxtErrorBoundary: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

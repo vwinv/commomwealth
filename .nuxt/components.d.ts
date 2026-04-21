@@ -14,11 +14,15 @@ type HydrationStrategies = {
 type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }> & T
 
 
-export const BackofficeSidebar: typeof import("../components/BackofficeSidebar.vue")['default']
+export const AdminDashboardChart: typeof import("../components/AdminDashboardChart.vue")['default']
+export const AdminSidebar: typeof import("../components/AdminSidebar.vue")['default']
+export const AdminTopBar: typeof import("../components/AdminTopBar.vue")['default']
 export const ParentDocCardIcon: typeof import("../components/ParentDocCardIcon.vue")['default']
 export const RevealSection: typeof import("../components/RevealSection.vue")['default']
 export const SiteFooter: typeof import("../components/SiteFooter.vue")['default']
 export const SiteHeader: typeof import("../components/SiteHeader.vue")['default']
+export const ParentPayTuitionInline: typeof import("../components/parent/PayTuitionInline.vue")['default']
+export const ParentPayTuitionModal: typeof import("../components/parent/PayTuitionModal.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -44,11 +48,15 @@ export const Head: typeof import("../node_modules/nuxt/dist/head/runtime/compone
 export const Html: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Html']
 export const Body: typeof import("../node_modules/nuxt/dist/head/runtime/components")['Body']
 export const NuxtIsland: typeof import("../node_modules/nuxt/dist/app/components/nuxt-island")['default']
-export const LazyBackofficeSidebar: LazyComponent<typeof import("../components/BackofficeSidebar.vue")['default']>
+export const LazyAdminDashboardChart: LazyComponent<typeof import("../components/AdminDashboardChart.vue")['default']>
+export const LazyAdminSidebar: LazyComponent<typeof import("../components/AdminSidebar.vue")['default']>
+export const LazyAdminTopBar: LazyComponent<typeof import("../components/AdminTopBar.vue")['default']>
 export const LazyParentDocCardIcon: LazyComponent<typeof import("../components/ParentDocCardIcon.vue")['default']>
 export const LazyRevealSection: LazyComponent<typeof import("../components/RevealSection.vue")['default']>
 export const LazySiteFooter: LazyComponent<typeof import("../components/SiteFooter.vue")['default']>
 export const LazySiteHeader: LazyComponent<typeof import("../components/SiteHeader.vue")['default']>
+export const LazyParentPayTuitionInline: LazyComponent<typeof import("../components/parent/PayTuitionInline.vue")['default']>
+export const LazyParentPayTuitionModal: LazyComponent<typeof import("../components/parent/PayTuitionModal.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

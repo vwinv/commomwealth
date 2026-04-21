@@ -54,6 +54,51 @@ export function useParentAuth() {
     return { Authorization: `Bearer ${t}` };
   }
 
+  function parseFilenameFromContentDisposition(cd: string | null): string | undefined {
+    if (!cd) return undefined;
+    const mStar = cd.match(/filename\*\s*=\s*UTF-8''([^;\s]+)/i);
+    if (mStar?.[1]) {
+      try {
+        return decodeURIComponent(mStar[1].replace(/"/g, ''));
+      } catch {
+        return mStar[1];
+      }
+    }
+    const m = cd.match(/filename\s*=\s*("?)([^";\r\n]+)\1/i);
+    return m?.[2]?.trim();
+  }
+
+  async function authFetchBlob(path: string): Promise<{ blob: Blob; filename?: string }> {
+    const t = activeToken.value;
+    const res = await fetch(`${config.public.apiBase}${path}`, {
+      method: 'GET',
+      headers: {
+        ...(t ? { Authorization: `Bearer ${t}` } : {}),
+        Accept: 'application/pdf',
+      },
+    });
+    if (!res.ok) {
+      let detail = res.statusText;
+      try {
+        const ct = res.headers.get('content-type') ?? '';
+        if (ct.includes('application/json')) {
+          const j = (await res.json()) as { message?: unknown };
+          if (j?.message != null) {
+            detail = Array.isArray(j.message) ? j.message.join(', ') : String(j.message);
+          }
+        } else {
+          const text = await res.text();
+          if (text) detail = text.slice(0, 200);
+        }
+      } catch {
+        /* ignore */
+      }
+      throw new Error(detail || `HTTP ${res.status}`);
+    }
+    const filename = parseFilenameFromContentDisposition(res.headers.get('Content-Disposition'));
+    return { blob: await res.blob(), filename };
+  }
+
   function authFetch<T>(
     path: string,
     opts: { method?: 'GET' | 'POST' | 'PATCH'; body?: Record<string, unknown> } = {},
@@ -66,5 +111,5 @@ export function useParentAuth() {
     });
   }
 
-  return { token: activeToken, isLoggedIn, login, logout, authHeaders, authFetch };
+  return { token: activeToken, isLoggedIn, login, logout, authHeaders, authFetch, authFetchBlob };
 }

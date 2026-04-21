@@ -23,7 +23,7 @@ import { readFile } from 'node:fs/promises';
 import consola, { consola as consola$1 } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/consola/dist/index.mjs';
 import { ErrorParser } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/youch-core/build/index.js';
 import { Youch } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/source-map/source-map.js';
+import { SourceMapConsumer } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/nitropack/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { stringify, uneval } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/devalue/index.js';
 import { captureRawStackTrace, parseRawStackTrace } from 'file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/errx/dist/index.js';
@@ -893,6 +893,11 @@ const _inlineRuntimeConfig = {
   },
   "public": {
     "apiBase": "http://localhost:3001/api",
+    "schoolDisplayName": "Commonwealth School",
+    "schoolContactEmail": "contact@commonwealth-school.com",
+    "schoolAdministrationEmail": "administration@commonwealth-school.com",
+    "schoolEmergencyPhone": "(219) 555-0114",
+    "schoolPaymentModes": "Virement bancaire · Wave · Orange Money · Espèces (caisse de l'école)",
     "i18n": {
       "baseUrl": "",
       "defaultLocale": "fr",
@@ -2337,7 +2342,7 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _g7L587qPGdJDggxzruf4dB8cWdIi7OvIWrL5E9JgYME = (function(nitro) {
+const _S4121UNRRXdDZDQm5TpqUCcb9JGKNQbQ5FurEnnARCU = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
@@ -2442,7 +2447,7 @@ function onConsoleLog(callback) {
 }
 
 const plugins = [
-  _g7L587qPGdJDggxzruf4dB8cWdIi7OvIWrL5E9JgYME,
+  _S4121UNRRXdDZDQm5TpqUCcb9JGKNQbQ5FurEnnARCU,
 _5_BgNebM_xC2BVpheq21CbOPO0hhwqdAUbBwjgYX4JY,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];

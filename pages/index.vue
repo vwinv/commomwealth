@@ -2,46 +2,13 @@
   <div class="w-full bg-white">
     <!-- HERO -->
     <section class="w-full">
-      <RevealSection extra-class="mx-auto max-w-[1200px] px-0 py-36">
-        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.25fr_0.75fr]">
-          <div class="pl-0 -ml-20">
-            <h1 class="leading-[1.05]">
-              <span class="relative inline-block text-[46px] font-extrabold tracking-tight text-brandBlue lg:text-[54px]">
-                The Commonwealth School
-                <img
-                  class="pointer-events-none absolute left-32 top-full mt-2 w-[220px]"
-                  :src="traitImg"
-                  alt=""
-                  aria-hidden="true"
-                />
-              </span>
-              <span class="block text-[42px] font-light tracking-tight text-brandBlue/90 lg:text-[50px]">
-                {{ t('home.hero.subtitle') }}
-              </span>
-            </h1>
-
-            <p class="mt-6 text-lg font-normal text-slate-800">{{ t('home.hero.tagline') }}</p>
-
-            <div class="mt-10">
-              <button
-                class="inline-flex h-10 items-center justify-center rounded-md bg-brandOrange px-6 text-sm font-semibold text-white shadow-sm"
-                type="button"
-              >
-                {{ t('home.hero.cta') }}
-              </button>
-            </div>
-
-            <div class="mt-12 flex items-center gap-3">
-              <span class="h-2 w-2 rounded-full bg-slate-400" aria-hidden="true" />
-              <span class="h-2 w-2 rounded-full bg-brandBlue" aria-hidden="true" />
-              <span class="h-2 w-2 rounded-full bg-slate-200" aria-hidden="true" />
-            </div>
-          </div>
-
-          <div class="flex items-center justify-center">
+      <RevealSection extra-class="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 sm:py-24 lg:px-0 lg:py-36">
+        <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:gap-10">
+          <!-- Mobile / tablette : images en premier ; lg+ : colonne droite -->
+          <div class="order-1 flex items-center justify-center lg:order-2">
             <div class="animate-hero-bounce relative isolate w-full max-w-[340px]">
               <img
-                class="pointer-events-none absolute -right-16 -top-16 z-0 h-40 w-40 object-cover"
+                class="pointer-events-none absolute -right-8 -top-8 z-0 h-28 w-28 object-cover sm:-right-12 sm:-top-12 sm:h-36 sm:w-36 lg:-right-16 lg:-top-16 lg:h-40 lg:w-40"
                 :src="image5"
                 alt=""
                 aria-hidden="true"
@@ -61,6 +28,41 @@
                   <img class="h-full w-full object-cover" :src="image4" alt="" />
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Mobile / tablette : texte en dessous + marge gauche ; lg+ : colonne gauche -->
+          <div class="order-2 ml-4 sm:ml-8 lg:order-1 lg:ml-0 lg:-ml-20 lg:pl-0">
+            <h1 class="leading-[1.05]">
+              <span class="relative inline-block text-[32px] font-extrabold tracking-tight text-brandBlue sm:text-[40px] lg:text-[46px] xl:text-[54px]">
+                The Commonwealth School
+                <img
+                  class="pointer-events-none absolute left-16 top-full mt-2 w-[140px] sm:left-24 sm:w-[180px] lg:left-32 lg:w-[220px]"
+                  :src="traitImg"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </span>
+              <span class="block text-[28px] font-light tracking-tight text-brandBlue/90 sm:text-[36px] lg:text-[42px] xl:text-[50px]">
+                {{ t('home.hero.subtitle') }}
+              </span>
+            </h1>
+
+            <p class="mt-6 text-base font-normal text-slate-800 sm:text-lg">{{ t('home.hero.tagline') }}</p>
+
+            <div class="mt-10">
+              <button
+                class="inline-flex h-10 items-center justify-center rounded-md bg-brandOrange px-6 text-sm font-semibold text-white shadow-sm"
+                type="button"
+              >
+                {{ t('home.hero.cta') }}
+              </button>
+            </div>
+
+            <div class="mt-12 flex items-center gap-3">
+              <span class="h-2 w-2 rounded-full bg-slate-400" aria-hidden="true" />
+              <span class="h-2 w-2 rounded-full bg-brandBlue" aria-hidden="true" />
+              <span class="h-2 w-2 rounded-full bg-slate-200" aria-hidden="true" />
             </div>
           </div>
         </div>

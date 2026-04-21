@@ -5,7 +5,7 @@
         "../node_modules/@unhead/vue"
       ],
       "@nuxt/devtools": [
-        "../node_modules/@nuxt/devtools"
+        "../node_modules/nuxt/node_modules/@nuxt/devtools"
       ],
       "vue": [
         "../node_modules/vue"
@@ -202,6 +202,8 @@
     "./nuxt.d.ts",
     "../node_modules/runtime",
     "../node_modules/dist/runtime",
+    "../node_modules/nuxt/node_modules/runtime",
+    "../node_modules/nuxt/node_modules/dist/runtime",
     ".."
   ],
   "exclude": [
@@ -209,6 +211,8 @@
     "../.data",
     "../node_modules/runtime/server",
     "../node_modules/dist/runtime/server",
+    "../node_modules/nuxt/node_modules/runtime/server",
+    "../node_modules/nuxt/node_modules/dist/runtime/server",
     "dev"
   ]
 }

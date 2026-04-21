@@ -14,6 +14,7 @@ export default <Partial<Config>>{
       colors: {
         brandBlue: '#216EC2',
         brandOrange: '#F99B4B',
+        brandGreen: '#2E8B57',
       },
     },
   },

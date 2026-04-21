@@ -33,7 +33,7 @@
         "../node_modules/@unhead/vue"
       ],
       "@nuxt/devtools": [
-        "../node_modules/@nuxt/devtools"
+        "../node_modules/nuxt/node_modules/@nuxt/devtools"
       ],
       "vue": [
         "../node_modules/vue"
@@ -165,6 +165,8 @@
     "./types/nitro-nuxt.d.ts",
     "../node_modules/runtime/server",
     "../node_modules/dist/runtime/server",
+    "../node_modules/nuxt/node_modules/runtime/server",
+    "../node_modules/nuxt/node_modules/dist/runtime/server",
     "../server/**/*",
     "../shared/**/*.d.ts",
     "./types/nitro.d.ts",
@@ -175,7 +177,7 @@
     "../node_modules/nuxt/node_modules",
     "../node_modules/@nuxtjs/tailwindcss/node_modules",
     "../node_modules/@nuxtjs/i18n/node_modules",
-    "../node_modules/@nuxt/devtools/node_modules",
+    "../node_modules/nuxt/node_modules/@nuxt/devtools/node_modules",
     "../node_modules/@nuxt/telemetry/node_modules",
     "../dist"
   ]

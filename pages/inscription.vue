@@ -210,6 +210,19 @@
               </div>
 
               <div>
+                <label class="mb-2 block text-xs font-semibold text-slate-600">Vous êtes</label>
+                <select
+                  v-model="form.parentRelation"
+                  class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-0 focus:border-brandBlue [color-scheme:light]"
+                  required
+                >
+                  <option value="" disabled>Choisir</option>
+                  <option value="FATHER">Le père</option>
+                  <option value="MOTHER">La mère</option>
+                </select>
+              </div>
+
+              <div>
                 <label class="mb-2 block text-xs font-semibold text-slate-600">Téléphone</label>
                 <input
                   v-model.trim="form.parentPhone"
@@ -226,6 +239,18 @@
                   class="h-11 w-full rounded-lg border border-slate-300 px-4 text-sm text-slate-700 outline-none ring-0 focus:border-brandBlue"
                   placeholder="email@exemple.com"
                   type="email"
+                />
+              </div>
+
+              <div>
+                <label class="mb-2 block text-xs font-semibold text-slate-600"
+                  >Adresse du domicile (famille / enfants)</label
+                >
+                <textarea
+                  v-model.trim="form.parentAddress"
+                  class="min-h-[88px] w-full resize-y rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-700 outline-none ring-0 focus:border-brandBlue"
+                  placeholder="Rue, ville, pays…"
+                  rows="3"
                 />
               </div>
             </template>
@@ -335,8 +360,10 @@ type FormState = {
   previousSchool: string;
   parentLastName: string;
   parentFirstName: string;
+  parentRelation: '' | 'FATHER' | 'MOTHER';
   parentPhone: string;
   parentEmail: string;
+  parentAddress: string;
   services: Array<'cantine' | 'bus' | 'garderie'>;
   comment: string;
 };
@@ -361,8 +388,10 @@ const form = reactive<FormState>({
   previousSchool: '',
   parentLastName: '',
   parentFirstName: '',
+  parentRelation: '',
   parentPhone: '',
   parentEmail: '',
+  parentAddress: '',
   services: [],
   comment: '',
 });
@@ -427,6 +456,17 @@ const stepLabelClass = (n: 1 | 2 | 3) => {
 };
 
 const next = () => {
+  submitError.value = '';
+  if (step.value === 2) {
+    if (!form.parentRelation) {
+      submitError.value = 'Indiquez si vous êtes le père ou la mère.';
+      return;
+    }
+    if (!form.parentAddress.trim()) {
+      submitError.value = 'L’adresse du domicile est obligatoire.';
+      return;
+    }
+  }
   step.value = (Math.min(3, step.value + 1) as 1 | 2 | 3);
 };
 
@@ -456,6 +496,14 @@ const onSubmit = async () => {
     submitError.value = 'L’e-mail du parent est obligatoire.';
     return;
   }
+  if (form.parentRelation !== 'FATHER' && form.parentRelation !== 'MOTHER') {
+    submitError.value = 'Indiquez si vous êtes le père ou la mère.';
+    return;
+  }
+  if (!form.parentAddress.trim()) {
+    submitError.value = 'L’adresse du domicile est obligatoire.';
+    return;
+  }
 
   submitting.value = true;
   try {
@@ -467,6 +515,8 @@ const onSubmit = async () => {
           phone: form.parentPhone.trim() || undefined,
           firstName: form.parentFirstName.trim(),
           lastName: form.parentLastName.trim(),
+          relation: form.parentRelation,
+          address: form.parentAddress.trim(),
         },
         schoolYear: currentSchoolYear(),
         children: students.value.map((s) => ({

@@ -18,6 +18,16 @@ import { NuxtModule, ModuleDependencyMeta } from '@nuxt/schema'
   interface SharedPublicRuntimeConfig {
    apiBase: string,
 
+   schoolDisplayName: string,
+
+   schoolContactEmail: string,
+
+   schoolAdministrationEmail: string,
+
+   schoolEmergencyPhone: string,
+
+   schoolPaymentModes: string,
+
    i18n: {
       baseUrl: string,
 
