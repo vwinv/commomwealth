@@ -1,1 +1,0 @@
-export { default } from "file:///Users/mac/Desktop/commonwealth/commomwealth/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs"

@@ -1,5 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { UserConfig } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const nuxtPathsShim = join(__dirname, 'shims/nuxt-internal-paths.mjs');
@@ -8,7 +9,10 @@ const nitroInternalShim = join(__dirname, 'shims/nuxt-internal-nitro.mjs');
 export default defineNuxtConfig({
   compatibilityDate: '2026-04-07',
   devtools: { enabled: true },
-  /** Un seul port pour le dev : évite de croire que le site est sur 3000 alors que Nuxt a basculé sur 3002+. */
+  /**
+   * Port du serveur de dev Nuxt (les types Vite `vite.server` n’y exposent plus `port` / `strictPort` :
+   * ils sont pilotés ici via `devServer`).
+   */
   devServer: {
     port: 3000,
     host: 'localhost',
@@ -53,9 +57,7 @@ export default defineNuxtConfig({
   },
   vite: {
     server: {
-      /** Si 3000 est pris, échoue clairement au lieu de changer de port (source de confusion / « boucle »). */
-      strictPort: true,
-      port: 3000,
+      /** Port : voir `devServer.port` ci-dessus. */
       /**
        * Moins de watchers = moins de risque EMFILE sur macOS (sinon Nuxt redémarre en boucle).
        * node_modules est déjà ignoré en pratique ; on explicite les gros dossiers du repo.
@@ -82,30 +84,32 @@ export default defineNuxtConfig({
     'vite:extendConfig'(config, { isServer }) {
       if (!isServer) return;
 
-      config.resolve ??= {};
-      const alias = config.resolve.alias;
+      /** Nuxt passe un `Readonly<ViteConfig>` : `resolve` est typé en lecture seule. */
+      const c = config as unknown as UserConfig;
+      c.resolve ??= {};
+      const alias = c.resolve.alias;
       if (Array.isArray(alias)) {
         alias.push(
           { find: '#internal/nuxt/paths', replacement: nuxtPathsShim },
           { find: '#internal/nitro', replacement: nitroInternalShim },
         );
       } else if (alias && typeof alias === 'object') {
-        config.resolve.alias = {
+        c.resolve.alias = {
           ...alias,
           '#internal/nuxt/paths': nuxtPathsShim,
           '#internal/nitro': nitroInternalShim,
         };
       } else {
-        config.resolve.alias = {
+        c.resolve.alias = {
           '#internal/nuxt/paths': nuxtPathsShim,
           '#internal/nitro': nitroInternalShim,
         };
       }
 
-      const external = config.build?.rollupOptions?.external;
+      const external = c.build?.rollupOptions?.external;
       if (Array.isArray(external)) {
         const drop = new Set(['#internal/nuxt/paths', '#internal/nitro', '#internal/nitro/utils']);
-        config.build!.rollupOptions!.external = external.filter((e) => {
+        c.build!.rollupOptions!.external = external.filter((e) => {
           if (typeof e === 'string') return !drop.has(e);
           return true;
         });
