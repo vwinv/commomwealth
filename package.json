@@ -7,7 +7,7 @@
     "#internal/nitro": "./shims/nuxt-internal-nitro.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": "20.x"
   },
   "scripts": {
     "predev": "node scripts/check-node-version.mjs",

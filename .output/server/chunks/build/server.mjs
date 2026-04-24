@@ -732,25 +732,25 @@ const __nuxt_page_meta$h = {
   layout: "admin"
 };
 const __nuxt_page_meta$g = {
-  layout: "admin"
+  layout: "parent"
 };
 const __nuxt_page_meta$f = {
   layout: "admin"
 };
 const __nuxt_page_meta$e = {
-  layout: "parent"
+  layout: "admin"
 };
 const __nuxt_page_meta$d = {
   layout: "admin"
 };
 const __nuxt_page_meta$c = {
-  layout: "admin"
+  layout: "parent"
 };
 const __nuxt_page_meta$b = {
   layout: "admin"
 };
 const __nuxt_page_meta$a = {
-  layout: "parent"
+  layout: "admin"
 };
 const __nuxt_page_meta$9 = {
   layout: "admin"
@@ -792,7 +792,7 @@ const _routes = [
     name: "index",
     path: "/",
     meta: __nuxt_page_meta$o || {},
-    component: () => import('./index-DN8deoix.mjs')
+    component: () => import('./index-AgIJLMeY.mjs')
   },
   {
     name: "legal",
@@ -832,13 +832,13 @@ const _routes = [
     name: "parent",
     path: "/parent",
     meta: { ...__nuxt_page_meta$j || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./index-st1a85tD.mjs')
+    component: () => import('./index-CoUt6QLd.mjs')
   },
   {
     name: "parent-login",
     path: "/parent/login",
     meta: __nuxt_page_meta$i || {},
-    component: () => import('./login-ChghfD2P.mjs')
+    component: () => import('./login-BBHTatWs.mjs')
   },
   {
     name: "admin-classes",
@@ -847,54 +847,52 @@ const _routes = [
     component: () => import('./classes-BXa_F8QD.mjs')
   },
   {
-    name: "admin-parents",
-    path: "/admin/parents",
-    meta: { ...__nuxt_page_meta$f || {}, ...{ "middleware": ["admin"] } },
-    component: () => import('./parents-JKoBbTn3.mjs'),
-    children: [
-      {
-        name: "admin-parents-id",
-        path: ":id()",
-        meta: { ...__nuxt_page_meta$g || {}, ...{ "middleware": ["admin"] } },
-        component: () => import('./_id_-32rHJ-2U.mjs')
-      }
-    ]
-  },
-  {
     name: "parent-compte",
     path: "/parent/compte",
-    meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./compte-CXd2BDGb.mjs')
+    meta: { ...__nuxt_page_meta$g || {}, ...{ "middleware": ["parent"] } },
+    component: () => import('./compte-CMLkEWV7.mjs')
   },
   {
     name: "admin-payments",
     path: "/admin/payments",
-    meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": ["admin"] } },
+    meta: { ...__nuxt_page_meta$f || {}, ...{ "middleware": ["admin"] } },
     component: () => import('./payments-BUJPh8wF.mjs')
   },
   {
     name: "admin-settings",
     path: "/admin/settings",
-    meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": ["admin"] } },
+    meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": ["admin"] } },
     component: () => import('./settings-DCyHUsqy.mjs')
   },
   {
     name: "admin-documents",
     path: "/admin/documents",
-    meta: { ...__nuxt_page_meta$b || {}, ...{ "middleware": ["admin"] } },
+    meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": ["admin"] } },
     component: () => import('./documents-F7I4jKvy.mjs')
   },
   {
     name: "parent-documents",
     path: "/parent/documents",
-    meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./documents-CdTqkOYX.mjs')
+    meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": ["parent"] } },
+    component: () => import('./documents-C0115fZN.mjs')
   },
   {
     name: "admin-parametrage",
     path: "/admin/parametrage",
-    meta: { ...__nuxt_page_meta$9 || {}, ...{ "middleware": ["admin"] } },
+    meta: { ...__nuxt_page_meta$b || {}, ...{ "middleware": ["admin"] } },
     component: () => import('./parametrage-8POfF_R0.mjs')
+  },
+  {
+    name: "admin-parents-id",
+    path: "/admin/parents/:id()",
+    meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": ["admin"] } },
+    component: () => import('./_id_-32rHJ-2U.mjs')
+  },
+  {
+    name: "admin-parents",
+    path: "/admin/parents",
+    meta: { ...__nuxt_page_meta$9 || {}, ...{ "middleware": ["admin"] } },
+    component: () => import('./index-BlNqecXE.mjs')
   },
   {
     name: "admin-students-id",
@@ -906,7 +904,7 @@ const _routes = [
     name: "parent-mot-de-passe",
     path: "/parent/mot-de-passe",
     meta: { ...__nuxt_page_meta$7 || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./mot-de-passe-wxfdLd7u.mjs')
+    component: () => import('./mot-de-passe-BoyrWPz4.mjs')
   },
   {
     name: "admin-students",
@@ -918,19 +916,19 @@ const _routes = [
     name: "parent-enfants",
     path: "/parent/enfants",
     meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./index-CkB3xMrB.mjs')
+    component: () => import('./index-DIOvGpBy.mjs')
   },
   {
     name: "parent-paiements",
     path: "/parent/paiements",
     meta: { ...__nuxt_page_meta$4 || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./index-Bg6fvs9V.mjs')
+    component: () => import('./index-lcBug2lI.mjs')
   },
   {
     name: "parent-paiements-payer",
     path: "/parent/paiements/payer",
     meta: { ...__nuxt_page_meta$3 || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./payer-2EohdlXR.mjs')
+    component: () => import('./payer-B_SEj7R8.mjs')
   },
   {
     name: "admin-inscriptions-id",
@@ -948,7 +946,7 @@ const _routes = [
     name: "parent-enfants-id-modifier",
     path: "/parent/enfants/:id()/modifier",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": ["parent"] } },
-    component: () => import('./modifier-CBBGFt5K.mjs')
+    component: () => import('./modifier-DxUUwL0T.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -6449,7 +6447,7 @@ const layouts = {
   admin: defineAsyncComponent(() => import('./admin-D9THuypE.mjs').then((m) => m.default || m)),
   default: defineAsyncComponent(() => import('./default-DLzoi496.mjs').then((m) => m.default || m)),
   marketing: defineAsyncComponent(() => import('./marketing-DJs-__oU.mjs').then((m) => m.default || m)),
-  parent: defineAsyncComponent(() => import('./parent-BIvzrRz4.mjs').then((m) => m.default || m))
+  parent: defineAsyncComponent(() => import('./parent-CDdiC51i.mjs').then((m) => m.default || m))
 };
 const routeRulesMatcher = _routeRulesMatcher;
 const LayoutLoader = defineComponent({
