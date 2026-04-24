@@ -237,6 +237,7 @@ type LegacyPaymentRow = {
   year: number;
   month: number;
   status: string;
+  amountCents?: number;
   enrollment: { child: ChildRef };
 };
 

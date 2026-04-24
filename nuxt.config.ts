@@ -46,7 +46,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // API Nest (voir backend `PORT`, défaut 3001 — Nuxt utilise souvent 3000)
-      apiBase: 'http://localhost:3001/api',
+      //apiBase: 'http://localhost:3001/api',
+      apiBase: 'https://backend-commonwealth.onrender.com',
       schoolDisplayName: 'Commonwealth School',
       schoolContactEmail: 'contact@commonwealth-school.com',
       schoolAdministrationEmail: 'administration@commonwealth-school.com',

@@ -26,9 +26,9 @@
       </label>
 
       <p class="mb-2 text-sm font-semibold text-slate-800">Moyens de paiement</p>
-      <div class="grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         <button
-          v-for="m in methods"
+          v-for="m in methodsForCountry"
           :key="m.id"
           type="button"
           class="flex min-h-[68px] items-center justify-center rounded-xl border-2 px-3 py-2 text-center text-xs font-bold uppercase tracking-wide shadow-sm transition"
@@ -38,6 +38,24 @@
           <img :src="m.logo" :alt="m.label" class="h-10 w-auto object-contain sm:h-11" />
         </button>
         <button
+          v-if="phoneCountry === '+225'"
+          type="button"
+          class="flex min-h-[68px] flex-col items-center justify-center rounded-xl border-2 border-[#ffcc00] bg-[#ffcc00] px-2 py-2 text-center text-[11px] font-extrabold uppercase leading-tight text-black shadow-sm transition"
+          :class="paymentMethod === 'mtn_money' ? 'ring-2 ring-[#c9a100] ring-offset-2' : 'border-transparent opacity-95 hover:opacity-100'"
+          @click="paymentMethod = 'mtn_money'"
+        >
+          MTN CI
+        </button>
+        <button
+          v-if="phoneCountry === '+225'"
+          type="button"
+          class="flex min-h-[68px] flex-col items-center justify-center rounded-xl border-2 border-[#0066b3] bg-[#0066b3] px-2 py-2 text-center text-[11px] font-extrabold uppercase leading-tight text-white shadow-sm transition"
+          :class="paymentMethod === 'moov_money' ? 'ring-2 ring-[#004a82] ring-offset-2' : 'border-transparent opacity-95 hover:opacity-100'"
+          @click="paymentMethod = 'moov_money'"
+        >
+          Moov CI
+        </button>
+        <button
           type="button"
           class="flex min-h-[68px] items-center justify-center rounded-xl border-2 px-3 py-2 text-center text-xs font-bold uppercase tracking-wide shadow-sm transition"
           :class="paymentMethod === 'card' ? 'border-[#1e5ea1] bg-[#2f77c2] text-white ring-2 ring-[#1e5ea1] ring-offset-2' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
@@ -45,6 +63,20 @@
         >
           Carte bancaire
         </button>
+      </div>
+
+      <div v-if="paymentMethod === 'orange_money' && phoneCountry === '+225'" class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950">
+        Orange Money CI : composez <strong>#144*82#</strong> puis option <strong>2</strong> pour obtenir le code de paiement, puis saisissez-le ci-dessous.
+      </div>
+      <div v-if="paymentMethod === 'orange_money' && phoneCountry === '+225'" class="mt-2">
+        <input
+          v-model.trim="orangeMoneyCiOtp"
+          type="text"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="Code de paiement Orange CI"
+          class="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-slate-400"
+        >
       </div>
 
       <div v-if="paymentMethod !== 'card'" class="mt-4 grid gap-2 sm:grid-cols-2">
@@ -123,7 +155,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import waveLogo from '~/assets/images/wave.png';
 import omLogo from '~/assets/images/om.png';
 import wizallLogo from '~/assets/images/wizall.png';
@@ -131,7 +163,7 @@ import westernLogo from '~/assets/images/western.png';
 
 type EnrollmentStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 type OverviewChild = { id: string; firstName: string; lastName: string; enrollments: Array<{ id: string; schoolYear: string; status: EnrollmentStatus }> };
-type Me = { phone: string | null; fullName?: string | null };
+type Me = { phone: string | null; fullName?: string | null; email?: string | null };
 type ChildRef = { firstName: string; lastName: string };
 type TuitionRow = { amountCents: number; status: string; schoolYear: string; enrollment: { child: ChildRef } };
 type MonthlyRow = { totalAmountCents: number; status: string; year: number; month: number; enrollment: { child: ChildRef } };
@@ -146,7 +178,11 @@ const lastName = ref('');
 const phoneCountry = ref<'+221' | '+225'>('+221');
 const phoneLocal = ref('');
 const selectedIds = ref<string[]>([]);
-const paymentMethod = ref<'wave' | 'orange_money' | 'wizall' | 'western_union' | 'card' | null>(null);
+const paymentMethod = ref<
+  'wave' | 'orange_money' | 'wizall' | 'western_union' | 'mtn_money' | 'moov_money' | 'card' | null
+>(null);
+const orangeMoneyCiOtp = ref('');
+const parentEmail = ref('');
 const cardNumber = ref('');
 const cardExpiry = ref('');
 const cardCvv = ref('');
@@ -155,12 +191,17 @@ const errorMsg = ref('');
 const overview = ref<OverviewChild[] | null>(null);
 const monthlyAmountXof = ref(0);
 
-const methods = [
+const methodsAll = [
   { id: 'wave' as const, label: 'Wave', logo: waveLogo, style: 'bg-[#4AD2FA] text-white', ring: 'ring-2 ring-[#30a7ca] ring-offset-2' },
   { id: 'orange_money' as const, label: 'OM', logo: omLogo, style: 'bg-black text-white', ring: 'ring-2 ring-black ring-offset-2' },
-  { id: 'wizall' as const, label: 'Wizall', logo: wizallLogo, style: 'bg-[#00BACF] text-white', ring: 'ring-2 ring-[#008d9c] ring-offset-2' },
+  { id: 'wizall' as const, label: 'Wizall', logo: wizallLogo, countries: ['+221'] as const, style: 'bg-[#00BACF] text-white', ring: 'ring-2 ring-[#008d9c] ring-offset-2' },
   { id: 'western_union' as const, label: 'Western union', logo: westernLogo, style: 'bg-black text-white', ring: 'ring-2 ring-black ring-offset-2' },
 ];
+
+const methodsForCountry = computed(() => {
+  const cc = phoneCountry.value;
+  return methodsAll.filter((m) => !('countries' in m) || (m as { countries?: readonly string[] }).countries?.includes(cc));
+});
 
 const rows = computed(() =>
   (overview.value ?? []).map((c) => {
@@ -179,10 +220,188 @@ const canSubmit = computed(() => {
   if (paymentMethod.value === 'card') {
     return !!cardNumber.value.trim() && !!cardExpiry.value.trim() && !!cardCvv.value.trim();
   }
+  if (paymentMethod.value === 'orange_money' && phoneCountry.value === '+225') {
+    if (!orangeMoneyCiOtp.value.trim()) return false;
+  }
   return !!firstName.value.trim() && !!lastName.value.trim() && !!phoneLocal.value.trim();
 });
 const displayAmount = computed(() => `${new Intl.NumberFormat('fr-FR').format(monthlyAmountXof.value)} XOF`);
 const fullPhoneForWallet = computed(() => `${phoneCountry.value}${phoneLocal.value.replace(/\s+/g, '')}`);
+
+watch(phoneCountry, () => {
+  if (paymentMethod.value === 'wizall' && phoneCountry.value === '+225') paymentMethod.value = null;
+  if ((paymentMethod.value === 'mtn_money' || paymentMethod.value === 'moov_money') && phoneCountry.value !== '+225') {
+    paymentMethod.value = null;
+  }
+});
+
+function stripCountry(phone: string, dial: '+221' | '+225'): string {
+  const p = phone.replace(/\s+/g, '');
+  if (p.startsWith(dial)) return p.slice(dial.length);
+  if (dial === '+221' && p.startsWith('221')) return p.slice(3);
+  if (dial === '+225' && p.startsWith('225')) return p.slice(3);
+  return p.replace(/^\+/, '');
+}
+
+/** Extrait le token depuis une URL PayDunya (live ou sandbox, avec ou sans segment `checkout`). */
+function tokenFromPaydunyaInvoiceUrl(s: string): string {
+  const m = s.trim().match(/\/invoice\/([^/?#]+)/i);
+  return (m?.[1] ?? '').trim();
+}
+
+function extractCheckoutToken(checkout: Record<string, unknown>): string {
+  const data = checkout?.data as Record<string, unknown> | undefined;
+  const direct = String(checkout?.token ?? data?.token ?? '').trim();
+  if (direct) return direct;
+  const rt = checkout?.response_text ?? data?.response_text;
+  if (typeof rt === 'object' && rt != null) {
+    const o = rt as Record<string, unknown>;
+    const nested = String(o.token ?? o.checkout_invoice_token ?? '').trim();
+    if (nested) return nested;
+  }
+  if (typeof rt === 'string') {
+    const fromUrl = tokenFromPaydunyaInvoiceUrl(rt);
+    if (fromUrl) return fromUrl;
+  }
+  return '';
+}
+
+function buildSoftpayPayload(
+  provider: string,
+  token: string,
+  opts: { fullName: string; email: string; phoneLocalDigits: string; dial: '+221' | '+225'; orangeOtp?: string },
+): Record<string, unknown> {
+  const fn = opts.fullName.trim() || 'Parent';
+  const email = opts.email.trim() || 'parent@commonwealth-school.local';
+  const local = opts.phoneLocalDigits.replace(/\D/g, '');
+
+  switch (provider) {
+    case 'wave_sn':
+      return {
+        wave_senegal_fullName: fn,
+        wave_senegal_email: email,
+        wave_senegal_phone: local,
+        wave_senegal_payment_token: token,
+      };
+    case 'wave_ci':
+      return {
+        wave_ci_fullName: fn,
+        wave_ci_email: email,
+        wave_ci_phone: local,
+        wave_ci_payment_token: token,
+      };
+    case 'orange_sn':
+      return {
+        customer_name: fn,
+        customer_email: email,
+        phone_number: local,
+        invoice_token: token,
+      };
+    case 'orange_ci':
+      return {
+        orange_money_ci_customer_fullname: fn,
+        orange_money_ci_email: email,
+        orange_money_ci_phone_number: local.startsWith('0') ? local : `0${local}`,
+        orange_money_ci_otp: String(opts.orangeOtp ?? '').trim(),
+        payment_token: token,
+      };
+    case 'wizall_sn':
+      return {
+        customer_name: fn,
+        customer_email: email,
+        phone_number: local,
+        invoice_token: token,
+      };
+    case 'mtn_ci':
+      return {
+        mtn_ci_customer_fullname: fn,
+        mtn_ci_email: email,
+        mtn_ci_phone_number: local,
+        mtn_ci_wallet_provider: 'MTNCI',
+        payment_token: token,
+      };
+    case 'moov_ci':
+      return {
+        moov_ci_customer_fullname: fn,
+        moov_ci_email: email,
+        moov_ci_phone_number: local,
+        payment_token: token,
+      };
+    case 'paydunya':
+      return {
+        customer_name: fn,
+        customer_email: email,
+        phone_phone: local,
+        password: '00000000',
+        invoice_token: token,
+      };
+    default:
+      return { payment_token: token, invoice_token: token };
+  }
+}
+
+function invoiceStatusFromConfirm(verify: Record<string, unknown>): string {
+  const data = verify?.data as Record<string, unknown> | undefined;
+  const inv = (data?.invoice ?? verify?.invoice) as Record<string, unknown> | undefined;
+  if (inv && typeof inv.status !== 'undefined') return String(inv.status);
+  return '';
+}
+
+function isCheckoutPaidPayload(verify: Record<string, unknown>): boolean {
+  const invStatus = invoiceStatusFromConfirm(verify).toLowerCase();
+  if (invStatus === 'completed' || invStatus === 'paid') return true;
+  const rt = verify?.response_text;
+  const rtObj = typeof rt === 'object' && rt != null ? (rt as Record<string, unknown>) : null;
+  const statusRaw = String(
+    verify?.status ??
+      rtObj?.status ??
+      rtObj?.payment_status ??
+      rtObj?.payment_status_text ??
+      (verify?.data as Record<string, unknown> | undefined)?.status ??
+      '',
+  ).toLowerCase();
+  return (
+    statusRaw.includes('completed') ||
+    statusRaw.includes('paid') ||
+    statusRaw.includes('success') ||
+    statusRaw.includes('successfully paid') ||
+    statusRaw === 'completed'
+  );
+}
+
+async function sleep(ms: number) {
+  await new Promise((r) => setTimeout(r, ms));
+}
+
+async function waitCheckoutPaid(checkoutToken: string, hadRedirectUrl: boolean): Promise<boolean> {
+  const attempts = hadRedirectUrl ? 14 : 5;
+  const delayMs = hadRedirectUrl ? 2500 : 900;
+  for (let i = 0; i < attempts; i++) {
+    const verify = await authFetch<Record<string, unknown>>(
+      `/backoffice/paydunya/checkout-invoice/${encodeURIComponent(checkoutToken)}/status`,
+    );
+    if (isCheckoutPaidPayload(verify)) return true;
+    if (i < attempts - 1) await sleep(delayMs);
+  }
+  return false;
+}
+
+function paydunyaErrorMessage(e: unknown): string {
+  const x = e as {
+    data?: { message?: string | string[]; response_text?: string };
+    message?: string;
+    statusMessage?: string;
+  };
+  const rt = x?.data?.response_text;
+  if (typeof rt === 'string' && rt.trim()) return rt.trim();
+  const m = x?.data?.message;
+  if (typeof m === 'string') return m;
+  if (Array.isArray(m) && m[0]) return String(m[0]);
+  if (typeof x?.statusMessage === 'string' && x.statusMessage.trim()) return x.statusMessage;
+  if (typeof x?.message === 'string' && x.message.trim()) return x.message;
+  if (e instanceof Error && e.message.trim()) return e.message;
+  return 'Enregistrement du paiement impossible.';
+}
 
 function toXof(cents: number): number {
   const n = Number(cents);
@@ -257,6 +476,7 @@ async function loadData() {
       firstName.value = first ?? '';
       lastName.value = rest.join(' ');
     }
+    parentEmail.value = String(me?.email ?? '').trim() || 'parent@commonwealth-school.local';
     const p = String(me?.phone ?? '').trim();
     if (p.startsWith('+225')) {
       phoneCountry.value = '+225';
@@ -292,18 +512,27 @@ async function submit() {
       throw new Error('Aucune facture impayée disponible pour paiement.');
     }
 
-    const providerByChannelAndCountry: Record<string, Record<string, string>> = {
+    const pm = paymentMethod.value;
+    if (!pm) return;
+
+    const providerByChannel: Record<
+      'wave' | 'orange_money' | 'wizall' | 'western_union' | 'mtn_money' | 'moov_money',
+      Partial<Record<'+221' | '+225', string>>
+    > = {
       wave: { '+221': 'wave_sn', '+225': 'wave_ci' },
       orange_money: { '+221': 'orange_sn', '+225': 'orange_ci' },
-      wizall: { '+221': 'wizall_sn', '+225': 'wizall_ci' },
+      wizall: { '+221': 'wizall_sn' },
       western_union: { '+221': 'paydunya', '+225': 'paydunya' },
+      mtn_money: { '+225': 'mtn_ci' },
+      moov_money: { '+225': 'moov_ci' },
     };
-    const provider = providerByChannelAndCountry[paymentMethod.value]?.[phoneCountry.value];
+
+    const provider = providerByChannel[pm as keyof typeof providerByChannel]?.[phoneCountry.value];
     if (!provider) {
       throw new Error('Combinaison moyen de paiement / pays non supportée.');
     }
 
-    const checkout = await authFetch<Record<string, any>>('/backoffice/paydunya/checkout-invoice', {
+    const checkout = await authFetch<Record<string, unknown>>('/backoffice/paydunya/checkout-invoice', {
       method: 'POST',
       body: {
         total_amount: monthlyAmountXof.value,
@@ -311,54 +540,54 @@ async function submit() {
         custom_data: {
           source: 'parent_portal',
           childIds: [...selectedIds.value],
-          channel: paymentMethod.value,
+          channel: pm,
           countryCode: phoneCountry.value,
         },
       },
     });
 
-    const checkoutToken =
-      String(checkout?.token ?? checkout?.response_text?.token ?? checkout?.response_text?.checkout_invoice_token ?? '').trim();
+    const checkoutToken = extractCheckoutToken(checkout);
     if (!checkoutToken) {
       throw new Error('Token de checkout PayDunya introuvable.');
     }
 
-    const softpay = await authFetch<Record<string, any>>(`/backoffice/paydunya/softpay/${provider}`, {
-      method: 'POST',
-      body: {
-        invoice_token: checkoutToken,
-        token: checkoutToken,
-        phone_number: fullPhoneForWallet.value,
-      },
+    const dial = phoneCountry.value;
+    const phoneDigits = stripCountry(fullPhoneForWallet.value, dial);
+    const fullName = `${firstName.value.trim()} ${lastName.value.trim()}`.trim();
+    const softBody = buildSoftpayPayload(provider, checkoutToken, {
+      fullName,
+      email: parentEmail.value,
+      phoneLocalDigits: phoneDigits,
+      dial,
+      orangeOtp: pm === 'orange_money' && dial === '+225' ? orangeMoneyCiOtp.value : undefined,
     });
 
+    const softpay = await authFetch<Record<string, unknown>>(`/backoffice/paydunya/softpay/${provider}`, {
+      method: 'POST',
+      body: softBody,
+    });
+
+    if (softpay && typeof softpay === 'object' && softpay.success === false) {
+      throw new Error(String(softpay.message ?? 'Paiement refusé par PayDunya.'));
+    }
+
+    const otherUrl = softpay?.other_url as Record<string, unknown> | undefined;
     const deepLink = String(
       softpay?.url ??
-        softpay?.response_text?.url ??
-        softpay?.response_text?.deeplink ??
-        softpay?.response_text?.deep_link ??
+        otherUrl?.om_url ??
+        otherUrl?.maxit_url ??
+        (softpay?.response_text as Record<string, unknown> | undefined)?.url ??
         '',
     ).trim();
+    const hadRedirectUrl = !!deepLink;
     if (deepLink) {
       window.open(deepLink, '_blank', 'noopener,noreferrer');
     }
 
-    const verify = await authFetch<Record<string, any>>(`/backoffice/paydunya/checkout-invoice/${encodeURIComponent(checkoutToken)}/status`);
-    const statusRaw = String(
-      verify?.status ??
-        verify?.response_text?.status ??
-        verify?.response_text?.payment_status ??
-        verify?.response_text?.payment_status_text ??
-        '',
-    ).toLowerCase();
-    const isPaid =
-      statusRaw.includes('completed') ||
-      statusRaw.includes('paid') ||
-      statusRaw.includes('success') ||
-      statusRaw.includes('successfully paid');
-
-    if (!isPaid) {
-      feedback.value = 'Demande PayDunya envoyée. Confirmez le paiement sur votre téléphone, puis réessayez pour finaliser.';
+    const paid = await waitCheckoutPaid(checkoutToken, hadRedirectUrl);
+    if (!paid) {
+      feedback.value =
+        'Si vous avez validé le paiement sur votre téléphone ou dans la page ouverte, patientez quelques secondes puis cliquez à nouveau sur « Payer » pour finaliser. Sinon, complétez d’abord le paiement depuis le lien ou l’application.';
       return;
     }
 
@@ -367,7 +596,7 @@ async function submit() {
       body: {
         childIds: [...selectedIds.value],
         phone: fullPhoneForWallet.value,
-        channel: paymentMethod.value,
+        channel: pm,
         firstName: firstName.value.trim(),
         lastName: lastName.value.trim(),
       },
@@ -375,8 +604,8 @@ async function submit() {
     const ok = (res?.results ?? []).filter((r) => r.ok).length;
     feedback.value = `Paiement enregistré pour ${ok} élève${ok > 1 ? 's' : ''}.`;
     emit('completed');
-  } catch (e: any) {
-    errorMsg.value = e?.data?.message ?? 'Enregistrement du paiement impossible.';
+  } catch (e: unknown) {
+    errorMsg.value = paydunyaErrorMessage(e);
   } finally {
     submitting.value = false;
   }
