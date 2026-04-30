@@ -292,7 +292,7 @@ definePageMeta({
   middleware: ['parent'],
 });
 
-const { authFetch } = useParentAuth();
+const { authFetch, logout } = useParentAuth();
 const { resolveDocumentUrl } = useParentDocumentUrl();
 
 const me = ref<Me | null>(null);
@@ -496,7 +496,19 @@ onMounted(async () => {
     tuitionCharges.value = payRes?.tuitionCharges ?? [];
     monthlyInstallments.value = payRes?.monthlyInstallments ?? [];
     apiDocs.value = docsRes ?? [];
-  } catch {
+  } catch (error: unknown) {
+    const e = error as {
+      statusCode?: number;
+      status?: number;
+      response?: { status?: number };
+      data?: { statusCode?: number };
+    };
+    const status = e.statusCode ?? e.status ?? e.response?.status ?? e.data?.statusCode;
+    if (status === 401 || status === 403) {
+      logout();
+      await navigateTo('/parent/login');
+      return;
+    }
     loadError.value = 'Impossible de charger vos données. Réessayez ou reconnectez-vous.';
   } finally {
     pending.value = false;

@@ -137,6 +137,7 @@ declare global {
   const useModel: typeof import('../../node_modules/vue').useModel
   const useNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt').useNuxtApp
   const useNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData').useNuxtData
+  const useNuxtDevTools: typeof import('../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools').useNuxtDevTools
   const useParentAuth: typeof import('../../composables/useParentAuth').useParentAuth
   const useParentDocumentUrl: typeof import('../../composables/useParentDocumentUrl').useParentDocumentUrl
   const useParentSchoolInvoice: typeof import('../../composables/useParentSchoolInvoice').useParentSchoolInvoice
@@ -366,6 +367,7 @@ declare module 'vue' {
     readonly useModel: UnwrapRef<typeof import('../../node_modules/vue')['useModel']>
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
+    readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
     readonly useParentAuth: UnwrapRef<typeof import('../../composables/useParentAuth')['useParentAuth']>
     readonly useParentDocumentUrl: UnwrapRef<typeof import('../../composables/useParentDocumentUrl')['useParentDocumentUrl']>
     readonly useParentSchoolInvoice: UnwrapRef<typeof import('../../composables/useParentSchoolInvoice')['useParentSchoolInvoice']>
