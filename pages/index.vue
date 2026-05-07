@@ -51,12 +51,12 @@
             <p class="mt-6 text-base font-normal text-slate-800 sm:text-lg">{{ t('home.hero.tagline') }}</p>
 
             <div class="mt-10">
-              <button
+              <NuxtLink
                 class="inline-flex h-10 items-center justify-center rounded-md bg-brandOrange px-6 text-sm font-semibold text-white shadow-sm"
-                type="button"
+                to="/inscription"
               >
                 {{ t('home.hero.cta') }}
-              </button>
+              </NuxtLink>
             </div>
 
             <div class="mt-12 flex items-center gap-3">

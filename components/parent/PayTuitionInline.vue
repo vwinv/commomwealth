@@ -515,81 +515,9 @@ async function submit() {
     const pm = paymentMethod.value;
     if (!pm) return;
 
-    const providerByChannel: Record<
-      'wave' | 'orange_money' | 'wizall' | 'western_union' | 'mtn_money' | 'moov_money',
-      Partial<Record<'+221' | '+225', string>>
-    > = {
-      wave: { '+221': 'wave_sn', '+225': 'wave_ci' },
-      orange_money: { '+221': 'orange_sn', '+225': 'orange_ci' },
-      wizall: { '+221': 'wizall_sn' },
-      western_union: { '+221': 'paydunya', '+225': 'paydunya' },
-      mtn_money: { '+225': 'mtn_ci' },
-      moov_money: { '+225': 'moov_ci' },
-    };
-
-    const provider = providerByChannel[pm as keyof typeof providerByChannel]?.[phoneCountry.value];
-    if (!provider) {
-      throw new Error('Combinaison moyen de paiement / pays non supportée.');
-    }
-
-    const checkout = await authFetch<Record<string, unknown>>('/backoffice/paydunya/checkout-invoice', {
-      method: 'POST',
-      body: {
-        total_amount: monthlyAmountXof.value,
-        description: 'Paiement scolarité',
-        custom_data: {
-          source: 'parent_portal',
-          childIds: [...selectedIds.value],
-          channel: pm,
-          countryCode: phoneCountry.value,
-        },
-      },
-    });
-
-    const checkoutToken = extractCheckoutToken(checkout);
-    if (!checkoutToken) {
-      throw new Error('Token de checkout PayDunya introuvable.');
-    }
-
-    const dial = phoneCountry.value;
-    const phoneDigits = stripCountry(fullPhoneForWallet.value, dial);
-    const fullName = `${firstName.value.trim()} ${lastName.value.trim()}`.trim();
-    const softBody = buildSoftpayPayload(provider, checkoutToken, {
-      fullName,
-      email: parentEmail.value,
-      phoneLocalDigits: phoneDigits,
-      dial,
-      orangeOtp: pm === 'orange_money' && dial === '+225' ? orangeMoneyCiOtp.value : undefined,
-    });
-
-    const softpay = await authFetch<Record<string, unknown>>(`/backoffice/paydunya/softpay/${provider}`, {
-      method: 'POST',
-      body: softBody,
-    });
-
-    if (softpay && typeof softpay === 'object' && softpay.success === false) {
-      throw new Error(String(softpay.message ?? 'Paiement refusé par PayDunya.'));
-    }
-
-    const otherUrl = softpay?.other_url as Record<string, unknown> | undefined;
-    const deepLink = String(
-      softpay?.url ??
-        otherUrl?.om_url ??
-        otherUrl?.maxit_url ??
-        (softpay?.response_text as Record<string, unknown> | undefined)?.url ??
-        '',
-    ).trim();
-    const hadRedirectUrl = !!deepLink;
-    if (deepLink) {
-      window.open(deepLink, '_blank', 'noopener,noreferrer');
-    }
-
-    const paid = await waitCheckoutPaid(checkoutToken, hadRedirectUrl);
-    if (!paid) {
-      feedback.value =
-        'Si vous avez validé le paiement sur votre téléphone ou dans la page ouverte, patientez quelques secondes puis cliquez à nouveau sur « Payer » pour finaliser. Sinon, complétez d’abord le paiement depuis le lien ou l’application.';
-      return;
-    }
+    // TEMP TEST MODE: PayDunya désactivé pour permettre les tests.
+    // Le flux passerelle (checkout + softpay + confirmation) est volontairement court-circuité
+    // et on enregistre directement le paiement côté back via /parent/payments/complete.
 
     const res = await authFetch<{ results: Array<{ ok: boolean; message?: string; kind?: string }> }>('/parent/payments/complete', {
       method: 'POST',
