@@ -8,6 +8,7 @@ declare module 'nuxt/app' {
   interface NuxtLayouts {
     admin: ComponentProps<typeof import("/Users/mac/Desktop/commonwealth/commomwealth/layouts/admin.vue").default>,
     default: ComponentProps<typeof import("/Users/mac/Desktop/commonwealth/commomwealth/layouts/default.vue").default>,
+    enrollment: ComponentProps<typeof import("/Users/mac/Desktop/commonwealth/commomwealth/layouts/enrollment.vue").default>,
     marketing: ComponentProps<typeof import("/Users/mac/Desktop/commonwealth/commomwealth/layouts/marketing.vue").default>,
     parent: ComponentProps<typeof import("/Users/mac/Desktop/commonwealth/commomwealth/layouts/parent.vue").default>,
 }

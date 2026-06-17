@@ -52,5 +52,58 @@
     "gallery": {
       "title": "Photo gallery"
     }
+  },
+  "parentOnboarding": {
+    "skip": "Skip",
+    "prev": "Previous",
+    "next": "Next",
+    "start": "Get started",
+    "s1": {
+      "badge": "SIMPLICITY",
+      "title": "Managing your children's admin has {highlight} been easier",
+      "titleHighlight": "never",
+      "subtitle": "No more hassle: enrollment, payments and documents — all online in a few clicks.",
+      "cardEnrollment": "Enrollment file",
+      "cardTuition": "Tuition",
+      "cardTuitionHint": "2 of 3 installments paid",
+      "cardValidated": "Document validated"
+    },
+    "s2": {
+      "badge": "YOUR TOOLS",
+      "title": "Everything you can {highlight}",
+      "titleHighlight": "track",
+      "subtitle": "One place to stay close to school, from morning to evening.",
+      "items": {
+        "enrollment": { "title": "Enrollment file", "desc": "Follow every step live" },
+        "payment": { "title": "Online payment", "desc": "Pay tuition securely" },
+        "journal": { "title": "Daily journal", "desc": "Activities, meals, nap & progress" },
+        "photos": { "title": "Photos & moments", "desc": "Highlights from their day" },
+        "docs": { "title": "Administrative documents", "desc": "Certificates & attestations" },
+        "messaging": { "title": "School messaging", "desc": "Chat with the team" }
+      }
+    },
+    "s3": {
+      "badge": "REAL TIME",
+      "title": "Your child's day, {highlight}",
+      "titleHighlight": "live",
+      "subtitle": "Arrivals, activities, meals and progress — stay informed minute by minute.",
+      "toastTitle": "Daily journal updated",
+      "toastMeta": "Early learning & motor skills · just now",
+      "childName": "Aïcha Koné",
+      "childClass": "Middle Section class",
+      "live": "LIVE",
+      "row1Title": "Arrived at school",
+      "row1Meta": "Dropped off by Mom",
+      "row2Title": "Early learning workshop",
+      "row2Meta": "Rhymes & motor skills · Room B",
+      "active": "Active",
+      "row3Title": "Daily journal",
+      "row3Meta": "Early learning & motor skills"
+    },
+    "s4": {
+      "title": "A smoother experience {highlight}",
+      "titleHighlight": "awaits you",
+      "subtitle": "Your space is ready. Sign in and stay close to your child's daily life, every day."
+    }
   }
 }

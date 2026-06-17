@@ -1,5 +1,10 @@
+import {
+  decodeAdminTokenPayload,
+  type AppModuleRoleCode,
+} from '~/utils/admin-permissions'
+
 export type AdminTokenCheck =
-  | { ok: true; role: string }
+  | { ok: true; role: string; permissions: AppModuleRoleCode[]; isSuperAdmin: boolean; sub: string; mustChangePassword: boolean }
   | { ok: false; reason: 'missing' | 'malformed' | 'wrong_role' | 'expired' }
 
 function decodeJwtPayload(token: string): Record<string, unknown> | null {
@@ -36,5 +41,16 @@ export function checkAdminAccessToken(token: string | null | undefined): AdminTo
   if (role !== 'ADMIN' && role !== 'STAFF') {
     return { ok: false, reason: 'wrong_role' }
   }
-  return { ok: true, role: String(role) }
+  const decoded = decodeAdminTokenPayload(token.trim())
+  if (!decoded) {
+    return { ok: false, reason: 'malformed' }
+  }
+  return {
+    ok: true,
+    role: String(role),
+    permissions: decoded.permissions,
+    isSuperAdmin: decoded.isSuperAdmin,
+    sub: decoded.sub,
+    mustChangePassword: decoded.mustChangePassword,
+  }
 }

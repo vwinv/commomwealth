@@ -177,7 +177,11 @@ async function onSubmit() {
       error.value = result.message
       return
     }
-    await navigateTo('/admin')
+    if (result.mustChangePassword) {
+      await navigateTo('/admin/changer-mot-de-passe')
+      return
+    }
+    await navigateTo(useAdminPermissions().adminLandingPath())
   } finally {
     pending.value = false
   }

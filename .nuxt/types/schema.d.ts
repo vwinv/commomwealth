@@ -18,6 +18,8 @@ import { NuxtModule, ModuleDependencyMeta } from '@nuxt/schema'
   interface SharedPublicRuntimeConfig {
    apiBase: string,
 
+   showTempPasswordOnUserCreate: boolean,
+
    schoolDisplayName: string,
 
    schoolContactEmail: string,

@@ -52,5 +52,58 @@
     "gallery": {
       "title": "Galerie photos"
     }
+  },
+  "parentOnboarding": {
+    "skip": "Passer",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "start": "Commencer",
+    "s1": {
+      "badge": "SIMPLICITÉ",
+      "title": "La gestion administrative de vos enfants n'a {highlight} été aussi simple",
+      "titleHighlight": "jamais",
+      "subtitle": "Fini les tracas : inscriptions, paiements et documents, tout se fait en ligne en quelques clics.",
+      "cardEnrollment": "Dossier d'inscription",
+      "cardTuition": "Scolarité",
+      "cardTuitionHint": "2 versements sur 3 réglés",
+      "cardValidated": "Document validé"
+    },
+    "s2": {
+      "badge": "VOS OUTILS",
+      "title": "Tout ce que vous pouvez {highlight}",
+      "titleHighlight": "suivre",
+      "subtitle": "Un seul espace pour rester proche de l'école, du matin au soir.",
+      "items": {
+        "enrollment": { "title": "Dossier d'inscription", "desc": "Suivez chaque étape en direct" },
+        "payment": { "title": "Paiement en ligne", "desc": "Réglez la scolarité en sécurité" },
+        "journal": { "title": "Carnet de suivi", "desc": "Éveil, repas, sieste & progrès" },
+        "photos": { "title": "Photos & moments", "desc": "Les temps forts de sa journée" },
+        "docs": { "title": "Documents administratifs", "desc": "Certificats & attestations" },
+        "messaging": { "title": "Messagerie avec l'école", "desc": "Échangez avec l'équipe" }
+      }
+    },
+    "s3": {
+      "badge": "TEMPS RÉEL",
+      "title": "Le quotidien de votre enfant, {highlight}",
+      "titleHighlight": "en direct",
+      "subtitle": "Arrivées, activités, repas et progrès : soyez informé à la minute, sans appeler l'école.",
+      "toastTitle": "Carnet de suivi mis à jour",
+      "toastMeta": "Éveil & motricité · à l'instant",
+      "childName": "Aïcha Koné",
+      "childClass": "Classe de Moyenne Section",
+      "live": "EN DIRECT",
+      "row1Title": "Arrivée à l'école",
+      "row1Meta": "Déposée par Maman",
+      "row2Title": "Atelier d'éveil",
+      "row2Meta": "Comptines & motricité · Salle B",
+      "active": "Actif",
+      "row3Title": "Carnet de suivi",
+      "row3Meta": "Éveil & motricité"
+    },
+    "s4": {
+      "title": "Une expérience plus fluide {highlight}",
+      "titleHighlight": "vous attend",
+      "subtitle": "Votre espace est prêt. Connectez-vous et restez proche du quotidien de votre enfant, chaque jour."
+    }
   }
 }

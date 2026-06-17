@@ -10,6 +10,37 @@
       <h1 class="min-w-0 flex-1 text-[2rem] font-bold tracking-tight text-[#216EC2] sm:text-[2.35rem]">Profil de l'élève</h1>
     </div>
 
+    <div v-if="profile && !pending" class="mb-4 flex flex-wrap gap-2 pl-6 sm:mb-5 sm:gap-3 sm:pl-8" role="tablist" aria-label="Sections du profil élève">
+      <button
+        v-for="tab in profileTabs"
+        :key="tab.id"
+        type="button"
+        role="tab"
+        :aria-selected="activeTab === tab.id"
+        class="inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold transition"
+        :class="
+          activeTab === tab.id
+            ? 'bg-[#216EC2] text-white shadow-md shadow-[#216EC2]/20'
+            : 'border-2 border-slate-200 bg-white text-slate-600 hover:border-[#216EC2]/30 hover:text-slate-800'
+        "
+        @click="activeTab = tab.id"
+      >
+        <component :is="tab.icon" class="h-5 w-5 shrink-0" />
+        <span>{{ tab.label }}</span>
+        <span
+          v-if="tab.badge != null && tab.badge > 0"
+          class="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-emerald-500 px-1.5 text-[11px] font-bold text-white"
+        >
+          {{ tab.badge }}
+        </span>
+        <span
+          v-if="tab.healthDot"
+          class="h-2.5 w-2.5 shrink-0 rounded-full bg-[#F9994B] shadow-sm"
+          aria-hidden="true"
+        />
+      </button>
+    </div>
+
     <p v-if="loadError" class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ loadError }}</p>
 
     <div
@@ -23,31 +54,61 @@
       v-else-if="profile"
       class="mt-0 overflow-hidden rounded-3xl bg-transparent sm:mt-1"
     >
+      <div v-show="activeTab === 'profil'" role="tabpanel" aria-label="Profil">
       <!-- Bandeau : avatar + nom + boutons, puis tuiles sur toute la largeur -->
       <div class="border-b border-slate-100 px-6 pb-4 pt-1 sm:px-8 sm:pb-5 sm:pt-2">
         <div class="flex w-full min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:gap-4">
-          <div
-            class="flex h-[156px] w-[156px] shrink-0 items-center justify-center self-center rounded-3xl border-2 border-[#216EC2]/35 bg-white text-[#216EC2] shadow-inner sm:self-auto"
-            aria-hidden="true"
+          <button
+            type="button"
+            class="group relative flex h-[156px] w-[156px] shrink-0 flex-col items-center justify-center gap-1.5 self-center overflow-hidden rounded-3xl border-2 border-dashed px-2 transition sm:self-auto"
+            :class="
+              photoDragOver
+                ? 'border-[#216EC2] bg-[#216EC2]/10'
+                : 'border-[#216EC2]/40 bg-[#216EC2]/5 text-[#216EC2] hover:border-[#216EC2]/60 hover:bg-[#216EC2]/10'
+            "
+            aria-label="Ajouter une photo de l'élève"
+            @click="openPhotoPicker"
+            @dragover.prevent="photoDragOver = true"
+            @dragleave.prevent="photoDragOver = false"
+            @drop.prevent="onPhotoDrop"
           >
-            <svg class="h-[96px] w-[96px]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="8.5" fill="currentColor" opacity="0.28" />
-              <circle cx="9.2" cy="10.1" r="0.95" fill="currentColor" />
-              <circle cx="14.8" cy="10.1" r="0.95" fill="currentColor" />
-              <path
-                d="M8.2 14.1c.9 1.4 2.3 2.1 3.8 2.1 1.1 0 2.2-.4 3-1.2"
-                stroke="currentColor"
-                stroke-width="1.9"
-                stroke-linecap="round"
-              />
-              <path
-                d="M14.4 15.65c-.06.45.18.72.52.78.28.05.55-.03.62-.2"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
+            <img
+              v-if="photoPreview"
+              :src="photoPreview"
+              alt="Photo de l'élève"
+              class="absolute inset-0 h-full w-full object-cover"
+            >
+            <template v-else>
+              <svg class="h-14 w-14 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8.5" fill="currentColor" opacity="0.28" />
+                <circle cx="9.2" cy="10.1" r="0.95" fill="currentColor" />
+                <circle cx="14.8" cy="10.1" r="0.95" fill="currentColor" />
+                <path
+                  d="M8.2 14.1c.9 1.4 2.3 2.1 3.8 2.1 1.1 0 2.2-.4 3-1.2"
+                  stroke="currentColor"
+                  stroke-width="1.9"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M14.4 15.65c-.06.45.18.72.52.78.28.05.55-.03.62-.2"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="text-center text-xs font-bold leading-tight">Ajouter une photo</span>
+              <span class="text-center text-[10px] font-medium leading-tight text-[#216EC2]/75">
+                Glissez une image ou cliquez
+              </span>
+            </template>
+          </button>
+          <input
+            ref="photoInput"
+            type="file"
+            accept="image/png,image/jpeg,image/jpg,image/webp"
+            class="hidden"
+            @change="onPhotoSelect"
+          >
           <div class="flex w-full min-w-0 flex-1 flex-col gap-3">
             <div class="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
               <p
@@ -327,6 +388,19 @@
           </ul>
         </div>
       </section>
+      </div>
+
+      <AdminStudentCarnetSuivi
+        v-show="activeTab === 'carnet'"
+        :child-id="childId"
+        @stats="onCarnetStats"
+      />
+
+      <AdminStudentFicheSante
+        v-show="activeTab === 'sante'"
+        :child-id="childId"
+        @status="onHealthStatus"
+      />
     </article>
 
     <Teleport to="body">
@@ -607,10 +681,89 @@
 </template>
 
 <script setup lang="ts">
+import { h } from 'vue'
+
 definePageMeta({
   layout: 'admin',
   middleware: ['admin'],
 })
+
+type ProfileTab = 'profil' | 'carnet' | 'sante'
+
+const TabProfilIcon = () =>
+  h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }, [
+    h('circle', { cx: '12', cy: '8', r: '4' }),
+    h('path', { d: 'M6 21v-1a6 6 0 0 1 12 0v1', 'stroke-linecap': 'round' }),
+  ])
+
+const TabCarnetIcon = () =>
+  h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }, [
+    h('path', { d: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20' }),
+    h('path', { d: 'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z' }),
+    h('path', { d: 'M8 7h8M8 11h8M8 15h5', 'stroke-linecap': 'round' }),
+  ])
+
+const TabSanteIcon = () =>
+  h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }, [
+    h('path', { d: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z', 'stroke-linejoin': 'round' }),
+    h('path', { d: 'm9 12 2 2 4-4', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }),
+  ])
+
+const activeTab = ref<ProfileTab>('profil')
+const carnetStats = ref({ draftCount: 0, publishedCount: 0 })
+const healthPendingSignature = ref(true)
+
+function onCarnetStats(stats: { draftCount: number; publishedCount: number }) {
+  carnetStats.value = stats
+}
+
+function onHealthStatus(payload: { pendingSignature: boolean }) {
+  healthPendingSignature.value = payload.pendingSignature
+}
+
+const profileTabs = computed(() => [
+  { id: 'profil' as const, label: 'Profil', icon: TabProfilIcon },
+  {
+    id: 'carnet' as const,
+    label: 'Carnet de suivi',
+    icon: TabCarnetIcon,
+    badge: carnetStats.value.draftCount > 0 ? carnetStats.value.draftCount : undefined,
+  },
+  {
+    id: 'sante' as const,
+    label: 'Fiche santé',
+    icon: TabSanteIcon,
+    healthDot: healthPendingSignature.value,
+  },
+])
+
+const photoInput = ref<HTMLInputElement | null>(null)
+const photoPreview = ref('')
+const photoDragOver = ref(false)
+
+function openPhotoPicker() {
+  photoInput.value?.click()
+}
+
+function readPhotoFile(file: File | undefined) {
+  if (!file || !file.type.startsWith('image/')) return
+  const reader = new FileReader()
+  reader.onload = () => {
+    photoPreview.value = String(reader.result ?? '')
+  }
+  reader.readAsDataURL(file)
+}
+
+function onPhotoSelect(e: Event) {
+  const input = e.target as HTMLInputElement
+  readPhotoFile(input.files?.[0])
+  input.value = ''
+}
+
+function onPhotoDrop(e: DragEvent) {
+  photoDragOver.value = false
+  readPhotoFile(e.dataTransfer?.files?.[0])
+}
 
 type ProfileDto = {
   childId: string

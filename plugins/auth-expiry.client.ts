@@ -29,7 +29,7 @@ export default defineNuxtPlugin(() => {
         parentLegacy.value = null;
         parentSess.value = null;
         parentLong.value = null;
-        if (path !== '/parent/login') {
+        if (path !== '/parent/login' && path !== '/parent/onboarding') {
           void navigateTo('/parent/login');
         }
       }

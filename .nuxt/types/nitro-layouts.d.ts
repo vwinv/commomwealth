@@ -1,4 +1,4 @@
-export type LayoutKey = "admin" | "default" | "marketing" | "parent"
+export type LayoutKey = "admin" | "default" | "enrollment" | "marketing" | "parent"
 declare module 'nitropack' {
   interface NitroRouteConfig {
     appLayout?: LayoutKey | false

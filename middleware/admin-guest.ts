@@ -4,6 +4,6 @@ import { checkAdminAccessToken } from '~/utils/admin-token'
 export default defineNuxtRouteMiddleware((to) => {
   if (to.path !== '/admin/login') return
   if (checkAdminAccessToken(useAuth().token.value).ok) {
-    return navigateTo('/admin')
+    return navigateTo(useAdminPermissions().adminLandingPath())
   }
 })

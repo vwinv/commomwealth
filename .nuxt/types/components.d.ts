@@ -21,8 +21,42 @@ interface _GlobalComponents {
   RevealSection: typeof import("../../components/RevealSection.vue")['default']
   SiteFooter: typeof import("../../components/SiteFooter.vue")['default']
   SiteHeader: typeof import("../../components/SiteHeader.vue")['default']
+  AdminAccountingTotalsBlocks: typeof import("../../components/admin/AdminAccountingTotalsBlocks.vue")['default']
+  AdminClassEditModal: typeof import("../../components/admin/AdminClassEditModal.vue")['default']
+  AdminLevelEditModal: typeof import("../../components/admin/AdminLevelEditModal.vue")['default']
+  AdminServiceEditModal: typeof import("../../components/admin/AdminServiceEditModal.vue")['default']
+  AdminStudentCarnetSuivi: typeof import("../../components/admin/AdminStudentCarnetSuivi.vue")['default']
+  AdminStudentFicheSante: typeof import("../../components/admin/AdminStudentFicheSante.vue")['default']
+  EnrollmentFamilySectionHeader: typeof import("../../components/enrollment/EnrollmentFamilySectionHeader.vue")['default']
+  EnrollmentField: typeof import("../../components/enrollment/EnrollmentField.vue")['default']
+  EnrollmentNavFooter: typeof import("../../components/enrollment/EnrollmentNavFooter.vue")['default']
+  EnrollmentParentSignature: typeof import("../../components/enrollment/EnrollmentParentSignature.vue")['default']
+  EnrollmentRecapBlock: typeof import("../../components/enrollment/EnrollmentRecapBlock.vue")['default']
+  EnrollmentRecapCard: typeof import("../../components/enrollment/EnrollmentRecapCard.vue")['default']
+  EnrollmentRecapRow: typeof import("../../components/enrollment/EnrollmentRecapRow.vue")['default']
+  EnrollmentSectionTitle: typeof import("../../components/enrollment/EnrollmentSectionTitle.vue")['default']
+  EnrollmentStepEnfant: typeof import("../../components/enrollment/EnrollmentStepEnfant.vue")['default']
+  EnrollmentStepFamille: typeof import("../../components/enrollment/EnrollmentStepFamille.vue")['default']
+  EnrollmentStepOptions: typeof import("../../components/enrollment/EnrollmentStepOptions.vue")['default']
+  EnrollmentStepSante: typeof import("../../components/enrollment/EnrollmentStepSante.vue")['default']
+  EnrollmentStepValidation: typeof import("../../components/enrollment/EnrollmentStepValidation.vue")['default']
+  EnrollmentStepper: typeof import("../../components/enrollment/EnrollmentStepper.vue")['default']
+  EnrollmentWizardHeader: typeof import("../../components/enrollment/EnrollmentWizardHeader.vue")['default']
+  ParentChildOverviewCard: typeof import("../../components/parent/ParentChildOverviewCard.vue")['default']
   ParentPayTuitionInline: typeof import("../../components/parent/PayTuitionInline.vue")['default']
   ParentPayTuitionModal: typeof import("../../components/parent/PayTuitionModal.vue")['default']
+  ParentChildSpaceCarnet: typeof import("../../components/parent/child-space/ParentChildSpaceCarnet.vue")['default']
+  ParentChildSpaceHeader: typeof import("../../components/parent/child-space/ParentChildSpaceHeader.vue")['default']
+  ParentChildSpaceProfil: typeof import("../../components/parent/child-space/ParentChildSpaceProfil.vue")['default']
+  ParentChildSpaceSante: typeof import("../../components/parent/child-space/ParentChildSpaceSante.vue")['default']
+  ParentChildSpaceTabs: typeof import("../../components/parent/child-space/ParentChildSpaceTabs.vue")['default']
+  ParentChildSpaceTypes: typeof import("../../components/parent/child-space/types")['default']
+  ParentOnboardingShell: typeof import("../../components/parent/onboarding/ParentOnboardingShell.vue")['default']
+  ParentOnboardingSlide1: typeof import("../../components/parent/onboarding/ParentOnboardingSlide1.vue")['default']
+  ParentOnboardingSlide2: typeof import("../../components/parent/onboarding/ParentOnboardingSlide2.vue")['default']
+  ParentOnboardingSlide3: typeof import("../../components/parent/onboarding/ParentOnboardingSlide3.vue")['default']
+  ParentOnboardingSlide4: typeof import("../../components/parent/onboarding/ParentOnboardingSlide4.vue")['default']
+  ParentOnboardingTitle: typeof import("../../components/parent/onboarding/ParentOnboardingTitle.vue")['default']
   NuxtWelcome: typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   NuxtLayout: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   NuxtErrorBoundary: typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -55,8 +89,42 @@ interface _GlobalComponents {
   LazyRevealSection: LazyComponent<typeof import("../../components/RevealSection.vue")['default']>
   LazySiteFooter: LazyComponent<typeof import("../../components/SiteFooter.vue")['default']>
   LazySiteHeader: LazyComponent<typeof import("../../components/SiteHeader.vue")['default']>
+  LazyAdminAccountingTotalsBlocks: LazyComponent<typeof import("../../components/admin/AdminAccountingTotalsBlocks.vue")['default']>
+  LazyAdminClassEditModal: LazyComponent<typeof import("../../components/admin/AdminClassEditModal.vue")['default']>
+  LazyAdminLevelEditModal: LazyComponent<typeof import("../../components/admin/AdminLevelEditModal.vue")['default']>
+  LazyAdminServiceEditModal: LazyComponent<typeof import("../../components/admin/AdminServiceEditModal.vue")['default']>
+  LazyAdminStudentCarnetSuivi: LazyComponent<typeof import("../../components/admin/AdminStudentCarnetSuivi.vue")['default']>
+  LazyAdminStudentFicheSante: LazyComponent<typeof import("../../components/admin/AdminStudentFicheSante.vue")['default']>
+  LazyEnrollmentFamilySectionHeader: LazyComponent<typeof import("../../components/enrollment/EnrollmentFamilySectionHeader.vue")['default']>
+  LazyEnrollmentField: LazyComponent<typeof import("../../components/enrollment/EnrollmentField.vue")['default']>
+  LazyEnrollmentNavFooter: LazyComponent<typeof import("../../components/enrollment/EnrollmentNavFooter.vue")['default']>
+  LazyEnrollmentParentSignature: LazyComponent<typeof import("../../components/enrollment/EnrollmentParentSignature.vue")['default']>
+  LazyEnrollmentRecapBlock: LazyComponent<typeof import("../../components/enrollment/EnrollmentRecapBlock.vue")['default']>
+  LazyEnrollmentRecapCard: LazyComponent<typeof import("../../components/enrollment/EnrollmentRecapCard.vue")['default']>
+  LazyEnrollmentRecapRow: LazyComponent<typeof import("../../components/enrollment/EnrollmentRecapRow.vue")['default']>
+  LazyEnrollmentSectionTitle: LazyComponent<typeof import("../../components/enrollment/EnrollmentSectionTitle.vue")['default']>
+  LazyEnrollmentStepEnfant: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepEnfant.vue")['default']>
+  LazyEnrollmentStepFamille: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepFamille.vue")['default']>
+  LazyEnrollmentStepOptions: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepOptions.vue")['default']>
+  LazyEnrollmentStepSante: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepSante.vue")['default']>
+  LazyEnrollmentStepValidation: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepValidation.vue")['default']>
+  LazyEnrollmentStepper: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepper.vue")['default']>
+  LazyEnrollmentWizardHeader: LazyComponent<typeof import("../../components/enrollment/EnrollmentWizardHeader.vue")['default']>
+  LazyParentChildOverviewCard: LazyComponent<typeof import("../../components/parent/ParentChildOverviewCard.vue")['default']>
   LazyParentPayTuitionInline: LazyComponent<typeof import("../../components/parent/PayTuitionInline.vue")['default']>
   LazyParentPayTuitionModal: LazyComponent<typeof import("../../components/parent/PayTuitionModal.vue")['default']>
+  LazyParentChildSpaceCarnet: LazyComponent<typeof import("../../components/parent/child-space/ParentChildSpaceCarnet.vue")['default']>
+  LazyParentChildSpaceHeader: LazyComponent<typeof import("../../components/parent/child-space/ParentChildSpaceHeader.vue")['default']>
+  LazyParentChildSpaceProfil: LazyComponent<typeof import("../../components/parent/child-space/ParentChildSpaceProfil.vue")['default']>
+  LazyParentChildSpaceSante: LazyComponent<typeof import("../../components/parent/child-space/ParentChildSpaceSante.vue")['default']>
+  LazyParentChildSpaceTabs: LazyComponent<typeof import("../../components/parent/child-space/ParentChildSpaceTabs.vue")['default']>
+  LazyParentChildSpaceTypes: LazyComponent<typeof import("../../components/parent/child-space/types")['default']>
+  LazyParentOnboardingShell: LazyComponent<typeof import("../../components/parent/onboarding/ParentOnboardingShell.vue")['default']>
+  LazyParentOnboardingSlide1: LazyComponent<typeof import("../../components/parent/onboarding/ParentOnboardingSlide1.vue")['default']>
+  LazyParentOnboardingSlide2: LazyComponent<typeof import("../../components/parent/onboarding/ParentOnboardingSlide2.vue")['default']>
+  LazyParentOnboardingSlide3: LazyComponent<typeof import("../../components/parent/onboarding/ParentOnboardingSlide3.vue")['default']>
+  LazyParentOnboardingSlide4: LazyComponent<typeof import("../../components/parent/onboarding/ParentOnboardingSlide4.vue")['default']>
+  LazyParentOnboardingTitle: LazyComponent<typeof import("../../components/parent/onboarding/ParentOnboardingTitle.vue")['default']>
   LazyNuxtWelcome: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   LazyNuxtLayout: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   LazyNuxtErrorBoundary: LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

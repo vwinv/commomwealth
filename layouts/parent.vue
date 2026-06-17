@@ -9,29 +9,45 @@
         <nav class="order-3 flex w-full justify-center gap-6 text-[15px] md:order-2 md:w-auto md:justify-center md:gap-10" aria-label="Espace parent">
           <NuxtLink
             to="/parent"
-            class="py-1 font-medium transition-colors"
-            :class="isAccueil ? 'text-brandOrange' : 'text-slate-600 hover:text-brandBlue'"
+            class="border-b-2 py-1 font-medium transition-colors"
+            :class="
+              isAccueil
+                ? 'border-brandOrange text-brandOrange'
+                : 'border-transparent text-slate-600 hover:text-brandBlue'
+            "
           >
             Accueil
           </NuxtLink>
           <NuxtLink
             to="/parent/enfants"
-            class="py-1 font-medium transition-colors"
-            :class="isEnfants ? 'text-brandOrange' : 'text-slate-600 hover:text-brandBlue'"
+            class="border-b-2 py-1 font-medium transition-colors"
+            :class="
+              isEnfants
+                ? 'border-brandOrange text-brandOrange'
+                : 'border-transparent text-slate-600 hover:text-brandBlue'
+            "
           >
             Mes enfants
           </NuxtLink>
           <NuxtLink
             to="/parent/paiements"
-            class="py-1 font-medium transition-colors"
-            :class="isPaiements ? 'text-brandOrange' : 'text-slate-600 hover:text-brandBlue'"
+            class="border-b-2 py-1 font-medium transition-colors"
+            :class="
+              isPaiements
+                ? 'border-brandOrange text-brandOrange'
+                : 'border-transparent text-slate-600 hover:text-brandBlue'
+            "
           >
             Paiements
           </NuxtLink>
           <NuxtLink
             to="/parent/documents"
-            class="py-1 font-medium transition-colors"
-            :class="isDocuments ? 'text-brandOrange' : 'text-slate-600 hover:text-brandBlue'"
+            class="border-b-2 py-1 font-medium transition-colors"
+            :class="
+              isDocuments
+                ? 'border-brandOrange text-brandOrange'
+                : 'border-transparent text-slate-600 hover:text-brandBlue'
+            "
           >
             Documents
           </NuxtLink>

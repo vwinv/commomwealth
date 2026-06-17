@@ -47,10 +47,9 @@
           <div class="space-y-3">
             <div class="text-sm font-semibold text-white/90">{{ t('footer.social') }}</div>
             <div class="flex items-center gap-4 text-white/90">
-              <a class="hover:text-white" href="#" aria-label="Facebook">f</a>
+              <a class="hover:text-white" href="https://www.facebook.com/Commonwealth.preschool/about?locale=fr_FR" aria-label="Facebook">f</a>
               <a class="hover:text-white" href="#" aria-label="LinkedIn">in</a>
-              <a class="hover:text-white" href="#" aria-label="Instagram">ig</a>
-              <a class="hover:text-white" href="#" aria-label="Google">g+</a>
+              <a class="hover:text-white" href="https://www.instagram.com/commonwealth_preschool?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" aria-label="Instagram">ig</a>
             </div>
           </div>
 
