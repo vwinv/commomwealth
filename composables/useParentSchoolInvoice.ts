@@ -16,6 +16,7 @@ import {
   stableReceiptNumber,
   type ParentReceiptLine,
 } from '~/utils/parentReceiptHtml';
+import { resolveSchoolContact } from '~/utils/school-contact';
 
 export type BillingContactDto = {
   fullName: string | null;
@@ -180,15 +181,13 @@ export function useParentSchoolInvoice() {
   const { authFetchBlob } = useParentAuth();
 
   function branding() {
-    const p = config.public as Record<string, string | undefined>;
+    const c = resolveSchoolContact(config.public);
     return {
-      schoolDisplayName: p.schoolDisplayName ?? 'Commonwealth School',
-      contactEmail: p.schoolContactEmail ?? 'contact@commonwealth-school.com',
-      emergencyPhone: p.schoolEmergencyPhone ?? '(219) 555-0114',
-      administrationEmail: p.schoolAdministrationEmail ?? 'administration@commonwealth-school.com',
-      paymentModesLine:
-        p.schoolPaymentModes ??
-        "Virement bancaire · Wave · Orange Money · Espèces (caisse de l'école)",
+      schoolDisplayName: c.displayName,
+      contactEmail: c.contactEmail,
+      emergencyPhone: c.emergencyPhone,
+      administrationEmail: c.administrationEmail,
+      paymentModesLine: c.paymentModes,
     };
   }
 

@@ -38,6 +38,7 @@ export { useParentAuth } from '../composables/useParentAuth';
 export { useParentDocumentUrl } from '../composables/useParentDocumentUrl';
 export { useParentOnboarding } from '../composables/useParentOnboarding';
 export { isPaidParentInvoiceSource, useParentSchoolInvoice, BillingContactDto, TuitionChargeInvoiceDto, MonthlyInstallmentInvoiceDto, LegacyPaymentInvoiceDto, ParentInvoiceSource, ParentInvoiceDocument, ParentReceiptDocument } from '../composables/useParentSchoolInvoice';
+export { useSchoolContact } from '../composables/useSchoolContact';
 export { APP_MODULE_ROLE_LABELS, ALL_APP_MODULE_ROLE_CODES, DIRECTOR_JOB_TITLE, ADMIN_LANDING_ROUTE_ORDER, ADMIN_ROUTE_MODULES, moduleForAdminPath, canAccessHomeFromSession, defaultAdminLandingPath, decodeAdminTokenPayload, AppModuleRoleCode } from '../utils/admin-permissions';
 export { checkAdminAccessToken, AdminTokenCheck } from '../utils/admin-token';
 export { parentRelationLabel, syncEmergencyFromSource, guardian2IsFilled } from '../utils/enrollment-family';
@@ -46,6 +47,7 @@ export { ENROLLMENT_AUTHORIZATIONS, authorizationLabel, formatServiceSelectionLa
 export { healthRecordToEnrollmentDraft } from '../utils/parent-health-mapper';
 export { extractInvoicePdfParts, buildParentInvoiceHtml, formatXofFromCents, tuitionAnnualDueDateFr, monthEndDateFr, schoolTrimesterFromMonth, stableInvoiceNumber, matriculeFromEnrollmentId, ParentInvoiceLine, ParentInvoiceHtmlInput } from '../utils/parentInvoiceHtml';
 export { formatPaymentModeFromTransactionRef, parseMedicalTags, stableReceiptNumber, buildParentReceiptHtml, ParentReceiptLine, ParentReceiptHtmlInput } from '../utils/parentReceiptHtml';
+export { SCHOOL_CONTACT_DEFAULTS, phoneToTelHref, emailToMailtoHref, resolveSchoolContact, SchoolContactInfo } from '../utils/school-contact';
 export { useI18n } from '../node_modules/vue-i18n/dist/vue-i18n';
 export { useRouteBaseName, useLocalePath, useLocaleRoute, useSwitchLocalePath, useLocaleHead, useBrowserLocale, useCookieLocale, useSetI18nParams, defineI18nRoute, defineI18nLocale, defineI18nConfig } from '../node_modules/@nuxtjs/i18n/dist/runtime/composables/index';
 export { useNuxtDevTools } from '../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';

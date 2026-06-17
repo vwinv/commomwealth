@@ -202,7 +202,7 @@
             v-model.trim="emergency.phone"
             type="tel"
             class="enrollment-input"
-            placeholder="(219) 555-0114"
+            placeholder="{{ schoolPhone }}"
           />
         </EnrollmentField>
       </div>
@@ -221,12 +221,15 @@ import {
   parentRelationLabel,
   syncEmergencyFromSource,
 } from '~/utils/enrollment-family';
+import { useSchoolContact } from '~/composables/useSchoolContact';
 
 type EmergencySource = EnrollmentEmergencyDraft['source'];
 
 const parent = defineModel<EnrollmentParentDraft>('parent', { required: true });
 const guardian2 = defineModel<EnrollmentGuardian2Draft>('guardian2', { required: true });
 const emergency = defineModel<EnrollmentEmergencyDraft>('emergency', { required: true });
+
+const schoolPhone = useSchoolContact().value.phone;
 
 defineProps<{
   parentAccountLocked?: boolean;

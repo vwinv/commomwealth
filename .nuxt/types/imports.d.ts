@@ -10,6 +10,7 @@ declare global {
   const ENROLLMENT_AUTHORIZATIONS: typeof import('../../utils/enrollment-options').ENROLLMENT_AUTHORIZATIONS
   const ENROLLMENT_BLOOD_GROUPS: typeof import('../../utils/enrollment-health').ENROLLMENT_BLOOD_GROUPS
   const ENROLLMENT_STEPS: typeof import('../../composables/useEnrollmentWizard').ENROLLMENT_STEPS
+  const SCHOOL_CONTACT_DEFAULTS: typeof import('../../utils/school-contact').SCHOOL_CONTACT_DEFAULTS
   const abortNavigation: typeof import('../../node_modules/nuxt/dist/app/composables/router').abortNavigation
   const addRouteMiddleware: typeof import('../../node_modules/nuxt/dist/app/composables/router').addRouteMiddleware
   const authorizationLabel: typeof import('../../utils/enrollment-options').authorizationLabel
@@ -46,6 +47,7 @@ declare global {
   const definePayloadReviver: typeof import('../../node_modules/nuxt/dist/app/composables/payload').definePayloadReviver
   const effect: typeof import('../../node_modules/vue').effect
   const effectScope: typeof import('../../node_modules/vue').effectScope
+  const emailToMailtoHref: typeof import('../../utils/school-contact').emailToMailtoHref
   const ensureHealthVaccinations: typeof import('../../utils/enrollment-health').ensureHealthVaccinations
   const extractInvoicePdfParts: typeof import('../../utils/parentInvoiceHtml').extractInvoicePdfParts
   const formatHealthDateFr: typeof import('../../utils/enrollment-health').formatHealthDateFr
@@ -101,6 +103,7 @@ declare global {
   const onWatcherCleanup: typeof import('../../node_modules/vue').onWatcherCleanup
   const parentRelationLabel: typeof import('../../utils/enrollment-family').parentRelationLabel
   const parseMedicalTags: typeof import('../../utils/parentReceiptHtml').parseMedicalTags
+  const phoneToTelHref: typeof import('../../utils/school-contact').phoneToTelHref
   const prefetchComponents: typeof import('../../node_modules/nuxt/dist/app/composables/preload').prefetchComponents
   const preloadComponents: typeof import('../../node_modules/nuxt/dist/app/composables/preload').preloadComponents
   const preloadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload').preloadPayload
@@ -116,6 +119,7 @@ declare global {
   const reloadNuxtApp: typeof import('../../node_modules/nuxt/dist/app/composables/chunk').reloadNuxtApp
   const requestIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback').requestIdleCallback
   const resolveComponent: typeof import('../../node_modules/vue').resolveComponent
+  const resolveSchoolContact: typeof import('../../utils/school-contact').resolveSchoolContact
   const schoolTrimesterFromMonth: typeof import('../../utils/parentInvoiceHtml').schoolTrimesterFromMonth
   const setInterval: typeof import('../../node_modules/nuxt/dist/app/compat/interval').setInterval
   const setPageLayout: typeof import('../../node_modules/nuxt/dist/app/composables/router').setPageLayout
@@ -183,6 +187,7 @@ declare global {
   const useRouter: typeof import('../../node_modules/nuxt/dist/app/composables/router').useRouter
   const useRuntimeConfig: typeof import('../../node_modules/nuxt/dist/app/nuxt').useRuntimeConfig
   const useRuntimeHook: typeof import('../../node_modules/nuxt/dist/app/composables/runtime-hook').useRuntimeHook
+  const useSchoolContact: typeof import('../../composables/useSchoolContact').useSchoolContact
   const useScript: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs').useScript
   const useScriptClarity: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs').useScriptClarity
   const useScriptCloudflareWebAnalytics: typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs').useScriptCloudflareWebAnalytics
@@ -268,6 +273,9 @@ declare global {
   // @ts-ignore
   export type { ParentReceiptLine, ParentReceiptHtmlInput } from '../../utils/parentReceiptHtml'
   import('../../utils/parentReceiptHtml')
+  // @ts-ignore
+  export type { SchoolContactInfo } from '../../utils/school-contact'
+  import('../../utils/school-contact')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -282,6 +290,7 @@ declare module 'vue' {
     readonly ENROLLMENT_AUTHORIZATIONS: UnwrapRef<typeof import('../../utils/enrollment-options')['ENROLLMENT_AUTHORIZATIONS']>
     readonly ENROLLMENT_BLOOD_GROUPS: UnwrapRef<typeof import('../../utils/enrollment-health')['ENROLLMENT_BLOOD_GROUPS']>
     readonly ENROLLMENT_STEPS: UnwrapRef<typeof import('../../composables/useEnrollmentWizard')['ENROLLMENT_STEPS']>
+    readonly SCHOOL_CONTACT_DEFAULTS: UnwrapRef<typeof import('../../utils/school-contact')['SCHOOL_CONTACT_DEFAULTS']>
     readonly abortNavigation: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['abortNavigation']>
     readonly addRouteMiddleware: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['addRouteMiddleware']>
     readonly authorizationLabel: UnwrapRef<typeof import('../../utils/enrollment-options')['authorizationLabel']>
@@ -318,6 +327,7 @@ declare module 'vue' {
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
     readonly effect: UnwrapRef<typeof import('../../node_modules/vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('../../node_modules/vue')['effectScope']>
+    readonly emailToMailtoHref: UnwrapRef<typeof import('../../utils/school-contact')['emailToMailtoHref']>
     readonly ensureHealthVaccinations: UnwrapRef<typeof import('../../utils/enrollment-health')['ensureHealthVaccinations']>
     readonly extractInvoicePdfParts: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['extractInvoicePdfParts']>
     readonly formatHealthDateFr: UnwrapRef<typeof import('../../utils/enrollment-health')['formatHealthDateFr']>
@@ -373,6 +383,7 @@ declare module 'vue' {
     readonly onWatcherCleanup: UnwrapRef<typeof import('../../node_modules/vue')['onWatcherCleanup']>
     readonly parentRelationLabel: UnwrapRef<typeof import('../../utils/enrollment-family')['parentRelationLabel']>
     readonly parseMedicalTags: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['parseMedicalTags']>
+    readonly phoneToTelHref: UnwrapRef<typeof import('../../utils/school-contact')['phoneToTelHref']>
     readonly prefetchComponents: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preload')['prefetchComponents']>
     readonly preloadComponents: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preload')['preloadComponents']>
     readonly preloadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['preloadPayload']>
@@ -388,6 +399,7 @@ declare module 'vue' {
     readonly reloadNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/chunk')['reloadNuxtApp']>
     readonly requestIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['requestIdleCallback']>
     readonly resolveComponent: UnwrapRef<typeof import('../../node_modules/vue')['resolveComponent']>
+    readonly resolveSchoolContact: UnwrapRef<typeof import('../../utils/school-contact')['resolveSchoolContact']>
     readonly schoolTrimesterFromMonth: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['schoolTrimesterFromMonth']>
     readonly setInterval: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/interval')['setInterval']>
     readonly setPageLayout: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['setPageLayout']>
@@ -455,6 +467,7 @@ declare module 'vue' {
     readonly useRouter: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/router')['useRouter']>
     readonly useRuntimeConfig: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useRuntimeConfig']>
     readonly useRuntimeHook: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/runtime-hook')['useRuntimeHook']>
+    readonly useSchoolContact: UnwrapRef<typeof import('../../composables/useSchoolContact')['useSchoolContact']>
     readonly useScript: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScript']>
     readonly useScriptClarity: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptClarity']>
     readonly useScriptCloudflareWebAnalytics: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/script-stubs')['useScriptCloudflareWebAnalytics']>

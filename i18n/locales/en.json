@@ -1,7 +1,7 @@
 {
   "meta": {
     "homeTitle": "Home",
-    "homeDescription": "The Commonwealth School — preschool in Abidjan."
+    "homeDescription": "Commonwealth Preschool of Abidjan — preschool in Abidjan."
   },
   "header": {
     "navAria": "Main navigation",
@@ -24,30 +24,32 @@
   },
   "home": {
     "hero": {
-      "subtitle": "Preschool of Abidjan",
+      "title": "Commonwealth Preschool of Abidjan",
+      "subtitle": "The Finnish School",
       "tagline": "Courage. Curiosity. Collaboration.",
       "cta": "Enroll your child"
     },
     "partnership": {
       "title": "A shared vision",
-      "body": "Commonwealth School combines excellence with the Finnish approach to early childhood education to build an innovative, forward-looking pedagogy.",
+      "body": "Commonwealth Preschool of Abidjan combines excellence with the Finnish approach to early childhood education to build an innovative, forward-looking pedagogy.",
       "cta": "Learn more",
       "imgAlt": "Partnership"
     },
     "about": {
       "title": "About",
-      "p1": "Curabitur tempor quis eros tempus lacinia. Nam bibendum pellentesque quam a convallis. Sed ut vulputate nisi. Integer in felis sed leo vestibulum venenatis. Suspendisse quis arcu sem. Aenean feugiat ex eu vestibulum vestibulum. Morbi a eleifend magna. Nam metus lacus, porttitor eu mauris a, blandit ultrices nibh. Mauris sit amet magna non ligula vestibulum eleifend. Nulla varius volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem.",
-      "p2": "condimentum ullamcorper quis venenatis nisi. Proin vitae facilisis nisi, ac posuere leo. volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem."
+      "p1": "Commonwealth Preschool of Abidjan is a bilingual preschool (English–French) welcoming children from 6 months to 6 years in an environment designed to reveal who they are—through play. Children are free to follow their curiosity, explore without judgment, and discover at their own pace.",
+      "p2": "Our pedagogy is rooted in the Finnish curriculum, recognized as one of the world's finest education systems. We believe every child has potential—just expressed differently. Our role is to find out how—and to build their path from there."
     },
     "values": {
       "title": "Our values",
-      "intro": "Commonwealth School draws on both international excellence and African cultural heritage. Its identity combines the fern’s message of resilience with a modern vision of holistic, human education. It celebrates diversity, the strength of community, and learning together—raising grounded, confident, and caring citizens.",
-      "courageTitle": "Courage",
-      "courageBody": "To dare, face challenges, and grow with confidence.",
+      "revealTitle": "Reveal",
+      "revealBody": "Every child arrives with their strengths. Not always visible. Not always named. Our work is to reveal them with kindness— and build their path from there.",
+      "resilienceTitle": "Resilience",
+      "resilienceBody": "Get back up, try again, and understand that mistakes are part of the journey.",
       "curiosityTitle": "Curiosity",
-      "curiosityBody": "To wonder, ask questions, and learn with joy.",
+      "curiosityBody": "Question, explore, and learn without limits.",
       "collabTitle": "Collaboration",
-      "collabBody": "To move forward together with respect, sharing, and solidarity."
+      "collabBody": "Learn together, respect differences, and build a community."
     },
     "gallery": {
       "title": "Photo gallery"

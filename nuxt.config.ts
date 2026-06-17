@@ -54,11 +54,21 @@ export default defineNuxtConfig({
       showTempPasswordOnUserCreate:
         process.env.NUXT_PUBLIC_SHOW_TEMP_PASSWORD_ON_USER_CREATE === 'true' ||
         process.env.SHOW_TEMP_PASSWORD_ON_USER_CREATE === 'true',
-      schoolDisplayName: 'Commonwealth School',
-      schoolContactEmail: 'contact@commonwealth-school.com',
-      schoolAdministrationEmail: 'administration@commonwealth-school.com',
-      schoolEmergencyPhone: '(219) 555-0114',
+      schoolDisplayName: process.env.NUXT_PUBLIC_SCHOOL_DISPLAY_NAME || 'Commonwealth Preschool of Abidjan',
+      schoolAddress:
+        process.env.NUXT_PUBLIC_SCHOOL_ADDRESS ||
+        '19 Rue le Perce-Neige, Riviera 6, Cocody, Abidjan',
+      schoolPhone: process.env.NUXT_PUBLIC_SCHOOL_PHONE || '+225 07 11 77 77 01',
+      schoolPhoneTel: process.env.NUXT_PUBLIC_SCHOOL_PHONE_TEL || '+2250711777701',
+      schoolDirectionEmail:
+        process.env.NUXT_PUBLIC_SCHOOL_DIRECTION_EMAIL || 'direction@commonwealth-school.com',
+      schoolContactEmail:
+        process.env.NUXT_PUBLIC_SCHOOL_CONTACT_EMAIL || 'direction@commonwealth-school.com',
+      schoolAdministrationEmail:
+        process.env.NUXT_PUBLIC_SCHOOL_ADMINISTRATION_EMAIL || 'direction@commonwealth-school.com',
+      schoolEmergencyPhone: process.env.NUXT_PUBLIC_SCHOOL_EMERGENCY_PHONE || '+225 07 11 77 77 01',
       schoolPaymentModes:
+        process.env.NUXT_PUBLIC_SCHOOL_PAYMENT_MODES ||
         "Virement bancaire · Wave · Orange Money · Espèces (caisse de l'école)",
     },
   },

@@ -4,7 +4,6 @@
     <section class="w-full">
       <RevealSection extra-class="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 sm:py-24 lg:px-0 lg:py-36">
         <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.25fr_0.75fr] lg:gap-10">
-          <!-- Mobile / tablette : images en premier ; lg+ : colonne droite -->
           <div class="order-1 flex items-center justify-center lg:order-2">
             <div class="animate-hero-bounce relative isolate w-full max-w-[340px]">
               <img
@@ -31,11 +30,10 @@
             </div>
           </div>
 
-          <!-- Mobile / tablette : texte en dessous + marge gauche ; lg+ : colonne gauche -->
           <div class="order-2 ml-4 sm:ml-8 lg:order-1 lg:ml-0 lg:-ml-20 lg:pl-0">
             <h1 class="leading-[1.05]">
               <span class="relative inline-block text-[32px] font-extrabold tracking-tight text-brandBlue sm:text-[40px] lg:text-[46px] xl:text-[54px]">
-                The Commonwealth School
+                {{ t('home.hero.title') }}
                 <img
                   class="pointer-events-none absolute left-16 top-full mt-2 w-[140px] sm:left-24 sm:w-[180px] lg:left-32 lg:w-[220px]"
                   :src="traitImg"
@@ -43,7 +41,7 @@
                   aria-hidden="true"
                 />
               </span>
-              <span class="block text-[28px] font-light tracking-tight text-brandBlue/90 sm:text-[36px] lg:text-[42px] xl:text-[50px]">
+              <span class="mt-6 block text-[28px] font-light tracking-tight text-brandBlue/90 sm:mt-8 sm:text-[36px] lg:text-[42px] xl:text-[50px]">
                 {{ t('home.hero.subtitle') }}
               </span>
             </h1>
@@ -108,14 +106,6 @@
 
             <div class="relative -translate-x-2 lg:-translate-x-6">
               <img class="h-[150px] w-[150px] object-contain" :src="partenariatImg" :alt="t('home.partnership.imgAlt')" />
-              <div
-                class="pointer-events-none absolute -right-6 -top-2 hidden h-[110px] w-[44px] lg:block"
-                aria-hidden="true"
-                style="
-                  background-image: radial-gradient(rgba(255, 255, 255, 0.9) 2px, transparent 2px);
-                  background-size: 14px 14px;
-                "
-              />
             </div>
           </div>
         </RevealSection>
@@ -140,18 +130,11 @@
         <div class="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_1fr]">
           <div class="relative overflow-hidden rounded-2xl bg-slate-100">
             <img class="h-full w-full object-cover" :src="aproposImg" alt="" />
-
-           
           </div>
 
           <div class="text-[13px] leading-6 text-slate-500 lg:pt-4">
-            <p class="text-center">
-              {{ t('home.about.p1') }}
-            </p>
-
-            <p class="mt-10 text-center">
-              {{ t('home.about.p2') }}
-            </p>
+            <p class="text-center">{{ t('home.about.p1') }}</p>
+            <p class="mt-10 text-center">{{ t('home.about.p2') }}</p>
           </div>
         </div>
       </RevealSection>
@@ -170,12 +153,26 @@
           />
         </div>
 
-        <p class="mt-8 max-w-[980px] text-sm leading-6 text-slate-700">
-          {{ t('home.values.intro') }}
-        </p>
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <RevealSection
+            extra-class="rounded-2xl bg-brandBlue p-6 text-white shadow-sm sm:col-span-2 lg:col-span-1"
+            :delay="170"
+          >
+            <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white">
+              <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                <path
+                  d="M12 3l2.2 6.8H21l-5.5 4 2.1 6.7L12 16.5 6.4 20.5l2.1-6.7L3 9.8h6.8L12 3Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div class="font-semibold">✦ {{ t('home.values.revealTitle') }}</div>
+            <div class="mt-2 text-sm text-white/85">{{ t('home.values.revealBody') }}</div>
+          </RevealSection>
 
-        <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <RevealSection extra-class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" :delay="170">
+          <RevealSection extra-class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" :delay="210">
             <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brandBlue text-white">
               <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                 <path
@@ -186,12 +183,12 @@
                 />
               </svg>
             </div>
-            <div class="font-semibold text-slate-900">{{ t('home.values.courageTitle') }}</div>
-            <div class="mt-2 text-sm text-slate-500">{{ t('home.values.courageBody') }}</div>
+            <div class="font-semibold text-slate-900">✦ {{ t('home.values.resilienceTitle') }}</div>
+            <div class="mt-2 text-sm text-slate-500">{{ t('home.values.resilienceBody') }}</div>
           </RevealSection>
 
-          <RevealSection extra-class="rounded-2xl bg-brandBlue p-6 text-white shadow-sm" :delay="210">
-            <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white">
+          <RevealSection extra-class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" :delay="250">
+            <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brandBlue text-white">
               <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                 <path
                   d="M12 2a7 7 0 0 0-4 12.7V18a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.3A7 7 0 0 0 12 2Z"
@@ -202,11 +199,11 @@
                 <path d="M9 22h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               </svg>
             </div>
-            <div class="font-semibold">{{ t('home.values.curiosityTitle') }}</div>
-            <div class="mt-2 text-sm text-white/85">{{ t('home.values.curiosityBody') }}</div>
+            <div class="font-semibold text-slate-900">✦ {{ t('home.values.curiosityTitle') }}</div>
+            <div class="mt-2 text-sm text-slate-500">{{ t('home.values.curiosityBody') }}</div>
           </RevealSection>
 
-          <RevealSection extra-class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" :delay="250">
+          <RevealSection extra-class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" :delay="290">
             <div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brandBlue text-white">
               <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                 <path
@@ -229,10 +226,8 @@
                 />
               </svg>
             </div>
-            <div class="font-semibold text-slate-900">{{ t('home.values.collabTitle') }}</div>
-            <div class="mt-2 text-sm text-slate-500">
-              {{ t('home.values.collabBody') }}
-            </div>
+            <div class="font-semibold text-slate-900">✦ {{ t('home.values.collabTitle') }}</div>
+            <div class="mt-2 text-sm text-slate-500">{{ t('home.values.collabBody') }}</div>
           </RevealSection>
         </div>
       </RevealSection>
@@ -312,7 +307,6 @@ useHead({
 </script>
 
 <style scoped>
-/* Rebond infini : pic puis amortissements avant de reposer. */
 @keyframes hero-bounce {
   0%,
   100% {
@@ -343,4 +337,3 @@ useHead({
   }
 }
 </style>
-

@@ -22,6 +22,14 @@ import { NuxtModule, ModuleDependencyMeta } from '@nuxt/schema'
 
    schoolDisplayName: string,
 
+   schoolAddress: string,
+
+   schoolPhone: string,
+
+   schoolPhoneTel: string,
+
+   schoolDirectionEmail: string,
+
    schoolContactEmail: string,
 
    schoolAdministrationEmail: string,

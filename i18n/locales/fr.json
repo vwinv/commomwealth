@@ -1,7 +1,7 @@
 {
   "meta": {
     "homeTitle": "Accueil",
-    "homeDescription": "The Commonwealth School — maternelle d’Abidjan."
+    "homeDescription": "Commonwealth Preschool of Abidjan — maternelle d’Abidjan."
   },
   "header": {
     "navAria": "Navigation principale",
@@ -24,30 +24,32 @@
   },
   "home": {
     "hero": {
-      "subtitle": "Maternelle d’Abidjan",
+      "title": "Commonwealth Preschool of Abidjan",
+      "subtitle": "L'École à la Finlandaise",
       "tagline": "Courage. Curiosité. Collaboration.",
       "cta": "Inscrivez votre enfant"
     },
     "partnership": {
       "title": "Une vision commune",
-      "body": "L’école Commonwealth allie l’excellence à l’approche finlandaise de l’éducation préscolaire afin de créer une pédagogie innovante et émergente.",
+      "body": "Commonwealth Preschool of Abidjan allie l’excellence à l’approche finlandaise de l’éducation préscolaire afin de créer une pédagogie innovante et émergente.",
       "cta": "Découvrir",
       "imgAlt": "Partenariat"
     },
     "about": {
       "title": "À propos",
-      "p1": "Curabitur tempor quis eros tempus lacinia. Nam bibendum pellentesque quam a convallis. Sed ut vulputate nisi. Integer in felis sed leo vestibulum venenatis. Suspendisse quis arcu sem. Aenean feugiat ex eu vestibulum vestibulum. Morbi a eleifend magna. Nam metus lacus, porttitor eu mauris a, blandit ultrices nibh. Mauris sit amet magna non ligula vestibulum eleifend. Nulla varius volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem.",
-      "p2": "condimentum ullamcorper quis venenatis nisi. Proin vitae facilisis nisi, ac posuere leo. volutpat turpis sed lacinia. Nam eget mi in purus lobortis eleifend. Sed nec ante dictum sem."
+      "p1": "Commonwealth Preschool of Abidjan est une école maternelle bilingue (Anglais – Français) qui accueille les enfants de 6 mois à 6 ans dans un environnement pensé pour révéler ce qu'ils sont — à travers le jeu. L'enfant est libre de suivre sa curiosité, d'explorer sans jugement, et de découvrir à son propre rythme.",
+      "p2": "Notre pédagogie s'appuie sur le curriculum finlandais, reconnu comme l'un des meilleurs systèmes éducatifs au monde. Nous croyons que chaque enfant a du potentiel, juste différemment. Notre rôle est de trouver comment — et de construire son parcours à partir de là."
     },
     "values": {
       "title": "Nos valeurs",
-      "intro": "Commonwealth School s’inspire à la fois de l’excellence internationale et de l’héritage culturel africain. Son identité conjugue le message de résilience de la fougère avec une vision moderne d’une éducation intégrale et humaine. Elle célèbre la diversité, la force du collectif et le pouvoir d’apprendre ensemble, formant des citoyens ancrés, confiants et bienveillants.",
-      "courageTitle": "Courage",
-      "courageBody": "Pour oser, affronter les défis et grandir avec confiance.",
+      "revealTitle": "Révéler",
+      "revealBody": "Chaque enfant arrive avec ses forces. Pas toujours visibles. Pas toujours nommées. Notre travail est de les révéler avec bienveillance — et de construire son parcours à partir de là.",
+      "resilienceTitle": "Résilience",
+      "resilienceBody": "Se relever, recommencer, et comprendre que les erreurs font partie du chemin.",
       "curiosityTitle": "Curiosité",
-      "curiosityBody": "Pour s’émerveiller, questionner et apprendre avec joie.",
+      "curiosityBody": "Questionner, explorer et apprendre sans limite.",
       "collabTitle": "Collaboration",
-      "collabBody": "Pour avancer ensemble dans le respect, le partage et la solidarité."
+      "collabBody": "Apprendre ensemble, respecter les différences et construire une communauté."
     },
     "gallery": {
       "title": "Galerie photos"

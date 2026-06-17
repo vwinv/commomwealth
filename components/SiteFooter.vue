@@ -24,9 +24,7 @@
                   />
                 </svg>
               </span>
-              <div>
-                <div class="font-semibold text-white">2110 Thornridge Cir, Syracuse, Connecticut 35624</div>
-              </div>
+              <div class="font-semibold text-white">{{ school.address }}</div>
             </div>
 
             <div class="flex items-start gap-3 text-sm text-white/90">
@@ -40,7 +38,22 @@
                   />
                 </svg>
               </span>
-              <div class="font-semibold text-white">(123) 456-7890</div>
+              <a :href="phoneTel" class="font-semibold text-white hover:underline">{{ school.phone }}</a>
+            </div>
+
+            <div class="flex items-start gap-3 text-sm text-white/90">
+              <span class="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
+                <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
+                  <path
+                    d="M4 6h16v12H4V6Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                  />
+                  <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <a :href="mailto" class="font-semibold text-white hover:underline">{{ school.directionEmail }}</a>
             </div>
           </div>
 
@@ -74,7 +87,7 @@
           <NuxtLink class="hover:text-white" to="/">{{ t('footer.navHome').toUpperCase() }}</NuxtLink>
           <NuxtLink class="hover:text-white" to="/#apropos">{{ t('footer.navAbout').toUpperCase() }}</NuxtLink>
           <NuxtLink class="hover:text-white" to="/#partenariat">{{ t('footer.navPartnerships').toUpperCase() }}</NuxtLink>
-          <NuxtLink class="hover:text-white" to="/#contact">{{ t('footer.navContact').toUpperCase() }}</NuxtLink>
+          <NuxtLink class="hover:text-white" to="/contact">{{ t('footer.navContact').toUpperCase() }}</NuxtLink>
         </nav>
       </div>
     </div>
@@ -83,7 +96,13 @@
 
 <script setup lang="ts">
 import logoImg from '~/assets/images/logo.png';
+import { useSchoolContact } from '~/composables/useSchoolContact';
+import { emailToMailtoHref, phoneToTelHref } from '~/utils/school-contact';
 
 const year = new Date().getFullYear();
 const { t } = useI18n();
+const school = useSchoolContact();
+
+const phoneTel = computed(() => phoneToTelHref(school.value.phone));
+const mailto = computed(() => emailToMailtoHref(school.value.directionEmail));
 </script>
