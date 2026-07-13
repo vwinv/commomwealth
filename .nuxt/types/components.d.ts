@@ -42,6 +42,19 @@ interface _GlobalComponents {
   EnrollmentStepValidation: typeof import("../../components/enrollment/EnrollmentStepValidation.vue")['default']
   EnrollmentStepper: typeof import("../../components/enrollment/EnrollmentStepper.vue")['default']
   EnrollmentWizardHeader: typeof import("../../components/enrollment/EnrollmentWizardHeader.vue")['default']
+  MarketingHomeAboutSection: typeof import("../../components/marketing/HomeAboutSection.vue")['default']
+  MarketingHomeApproachSection: typeof import("../../components/marketing/HomeApproachSection.vue")['default']
+  MarketingHomeClassesSection: typeof import("../../components/marketing/HomeClassesSection.vue")['default']
+  MarketingHomeGallerySection: typeof import("../../components/marketing/HomeGallerySection.vue")['default']
+  MarketingHomeHeroSection: typeof import("../../components/marketing/HomeHeroSection.vue")['default']
+  MarketingHomePartnersSection: typeof import("../../components/marketing/HomePartnersSection.vue")['default']
+  MarketingHomeRentreeSection: typeof import("../../components/marketing/HomeRentreeSection.vue")['default']
+  MarketingHomeSuggestionsSection: typeof import("../../components/marketing/HomeSuggestionsSection.vue")['default']
+  MarketingHomeValuesSection: typeof import("../../components/marketing/HomeValuesSection.vue")['default']
+  MarketingHomeWorkshopsSection: typeof import("../../components/marketing/HomeWorkshopsSection.vue")['default']
+  MarketingDotPattern: typeof import("../../components/marketing/MarketingDotPattern.vue")['default']
+  MarketingSectionTitle: typeof import("../../components/marketing/MarketingSectionTitle.vue")['default']
+  MotionPageLoadCurtain: typeof import("../../components/motion/PageLoadCurtain.vue")['default']
   ParentChildOverviewCard: typeof import("../../components/parent/ParentChildOverviewCard.vue")['default']
   ParentPayTuitionInline: typeof import("../../components/parent/PayTuitionInline.vue")['default']
   ParentPayTuitionModal: typeof import("../../components/parent/PayTuitionModal.vue")['default']
@@ -110,6 +123,19 @@ interface _GlobalComponents {
   LazyEnrollmentStepValidation: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepValidation.vue")['default']>
   LazyEnrollmentStepper: LazyComponent<typeof import("../../components/enrollment/EnrollmentStepper.vue")['default']>
   LazyEnrollmentWizardHeader: LazyComponent<typeof import("../../components/enrollment/EnrollmentWizardHeader.vue")['default']>
+  LazyMarketingHomeAboutSection: LazyComponent<typeof import("../../components/marketing/HomeAboutSection.vue")['default']>
+  LazyMarketingHomeApproachSection: LazyComponent<typeof import("../../components/marketing/HomeApproachSection.vue")['default']>
+  LazyMarketingHomeClassesSection: LazyComponent<typeof import("../../components/marketing/HomeClassesSection.vue")['default']>
+  LazyMarketingHomeGallerySection: LazyComponent<typeof import("../../components/marketing/HomeGallerySection.vue")['default']>
+  LazyMarketingHomeHeroSection: LazyComponent<typeof import("../../components/marketing/HomeHeroSection.vue")['default']>
+  LazyMarketingHomePartnersSection: LazyComponent<typeof import("../../components/marketing/HomePartnersSection.vue")['default']>
+  LazyMarketingHomeRentreeSection: LazyComponent<typeof import("../../components/marketing/HomeRentreeSection.vue")['default']>
+  LazyMarketingHomeSuggestionsSection: LazyComponent<typeof import("../../components/marketing/HomeSuggestionsSection.vue")['default']>
+  LazyMarketingHomeValuesSection: LazyComponent<typeof import("../../components/marketing/HomeValuesSection.vue")['default']>
+  LazyMarketingHomeWorkshopsSection: LazyComponent<typeof import("../../components/marketing/HomeWorkshopsSection.vue")['default']>
+  LazyMarketingDotPattern: LazyComponent<typeof import("../../components/marketing/MarketingDotPattern.vue")['default']>
+  LazyMarketingSectionTitle: LazyComponent<typeof import("../../components/marketing/MarketingSectionTitle.vue")['default']>
+  LazyMotionPageLoadCurtain: LazyComponent<typeof import("../../components/motion/PageLoadCurtain.vue")['default']>
   LazyParentChildOverviewCard: LazyComponent<typeof import("../../components/parent/ParentChildOverviewCard.vue")['default']>
   LazyParentPayTuitionInline: LazyComponent<typeof import("../../components/parent/PayTuitionInline.vue")['default']>
   LazyParentPayTuitionModal: LazyComponent<typeof import("../../components/parent/PayTuitionModal.vue")['default']>

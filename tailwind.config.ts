@@ -15,6 +15,7 @@ export default <Partial<Config>>{
         brandBlue: '#216EC2',
         brandOrange: '#F99B4B',
         brandGreen: '#2E8B57',
+        brandPurple: '#7B4FD4',
       },
     },
   },

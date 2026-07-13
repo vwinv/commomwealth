@@ -38,7 +38,7 @@ export default defineNuxtConfig({
       fallbackLocale: 'fr',
     },
   },
-  css: ['~/assets/css/tailwind.css', '~/assets/css/enrollment-form.css'],
+  css: ['~/assets/css/tailwind.css', '~/assets/css/motion.css', '~/assets/css/enrollment-form.css'],
   /** Désactivé explicitement : évite l’import virtuel `#app-manifest` côté runtime. */
   experimental: {
     appManifest: false,

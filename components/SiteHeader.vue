@@ -1,40 +1,34 @@
 <template>
   <header class="w-full border-b border-slate-200 bg-white">
     <div
-      class="mx-auto flex max-w-[1200px] items-center justify-between gap-4 py-3 pl-4 pr-4 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-6 lg:py-3 lg:pl-8 lg:pr-4"
+      class="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-6 lg:px-8 xl:gap-10 xl:px-10"
     >
-      <NuxtLink class="flex min-w-[120px] items-center sm:min-w-[140px] lg:-ml-4 lg:pl-0" to="/" :aria-label="t('header.home')">
-        <img class="h-12 w-auto object-contain sm:h-16" :src="logoUrl" alt="Logo" />
+      <NuxtLink class="flex shrink-0 items-center" to="/" :aria-label="t('header.home')">
+        <img class="h-11 w-auto object-contain sm:h-14 xl:h-16" :src="logoUrl" alt="Logo" />
       </NuxtLink>
 
-      <nav class="hidden items-center justify-center gap-6 lg:flex xl:gap-8" :aria-label="t('header.navAria')">
-        <NuxtLink class="px-2 py-2 text-[15px] font-normal text-slate-600 hover:text-slate-900" to="/">{{
-          t('header.home')
-        }}</NuxtLink>
-        <NuxtLink class="px-2 py-2 text-[13px] font-normal text-slate-600 hover:text-slate-900" to="/#apropos">{{
-          t('header.about')
-        }}</NuxtLink>
-        <NuxtLink class="px-2 py-2 text-[13px] font-normal text-slate-600 hover:text-slate-900" to="/#values">{{
-          t('header.values')
-        }}</NuxtLink>
-        <NuxtLink class="px-2 py-2 text-[13px] font-normal text-slate-600 hover:text-slate-900" to="/#partenariat">{{
-          t('header.partnership')
-        }}</NuxtLink>
+      <nav class="hidden min-w-0 flex-nowrap items-center justify-center gap-4 lg:flex xl:gap-7" :aria-label="t('header.navAria')">
+        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/">{{ t('header.home') }}</NuxtLink>
+        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#apropos">{{ t('header.about') }}</NuxtLink>
+        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#classes">{{ t('header.classes') }}</NuxtLink>
+        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#values">{{ t('header.values') }}</NuxtLink>
+        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#ateliers">{{ t('header.workshops') }}</NuxtLink>
+        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#partenariat">{{ t('header.partnership') }}</NuxtLink>
       </nav>
 
-      <div class="hidden items-center justify-end gap-2 sm:gap-3 lg:flex">
+      <div class="hidden shrink-0 flex-nowrap items-center justify-end gap-2 lg:flex xl:gap-3">
         <NuxtLink
-          class="inline-flex h-10 items-center justify-center rounded-lg border border-brandOrange bg-brandOrange px-3 text-sm font-semibold text-white sm:px-4"
+          class="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-brandOrange bg-brandOrange px-3 text-xs font-semibold text-white xl:px-4 xl:text-sm"
           to="/inscription"
           >{{ t('header.register') }}</NuxtLink
         >
         <NuxtLink
-          class="inline-flex h-10 items-center justify-center rounded-lg border border-brandBlue bg-brandBlue px-3 text-sm font-semibold text-white sm:px-4"
+          class="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-brandBlue bg-brandBlue px-3 text-xs font-semibold text-white xl:px-4 xl:text-sm"
           to="/contact"
           >{{ t('header.contact') }}</NuxtLink
         >
         <NuxtLink
-          class="inline-flex h-10 items-center justify-center rounded-lg border border-brandBlue bg-white px-3 text-sm font-semibold text-brandBlue sm:px-4"
+          class="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-brandBlue bg-white px-3 text-xs font-semibold text-brandBlue xl:px-4 xl:text-sm"
           to="/parent"
           >{{ t('header.parentSpace') }}</NuxtLink
         >
@@ -84,33 +78,30 @@
       :id="mobileMenuId"
       class="border-t border-slate-200 bg-white lg:hidden"
     >
-      <nav class="mx-auto flex max-w-[1200px] flex-col gap-1 px-4 py-4" :aria-label="t('header.navAria')">
+      <nav class="mx-auto flex max-w-[1200px] flex-col gap-2 px-5 py-5" :aria-label="t('header.navAria')">
         <NuxtLink
-          class="rounded-lg px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50"
+          class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50"
           to="/"
           @click="closeMenu"
           >{{ t('header.home') }}</NuxtLink
         >
         <NuxtLink
-          class="rounded-lg px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50"
+          class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50"
           to="/#apropos"
           @click="closeMenu"
           >{{ t('header.about') }}</NuxtLink
         >
+        <NuxtLink class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50" to="/#classes" @click="closeMenu">{{ t('header.classes') }}</NuxtLink>
+        <NuxtLink class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50" to="/#values" @click="closeMenu">{{ t('header.values') }}</NuxtLink>
+        <NuxtLink class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50" to="/#ateliers" @click="closeMenu">{{ t('header.workshops') }}</NuxtLink>
         <NuxtLink
-          class="rounded-lg px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50"
-          to="/#values"
-          @click="closeMenu"
-          >{{ t('header.values') }}</NuxtLink
-        >
-        <NuxtLink
-          class="rounded-lg px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50"
+          class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50"
           to="/#partenariat"
           @click="closeMenu"
           >{{ t('header.partnership') }}</NuxtLink
         >
       </nav>
-      <div class="mx-auto flex max-w-[1200px] flex-col gap-2 border-t border-slate-100 px-4 pb-6 pt-4">
+      <div class="mx-auto flex max-w-[1200px] flex-col gap-3 border-t border-slate-100 px-5 pb-7 pt-5">
         <NuxtLink
           class="inline-flex h-11 items-center justify-center rounded-lg border border-brandOrange bg-brandOrange text-sm font-semibold text-white"
           to="/inscription"

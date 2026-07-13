@@ -61,26 +61,44 @@
 
   .reveal-init {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
     transition:
-      opacity 2.45s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 2.65s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
     backface-visibility: hidden;
+  }
+
+  .reveal-init.reveal-up {
+    transform: translate3d(0, 40px, 0);
+  }
+
+  .reveal-init.reveal-left {
+    transform: translate3d(-48px, 12px, 0);
+  }
+
+  .reveal-init.reveal-right {
+    transform: translate3d(48px, 12px, 0);
+  }
+
+  .reveal-init.reveal-scale {
+    transform: translate3d(0, 24px, 0) scale(0.9);
+  }
+
+  .reveal-init.reveal-smooth-up {
+    transform: translate3d(0, 48px, 0);
+    transition:
+      opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-init.reveal-rise {
+    transform: translate3d(0, 56px, 0) scale(0.96);
   }
 
   .reveal-in {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
     will-change: transform, opacity;
     backface-visibility: hidden;
-  }
-
-  /* Variante plus douce et marquée "bas -> haut" pour sections clés. */
-  .reveal-smooth-up.reveal-init {
-    transform: translate3d(0, 16px, 0);
-    transition:
-      opacity 3.1s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 3.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {

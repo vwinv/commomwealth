@@ -7,8 +7,11 @@
     "navAria": "Main navigation",
     "home": "Home",
     "about": "About",
+    "classes": "Classes",
     "values": "Our values",
-    "partnership": "Partnership",
+    "workshops": "Workshops",
+    "gallery": "Photo book",
+    "partnership": "Partnerships",
     "register": "Apply",
     "contact": "Contact us",
     "parentSpace": "Parent portal",
@@ -18,6 +21,7 @@
   "footer": {
     "social": "Social media",
     "navHome": "Home",
+    "navClasses": "Classes",
     "navAbout": "About",
     "navPartnerships": "Partnerships",
     "navContact": "Contact us"
@@ -27,32 +31,172 @@
       "title": "Commonwealth Preschool of Abidjan",
       "subtitle": "The Finnish School",
       "tagline": "Courage. Curiosity. Collaboration.",
-      "cta": "Enroll your child"
+      "cta": "Enroll your child",
+      "parentSpace": "Parent portal"
     },
-    "partnership": {
-      "title": "A shared vision",
-      "body": "Commonwealth Preschool of Abidjan combines excellence with the Finnish approach to early childhood education to build an innovative, forward-looking pedagogy.",
-      "cta": "Learn more",
-      "imgAlt": "Partnership"
+    "rentree": {
+      "title": "School year {year}",
+      "intro": "Get ready for your child's new school year. Choose the right age group and start enrollment online.",
+      "cardCta": "Enroll your child here →",
+      "levels": {
+        "enfants": {
+          "title": "Children from 18 months",
+          "body": "A gentle first awakening in a warm, secure setting.",
+          "price": "From 180,000 F/month",
+          "status": "Enrollment open",
+          "imageAlt": "Child at activity"
+        },
+        "petits": {
+          "title": "Little ones (2–3 years)",
+          "body": "Sensory awakening, motor skills and language through play.",
+          "price": "From 195,000 F/month",
+          "status": "Limited places",
+          "imageAlt": "Child at activity"
+        },
+        "moyens": {
+          "title": "Middle group (3–4 years)",
+          "body": "Autonomy, curiosity and group projects in bilingual immersion.",
+          "price": "From 210,000 F/month",
+          "status": "Enrollment open",
+          "imageAlt": "Child at activity"
+        },
+        "grands": {
+          "title": "Big group (4–5 years)",
+          "body": "Confident preparation for kindergarten with Finnish pedagogy.",
+          "price": "From 225,000 F/month",
+          "status": "Enrollment open",
+          "imageAlt": "Child at activity"
+        }
+      },
+      "features": {
+        "safe": { "title": "Safe environment", "subtitle": "Protected and caring setting" },
+        "meal": { "title": "Balanced meals", "subtitle": "Daily adapted nutrition" },
+        "quality": { "title": "Quality teaching", "subtitle": "Expert teaching team" }
+      }
     },
     "about": {
       "title": "About",
-      "p1": "Commonwealth Preschool of Abidjan is a bilingual preschool (English–French) welcoming children from 6 months to 6 years in an environment designed to reveal who they are—through play. Children are free to follow their curiosity, explore without judgment, and discover at their own pace.",
-      "p2": "Our pedagogy is rooted in the Finnish curriculum, recognized as one of the world's finest education systems. We believe every child has potential—just expressed differently. Our role is to find out how—and to build their path from there."
+      "p1": "Welcome to Commonwealth School, a place dedicated to the awakening, well-being and development of children from 6 months to 6 years old.",
+      "p2": "Our mission is to offer a warm, safe and stimulating environment where every child can grow, learn and thrive at their own pace. Through a caring pedagogical approach, we encourage curiosity, autonomy, creativity and self-confidence from the earliest years of life.",
+      "p3": "At Commonwealth School, we believe education is a partnership between school and family. That is why we place essential importance on supporting parents and maintaining close communication to foster each child's harmonious development.",
+      "p4": "Our qualified teams offer varied activities, awakening workshops, creative experiences and moments of discovery that allow each child to learn by exploring the world around them.",
+      "p5": "Together, let us make the first years of learning an adventure rich in discoveries, smiles and achievements.",
+      "imageAlt": "Children in class"
+    },
+    "classes": {
+      "title": "Classes",
+      "intro": "Discover our age groups and the support offered at each stage of your child's development.",
+      "body": "Logical-mathematical intelligence is the ability to reason, deduce and identify patterns. In toddlers, it shows through a need to understand the \"why\" of things, the pleasure of sorting, classifying and ordering, and a fascination with cause-and-effect relationships.",
+      "items": {
+        "graines": {
+          "title": "Les graines (6-18 months)",
+          "bullets": [
+            "Tries to repeat an action to observe the same result",
+            "Explores objects methodically (turns over, shakes, taps)",
+            "Observes for a long time before touching"
+          ]
+        },
+        "pousses": {
+          "title": "Les pousses (18M-3 years)",
+          "bullets": [
+            "Spontaneously sorts by color, shape and size",
+            "Asks \"Why?\" type questions repeatedly",
+            "Enjoys puzzles and nesting shapes",
+            "Quickly understands simple sequences"
+          ]
+        },
+        "branches": {
+          "title": "Les branches (3-4 years)",
+          "bullets": [
+            "Anticipates what will happen (\"if I do this, then…\")",
+            "Enjoys counting, measuring and comparing quantities",
+            "Notices patterns and anomalies",
+            "Is only satisfied when they understand the \"how\" and \"why\""
+          ]
+        },
+        "feuilles": {
+          "title": "Les feuilles (4-6 years)",
+          "bullets": [
+            "Solves problems through logical steps",
+            "Creates their own rules in games",
+            "Fascinated by simple science experiments",
+            "Enjoys categorizing and creating classification systems",
+            "Understands more/less, big/small, before/after"
+          ]
+        }
+      }
+    },
+    "vision": {
+      "title": "A shared vision",
+      "body": "Commonwealth Preschool of Abidjan combines excellence with the Finnish approach to early childhood education to build an innovative, forward-looking pedagogy.",
+      "cta": "Apply",
+      "imgAlt": "Commonwealth emblem"
+    },
+    "approach": {
+      "title": "Our approach",
+      "p1": "At Commonwealth School, we believe every child is unique and deserves an environment where they can grow with confidence, learn with joy and fully develop their potential.",
+      "p2": "Our educational approach is built on learning through exploration, play and everyday experiences. We encourage curiosity, autonomy, creativity and self-confidence through activities tailored to each stage of a child's development.",
+      "p3": "We also foster a trusting relationship with families, convinced that collaboration between parents and the teaching team is essential to every child's wellbeing.",
+      "p4": "In a safe, caring and stimulating setting, we guide children from 6 months to 6 years through their first discoveries and prepare them calmly for tomorrow's learning.",
+      "imageAlt": "Our educational approach"
     },
     "values": {
       "title": "Our values",
-      "revealTitle": "Reveal",
-      "revealBody": "Every child arrives with their strengths. Not always visible. Not always named. Our work is to reveal them with kindness— and build their path from there.",
-      "resilienceTitle": "Resilience",
-      "resilienceBody": "Get back up, try again, and understand that mistakes are part of the journey.",
+      "intro": "Three pillars guide our daily work with children and families.",
+      "shareTitle": "Sharing",
+      "shareBody": "Learning to give, receive and build together with respect for everyone.",
       "curiosityTitle": "Curiosity",
-      "curiosityBody": "Question, explore, and learn without limits.",
+      "curiosityBody": "Question, explore and learn without limits—in joy and wonder.",
       "collabTitle": "Collaboration",
-      "collabBody": "Learn together, respect differences, and build a community."
+      "collabBody": "Growing together, respecting differences and building a supportive community."
+    },
+    "workshops": {
+      "title": "Discovery Workshops",
+      "p1": "Through fun, creative, sensory and educational activities, each workshop sparks curiosity, develops the child's abilities and strengthens the parent-child bond in a caring, secure environment.",
+      "p2": "Come explore, learn, create and grow together at your child's pace.",
+      "cta": "Register",
+      "items": {
+        "paint": {
+          "title": "Family Painting Workshop",
+          "description": "A perfect morning of painting for you and your children.",
+          "date": "07 July 2026",
+          "time": "From 09:00 to 12:00",
+          "age": "Ages 2 to 6",
+          "price": "Free"
+        },
+        "bike": {
+          "title": "Bike Learning Workshop",
+          "description": "A perfect morning of painting for you and your children.",
+          "date": "07 July 2026",
+          "time": "From 09:00 to 12:00",
+          "age": "Ages 2 to 6",
+          "price": "10,000 FCFA"
+        },
+        "hair": {
+          "title": "Hairdressing Workshop for Dads",
+          "description": "A perfect morning of painting for you and your children.",
+          "date": "07 July 2026",
+          "time": "From 09:00 to 12:00",
+          "age": "Ages 2 to 6",
+          "price": "20,000 FCFA"
+        }
+      }
     },
     "gallery": {
-      "title": "Photo gallery"
+      "title": "Photo book",
+      "cta": "More photos"
+    },
+    "partners": {
+      "title": "Partnerships",
+      "local": "Commonwealth"
+    },
+    "suggestions": {
+      "title": "All your suggestions here",
+      "body": "An idea, a question or feedback? Write us your message and we'll get back to you quickly.",
+      "placeholder": "Enter your message",
+      "cta": "Send",
+      "success": "Thank you! Your message has been received.",
+      "imageAlt": "Child in creative activity"
     }
   },
   "parentOnboarding": {

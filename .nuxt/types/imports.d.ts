@@ -170,6 +170,7 @@ declare global {
   const useNuxtApp: typeof import('../../node_modules/nuxt/dist/app/nuxt').useNuxtApp
   const useNuxtData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData').useNuxtData
   const useNuxtDevTools: typeof import('../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools').useNuxtDevTools
+  const usePageLoadMotion: typeof import('../../composables/usePageLoadMotion').usePageLoadMotion
   const useParentAuth: typeof import('../../composables/useParentAuth').useParentAuth
   const useParentDocumentUrl: typeof import('../../composables/useParentDocumentUrl').useParentDocumentUrl
   const useParentOnboarding: typeof import('../../composables/useParentOnboarding').useParentOnboarding
@@ -450,6 +451,7 @@ declare module 'vue' {
     readonly useNuxtApp: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['useNuxtApp']>
     readonly useNuxtData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useNuxtData']>
     readonly useNuxtDevTools: UnwrapRef<typeof import('../../node_modules/nuxt/node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools')['useNuxtDevTools']>
+    readonly usePageLoadMotion: UnwrapRef<typeof import('../../composables/usePageLoadMotion')['usePageLoadMotion']>
     readonly useParentAuth: UnwrapRef<typeof import('../../composables/useParentAuth')['useParentAuth']>
     readonly useParentDocumentUrl: UnwrapRef<typeof import('../../composables/useParentDocumentUrl')['useParentDocumentUrl']>
     readonly useParentOnboarding: UnwrapRef<typeof import('../../composables/useParentOnboarding')['useParentOnboarding']>
