@@ -46,9 +46,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // API Nest (voir backend `PORT`, défaut 3001 — Nuxt utilise souvent 3000)
-      apiBase: 'http://localhost:3001/api',
+      //apiBase: 'http://localhost:3001/api',
       /** Doit inclure `/api` (préfixe global Nest dans `backend-commonwealth/src/main.ts`). */
-      //apiBase: 'https://backend-commonwealth-mjoj.onrender.com/api',
+      apiBase: 'https://backend-commonwealth-mjoj.onrender.com/api',
       //apiBase: 'http://localhost:3001/api',
       /** true = afficher le mot de passe temporaire après création (aligné sur SHOW_TEMP_PASSWORD_ON_USER_CREATE côté API). */
       showTempPasswordOnUserCreate:
