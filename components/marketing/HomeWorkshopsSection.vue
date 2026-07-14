@@ -9,7 +9,18 @@
         </div>
       </RevealSection>
 
-      <div class="relative mt-10">
+      <div v-if="pending" class="mt-10 text-center text-sm text-slate-500">
+        {{ t('home.workshops.loading') }}
+      </div>
+
+      <div
+        v-else-if="!workshops.length"
+        class="mt-10 rounded-2xl border border-dashed border-slate-300 bg-white/70 px-6 py-14 text-center text-sm font-medium text-slate-500"
+      >
+        {{ t('home.workshops.empty') }}
+      </div>
+
+      <div v-else class="relative mt-10">
         <button
           type="button"
           class="absolute -left-1 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center text-brandBlue sm:flex"
@@ -33,7 +44,7 @@
               <h3 class="text-[15px] font-bold leading-snug text-slate-900">{{ w.title }}</h3>
 
               <div class="motion-img-wrap mt-3 overflow-hidden rounded-xl">
-                <img class="h-[150px] w-full object-cover" :src="w.image" :alt="w.title" />
+                <img class="h-[150px] w-full object-cover" :src="mediaUrl(w.image)" :alt="w.title" />
               </div>
 
               <p class="mt-3 text-xs leading-5 text-slate-500">{{ w.description }}</p>
@@ -94,48 +105,36 @@
 </template>
 
 <script setup lang="ts">
-import photo1 from '~/assets/images/photo1.png';
-import photo2 from '~/assets/images/photo2.png';
-import photo3 from '~/assets/images/photo3.png';
+type PublicWorkshop = {
+  id: string
+  title: string
+  description: string
+  image: string
+  date: string
+  time: string
+  age: string
+  price: string
+}
 
-const { t } = useI18n();
-const track = ref<HTMLElement | null>(null);
+const { t } = useI18n()
+const config = useRuntimeConfig()
+const track = ref<HTMLElement | null>(null)
 
-const workshops = computed(() => [
-  {
-    id: 'paint',
-    title: t('home.workshops.items.paint.title'),
-    description: t('home.workshops.items.paint.description'),
-    date: t('home.workshops.items.paint.date'),
-    time: t('home.workshops.items.paint.time'),
-    age: t('home.workshops.items.paint.age'),
-    price: t('home.workshops.items.paint.price'),
-    image: photo1,
-  },
-  {
-    id: 'bike',
-    title: t('home.workshops.items.bike.title'),
-    description: t('home.workshops.items.bike.description'),
-    date: t('home.workshops.items.bike.date'),
-    time: t('home.workshops.items.bike.time'),
-    age: t('home.workshops.items.bike.age'),
-    price: t('home.workshops.items.bike.price'),
-    image: photo2,
-  },
-  {
-    id: 'hair',
-    title: t('home.workshops.items.hair.title'),
-    description: t('home.workshops.items.hair.description'),
-    date: t('home.workshops.items.hair.date'),
-    time: t('home.workshops.items.hair.time'),
-    age: t('home.workshops.items.hair.age'),
-    price: t('home.workshops.items.hair.price'),
-    image: photo3,
-  },
-]);
+const { data, pending } = await useAsyncData('public-ateliers', () =>
+  $fetch<{ items: PublicWorkshop[] }>(`${config.public.apiBase}/public/ateliers`),
+)
+
+const workshops = computed(() => data.value?.items ?? [])
+
+function mediaUrl(url: string) {
+  if (!url) return ''
+  if (/^https?:\/\//i.test(url) || url.startsWith('data:')) return url
+  const base = String(config.public.apiBase ?? '').replace(/\/api\/?$/, '')
+  return `${base}${url.startsWith('/') ? '' : '/'}${url}`
+}
 
 function scroll(dir: number) {
-  track.value?.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  track.value?.scrollBy({ left: dir * 320, behavior: 'smooth' })
 }
 </script>
 

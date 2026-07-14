@@ -85,7 +85,7 @@
     },
     "classes": {
       "title": "Classes",
-      "intro": "Discover our age groups and the support offered at each stage of your child's development.",
+      "intro": "Logical-mathematical intelligence is the ability to reason, deduce and identify patterns. In toddlers, it shows through a need to understand the \"why\" of things, the pleasure of sorting, classifying and ordering, and a fascination with cause-and-effect relationships.",
       "body": "Logical-mathematical intelligence is the ability to reason, deduce and identify patterns. In toddlers, it shows through a need to understand the \"why\" of things, the pleasure of sorting, classifying and ordering, and a fascination with cause-and-effect relationships.",
       "items": {
         "graines": {
@@ -142,7 +142,7 @@
     },
     "values": {
       "title": "Our values",
-      "intro": "Three pillars guide our daily work with children and families.",
+      "intro": "Commonwealth School draws on both international excellence and African cultural heritage. Its identity combines the fern's message of resilience with a modern vision of integral, human education. It celebrates diversity, the strength of the collective and the power of learning together, forming grounded, confident and caring citizens.",
       "shareTitle": "Sharing",
       "shareBody": "Learning to give, receive and build together with respect for everyone.",
       "curiosityTitle": "Curiosity",
@@ -155,6 +155,8 @@
       "p1": "Through fun, creative, sensory and educational activities, each workshop sparks curiosity, develops the child's abilities and strengthens the parent-child bond in a caring, secure environment.",
       "p2": "Come explore, learn, create and grow together at your child's pace.",
       "cta": "Register",
+      "loading": "Loading workshops…",
+      "empty": "No workshops scheduled",
       "items": {
         "paint": {
           "title": "Family Painting Workshop",

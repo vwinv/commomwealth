@@ -85,7 +85,7 @@
     },
     "classes": {
       "title": "Les classes",
-      "intro": "Découvrez nos groupes d'âge et l'accompagnement proposé à chaque étape du développement de votre enfant.",
+      "intro": "L'intelligence logico-mathématique est la capacité à raisonner, à déduire, à identifier des patterns. Chez les tout-petits, elle se manifeste par un besoin de comprendre le « pourquoi » des choses, par le plaisir de trier, de classer, d'ordonner, et par une fascination pour les relations de cause à effet.",
       "body": "L'intelligence logico-mathématique est la capacité à raisonner, à déduire, à identifier des patterns. Chez les tout-petits, elle se manifeste par un besoin de comprendre le « pourquoi » des choses, par le plaisir de trier, de classer, d'ordonner, et par une fascination pour les relations de cause à effet.",
       "items": {
         "graines": {
@@ -142,7 +142,7 @@
     },
     "values": {
       "title": "Nos valeurs",
-      "intro": "Trois piliers guident notre action au quotidien auprès des enfants et des familles.",
+      "intro": "Commonwealth School s’inspire à la fois de l’excellence internationale et de l’héritage culturel africain. Son identité conjugue le message de résilience de la fougère avec une vision moderne d’une éducation intégrale et humaine. Elle célèbre la diversité, la force du collectif et le pouvoir d’apprendre ensemble, formant des citoyens ancrés, confiants et bienveillants.",
       "shareTitle": "Partage",
       "shareBody": "Apprendre à donner, recevoir et construire ensemble dans le respect de chacun.",
       "curiosityTitle": "Curiosité",
@@ -155,6 +155,8 @@
       "p1": "À travers des activités ludiques, créatives, sensorielles et éducatives, chaque atelier stimule la curiosité, développe les capacités de l'enfant et renforce le lien parent-enfant dans un environnement bienveillant et sécurisé.",
       "p2": "Venez explorer, apprendre, créer et grandir ensemble au rythme de votre enfant.",
       "cta": "Inscription",
+      "loading": "Chargement des ateliers…",
+      "empty": "Aucun atelier prévu",
       "items": {
         "paint": {
           "title": "Atelier Peinture en Famille",

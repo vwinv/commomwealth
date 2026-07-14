@@ -5,7 +5,7 @@
     <div class="relative mx-auto max-w-[1200px] px-6">
       <RevealSection variant="blur">
         <MarketingSectionTitle :title="t('home.classes.title')" />
-        <p class="mt-4 max-w-[640px] text-sm leading-6 text-slate-600">{{ t('home.classes.intro') }}</p>
+        <p class="mt-4 max-w-[720px] text-sm leading-7 text-slate-600">{{ t('home.classes.intro') }}</p>
       </RevealSection>
 
       <div class="mt-10 space-y-3">

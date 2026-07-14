@@ -30,8 +30,8 @@ const props = withDefaults(
   {
     delay: 0,
     extraClass: '',
-    threshold: 0.12,
-    variant: 'rise',
+    threshold: 0.15,
+    variant: 'smooth-up',
     immediate: false,
     stagger: false,
   },
@@ -55,7 +55,6 @@ function runImmediate() {
     show();
     return;
   }
-
   const baseDelay = props.immediate ? 480 : 0;
   window.setTimeout(show, baseDelay + props.delay);
 }
@@ -90,7 +89,7 @@ onMounted(() => {
     },
     {
       threshold: props.threshold,
-      rootMargin: '0px 0px -8% 0px',
+      rootMargin: '0px 0px -10% 0px',
     },
   );
 

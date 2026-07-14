@@ -3,7 +3,7 @@
     <div class="mx-auto max-w-[1200px] px-6">
       <RevealSection variant="blur">
         <MarketingSectionTitle :title="t('home.values.title')" />
-        <p class="mt-4 max-w-[560px] text-sm text-slate-600">{{ t('home.values.intro') }}</p>
+        <p class="mt-4 max-w-[720px] text-sm leading-7 text-slate-600">{{ t('home.values.intro') }}</p>
       </RevealSection>
 
       <div class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">

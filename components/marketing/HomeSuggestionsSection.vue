@@ -1,16 +1,16 @@
 <template>
   <section id="suggestions" class="w-full bg-white">
     <div class="mx-auto grid max-w-[1200px] grid-cols-1 items-center lg:grid-cols-2">
-      <RevealSection extra-class="motion-img-wrap h-[160px] overflow-hidden lg:h-[200px]" variant="left">
+      <RevealSection extra-class="motion-img-wrap h-[220px] overflow-hidden lg:h-[280px]" variant="left">
         <img
           class="h-full w-full object-cover"
-          :src="contactImg"
+          :src="suggestionImg"
           :alt="t('home.suggestions.imageAlt')"
         />
       </RevealSection>
 
       <RevealSection
-        extra-class="flex flex-col justify-center px-6 py-5 sm:px-8 lg:px-10 lg:py-4"
+        extra-class="flex flex-col justify-center px-6 py-8 sm:px-8 lg:px-10 lg:py-10"
         variant="rise"
         :delay="120"
       >
@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import contactImg from '~/assets/images/contact.png';
+import suggestionImg from '~/assets/images/suggestion.png';
 
 const { t } = useI18n();
 const message = ref('');
