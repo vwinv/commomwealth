@@ -11,16 +11,39 @@
           Année scolaire {{ schoolYearLabel }}
         </p>
       </div>
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-xl bg-[#216EC2] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-105"
-        @click="openFormModal()"
-      >
-        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
-        </svg>
-        Ajouter un programme
-      </button>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl bg-[#216EC2] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-105 disabled:opacity-50"
+          :disabled="pending || !overview"
+          @click="exportProgrammeIcs"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Exporter
+        </button>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl border-2 border-[#216EC2] bg-white px-4 py-2.5 text-sm font-bold text-[#216EC2] transition hover:bg-[#216EC2]/5"
+          @click="openCategoriesModal"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          Catégories
+        </button>
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-xl bg-[#216EC2] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-105"
+          @click="openFormModal()"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+          </svg>
+          Ajouter un programme
+        </button>
+      </div>
     </div>
 
     <p v-if="loadError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ loadError }}</p>
@@ -95,16 +118,16 @@
             :key="event.id"
             class="flex w-full overflow-hidden rounded-2xl border bg-white shadow-sm"
             :style="{
-              borderColor: `${categoryTheme(event.category).iconColor}40`,
-              boxShadow: `0 1px 3px ${categoryTheme(event.category).iconColor}14`,
+              borderColor: `${eventTheme(event).iconColor}40`,
+              boxShadow: `0 1px 3px ${eventTheme(event).iconColor}14`,
             }"
           >
             <div
               class="flex w-16 shrink-0 flex-col items-center justify-center border-r py-4 text-center"
               :style="{
-                backgroundColor: categoryTheme(event.category).iconBg,
-                color: categoryTheme(event.category).iconColor,
-                borderColor: `${categoryTheme(event.category).iconColor}30`,
+                backgroundColor: eventTheme(event).iconBg,
+                color: eventTheme(event).iconColor,
+                borderColor: `${eventTheme(event).iconColor}30`,
               }"
             >
               <span class="text-2xl font-bold leading-none">{{ event.dayNum }}</span>
@@ -116,15 +139,15 @@
                 <span
                   class="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-xs font-bold"
                   :style="{
-                    backgroundColor: categoryTheme(event.category).iconBg,
-                    color: categoryTheme(event.category).iconColor,
+                    backgroundColor: eventTheme(event).iconBg,
+                    color: eventTheme(event).iconColor,
                   }"
                 >
                   <span
                     class="inline-flex h-4 w-4 shrink-0 items-center justify-center"
-                    :style="{ color: categoryTheme(event.category).iconColor }"
+                    :style="{ color: eventTheme(event).iconColor }"
                     aria-hidden="true"
-                    v-html="categoryTheme(event.category).icon"
+                    v-html="GENERIC_CAT_ICON"
                   />
                   {{ event.categoryLabel }}
                 </span>
@@ -264,26 +287,32 @@
               <span class="mb-2 block text-xs font-bold uppercase tracking-wide text-slate-500">Catégorie</span>
               <div class="grid grid-cols-2 gap-3">
                 <button
-                  v-for="cat in categoryOptions"
-                  :key="cat.value"
+                  v-for="cat in activeCategoryOptions"
+                  :key="cat.id"
                   type="button"
                   class="flex items-center gap-2.5 rounded-xl border-2 px-4 py-3 text-left text-sm font-semibold transition"
                   :class="
-                    form.category === cat.value
+                    form.categoryId === cat.id
                       ? 'border-[#216EC2] bg-[#216EC2]/5 text-[#216EC2]'
                       : 'border-slate-200 text-slate-700 hover:border-slate-300'
                   "
-                  @click="form.category = cat.value"
+                  @click="form.categoryId = cat.id"
                 >
                   <span
                     class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                    :style="{ backgroundColor: cat.iconBg, color: cat.iconColor }"
+                    :style="{ backgroundColor: cat.bgColor, color: cat.color }"
                     aria-hidden="true"
-                    v-html="cat.icon"
+                    v-html="GENERIC_CAT_ICON"
                   />
-                  {{ cat.label }}
+                  {{ cat.name }}
                 </button>
               </div>
+              <p v-if="!activeCategoryOptions.length" class="mt-2 text-sm text-slate-500">
+                Aucune catégorie active.
+                <button type="button" class="font-semibold text-[#216EC2] underline" @click="openCategoriesModal">
+                  En créer une
+                </button>
+              </p>
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2">
@@ -412,17 +441,114 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Gestion des catégories -->
+    <Teleport to="body">
+      <div
+        v-if="categoriesOpen"
+        class="fixed inset-0 z-[200] flex items-center justify-center bg-[#216EC2]/20 p-4 backdrop-blur-sm"
+        role="dialog"
+        aria-modal="true"
+        @click.self="categoriesOpen = false"
+      >
+        <div class="w-full max-w-lg rounded-2xl border border-[#BFD6F0] bg-white p-5 shadow-xl sm:p-6">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-bold text-[#216EC2]">Catégories du programme</h2>
+              <p class="mt-1 text-sm text-slate-500">Ajoutez Sport, Culture, etc. selon vos besoins.</p>
+            </div>
+            <button
+              type="button"
+              class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              aria-label="Fermer"
+              @click="categoriesOpen = false"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <p v-if="categoriesError" class="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {{ categoriesError }}
+          </p>
+
+          <form class="mt-4 flex gap-2" @submit.prevent="createCategory">
+            <input
+              v-model.trim="newCategoryName"
+              type="text"
+              required
+              placeholder="Ex. Sport, Culture…"
+              class="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
+            />
+            <button
+              type="submit"
+              class="shrink-0 rounded-xl bg-[#216EC2] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50"
+              :disabled="categoriesBusy || !newCategoryName"
+            >
+              Ajouter
+            </button>
+          </form>
+
+          <ul class="mt-4 max-h-[50vh] space-y-2 overflow-y-auto">
+            <li
+              v-for="cat in allCategories"
+              :key="cat.id"
+              class="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5"
+            >
+              <span
+                class="h-3.5 w-3.5 shrink-0 rounded-full"
+                :style="{ backgroundColor: cat.color }"
+                aria-hidden="true"
+              />
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-slate-800">{{ cat.name }}</p>
+                <p class="text-[11px] text-slate-400">{{ cat.active ? 'Active' : 'Désactivée' }}</p>
+              </div>
+              <button
+                type="button"
+                class="rounded-lg px-2.5 py-1.5 text-xs font-bold text-[#216EC2] transition hover:bg-[#216EC2]/10 disabled:opacity-50"
+                :disabled="categoriesBusy"
+                @click="toggleCategoryActive(cat)"
+              >
+                {{ cat.active ? 'Désactiver' : 'Activer' }}
+              </button>
+              <button
+                type="button"
+                class="rounded-lg px-2.5 py-1.5 text-xs font-bold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+                :disabled="categoriesBusy"
+                @click="deleteCategory(cat)"
+              >
+                Supprimer
+              </button>
+            </li>
+            <li v-if="!allCategories.length" class="py-6 text-center text-sm text-slate-500">Aucune catégorie.</li>
+          </ul>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
+import { downloadProgrammeIcs } from '~/utils/programmeCalendarIcs'
+
 definePageMeta({
   layout: 'admin',
   middleware: ['admin'],
 })
 
 type ProgramStatus = 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED'
-type ProgramCategory = 'SORTIE_SCOLAIRE' | 'PARENTS' | 'PROFESSEURS' | 'SKILLS_EVEIL'
+
+type ProgrammeCategory = {
+  id: string
+  name: string
+  slug: string
+  color: string
+  bgColor: string
+  sortOrder: number
+  active: boolean
+}
 
 type ProgramEvent = {
   id: string
@@ -436,8 +562,11 @@ type ProgramEvent = {
   monthKey: string
   location: string
   assignedStaff: string
-  category: ProgramCategory
+  categoryId: string
+  category: string
   categoryLabel: string
+  categoryColor: string
+  categoryBgColor: string
   status: ProgramStatus
   statusLabel: string
   levelLabels: string[]
@@ -447,6 +576,7 @@ type ProgramEvent = {
 type OverviewDto = {
   schoolYear: string
   staffOptions: Array<{ id: string; label: string }>
+  categories: ProgrammeCategory[]
   stats: { total: number; upcoming: number; inProgress: number; completed: number }
   groups: Array<{ monthLabel: string; events: ProgramEvent[] }>
   items: ProgramEvent[]
@@ -454,54 +584,14 @@ type OverviewDto = {
 
 type CatalogLevel = { id: string; name: string }
 
-type CategoryTheme = {
-  label: string
-  iconBg: string
-  iconColor: string
-  badgeClass: string
-  icon: string
-}
+const GENERIC_CAT_ICON =
+  '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'
 
-const CATEGORY_THEMES: Record<ProgramCategory, CategoryTheme> = {
-  SORTIE_SCOLAIRE: {
-    label: 'Sortie scolaire',
-    iconBg: '#E8F5E9',
-    iconColor: '#43A047',
-    badgeClass: 'bg-[#E8F5E9] text-[#2E7D32]',
-    icon: `<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 10h16v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6z"/><path d="M8 18v2M16 18v2"/><circle cx="8" cy="18" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="18" r="1" fill="currentColor" stroke="none"/></svg>`,
-  },
-  PARENTS: {
-    label: 'Parents',
-    iconBg: '#FFF3E0',
-    iconColor: '#F9994B',
-    badgeClass: 'bg-[#FFF3E0] text-[#F9994B]',
-    icon: `<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-  },
-  PROFESSEURS: {
-    label: 'Professeurs',
-    iconBg: '#EDE7F6',
-    iconColor: '#7E57C2',
-    badgeClass: 'bg-[#EDE7F6] text-[#7E57C2]',
-    icon: `<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
-  },
-  SKILLS_EVEIL: {
-    label: 'Skills & éveil',
-    iconBg: '#F3E5F5',
-    iconColor: '#AB47BC',
-    badgeClass: 'bg-[#F3E5F5] text-[#8E24AA]',
-    icon: `<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z"/></svg>`,
-  },
-}
-
-const CATEGORY_ORDER: ProgramCategory[] = ['SORTIE_SCOLAIRE', 'PARENTS', 'PROFESSEURS', 'SKILLS_EVEIL']
-
-const categoryOptions = CATEGORY_ORDER.map((value) => ({
-  value,
-  ...CATEGORY_THEMES[value],
-}))
-
-function categoryTheme(category: ProgramCategory) {
-  return CATEGORY_THEMES[category]
+function eventTheme(event: ProgramEvent) {
+  return {
+    iconBg: event.categoryBgColor || '#E8F1FB',
+    iconColor: event.categoryColor || '#216EC2',
+  }
 }
 
 const statusOptions = [
@@ -527,7 +617,7 @@ const overview = ref<OverviewDto | null>(null)
 const loadError = ref<string | null>(null)
 const pending = ref(true)
 const actionId = ref<string | null>(null)
-const activeCategory = ref<'ALL' | ProgramCategory>('ALL')
+const activeCategory = ref<'ALL' | string>('ALL')
 const intFr = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 })
 
 const formOpen = ref(false)
@@ -538,6 +628,11 @@ const catalogLevels = ref<CatalogLevel[]>([])
 const catalogPending = ref(false)
 const staffOptions = ref<OverviewDto['staffOptions']>([])
 
+const categoriesOpen = ref(false)
+const categoriesError = ref<string | null>(null)
+const categoriesBusy = ref(false)
+const newCategoryName = ref('')
+
 const form = reactive({
   title: '',
   description: '',
@@ -545,15 +640,18 @@ const form = reactive({
   endDate: '',
   location: '',
   assignedStaff: '',
-  category: 'SORTIE_SCOLAIRE' as ProgramCategory,
+  categoryId: '',
   status: 'PLANNED' as ProgramStatus,
   levelIds: [] as string[],
 })
 
-const filterChips = [
+const allCategories = computed(() => overview.value?.categories ?? [])
+const activeCategoryOptions = computed(() => allCategories.value.filter((c) => c.active))
+
+const filterChips = computed(() => [
   { value: 'ALL' as const, label: 'Tous' },
-  ...CATEGORY_ORDER.map((value) => ({ value, label: CATEGORY_THEMES[value].label })),
-]
+  ...activeCategoryOptions.value.map((c) => ({ value: c.id, label: c.name })),
+])
 
 const schoolYearLabel = computed(() => overview.value?.schoolYear ?? '—')
 
@@ -596,7 +694,7 @@ const filteredGroups = computed(() => {
   return (overview.value?.groups ?? [])
     .map((g) => ({
       ...g,
-      events: g.events.filter((e) => e.category === activeCategory.value),
+      events: g.events.filter((e) => e.categoryId === activeCategory.value),
     }))
     .filter((g) => g.events.length > 0)
 })
@@ -639,6 +737,10 @@ async function loadCatalogLevels() {
   }
 }
 
+function defaultCategoryId() {
+  return activeCategoryOptions.value[0]?.id ?? ''
+}
+
 function resetForm() {
   form.title = ''
   form.description = ''
@@ -646,7 +748,7 @@ function resetForm() {
   form.endDate = ''
   form.location = ''
   form.assignedStaff = ''
-  form.category = 'SORTIE_SCOLAIRE'
+  form.categoryId = defaultCategoryId()
   form.status = 'PLANNED'
   form.levelIds = []
   editingId.value = null
@@ -663,7 +765,7 @@ function openFormModal(event?: ProgramEvent) {
     form.endDate = event.endDate ? isoDateInput(event.endDate) : ''
     form.location = event.location
     form.assignedStaff = event.assignedStaff
-    form.category = event.category
+    form.categoryId = event.categoryId
     form.status = event.status
     form.levelIds = [...event.levelIds]
   }
@@ -671,10 +773,112 @@ function openFormModal(event?: ProgramEvent) {
   void loadCatalogLevels()
 }
 
+function openCategoriesModal() {
+  categoriesError.value = null
+  newCategoryName.value = ''
+  categoriesOpen.value = true
+}
+
+function exportProgrammeIcs() {
+  try {
+    const items = overview.value?.items ?? []
+    if (!items.length) {
+      loadError.value = 'Aucun programme à exporter.'
+      return
+    }
+    loadError.value = null
+    downloadProgrammeIcs({
+      schoolYear: overview.value?.schoolYear ?? schoolYearLabel.value,
+      events: items.map((e) => ({
+        id: e.id,
+        title: e.title,
+        description: e.description,
+        eventDate: e.eventDate,
+        endDate: e.endDate,
+        location: e.location,
+        categoryLabel: e.categoryLabel,
+        statusLabel: e.statusLabel,
+        levelLabels: e.levelLabels,
+      })),
+    })
+  } catch (e: unknown) {
+    loadError.value = e instanceof Error ? e.message : "Impossible de télécharger le fichier ICS."
+  }
+}
+
+function apiMsg(e: unknown, fallback: string) {
+  const err = e as { data?: { message?: string | string[] } }
+  const raw = err?.data?.message
+  return typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0] : fallback
+}
+
+async function createCategory() {
+  const t = token.value
+  if (!t || !newCategoryName.value.trim()) return
+  categoriesBusy.value = true
+  categoriesError.value = null
+  try {
+    await $fetch(`${config.public.apiBase}/admin/programme/categories`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${t}` },
+      body: { name: newCategoryName.value.trim() },
+    })
+    newCategoryName.value = ''
+    await loadOverview()
+  } catch (e: unknown) {
+    categoriesError.value = apiMsg(e, "Impossible d'ajouter la catégorie.")
+  } finally {
+    categoriesBusy.value = false
+  }
+}
+
+async function toggleCategoryActive(cat: ProgrammeCategory) {
+  const t = token.value
+  if (!t) return
+  categoriesBusy.value = true
+  categoriesError.value = null
+  try {
+    await $fetch(`${config.public.apiBase}/admin/programme/categories/${cat.id}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${t}` },
+      body: { active: !cat.active },
+    })
+    await loadOverview()
+  } catch (e: unknown) {
+    categoriesError.value = apiMsg(e, 'Impossible de mettre à jour la catégorie.')
+  } finally {
+    categoriesBusy.value = false
+  }
+}
+
+async function deleteCategory(cat: ProgrammeCategory) {
+  if (!confirm(`Supprimer la catégorie « ${cat.name} » ?`)) return
+  const t = token.value
+  if (!t) return
+  categoriesBusy.value = true
+  categoriesError.value = null
+  try {
+    await $fetch(`${config.public.apiBase}/admin/programme/categories/${cat.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${t}` },
+    })
+    if (activeCategory.value === cat.id) activeCategory.value = 'ALL'
+    await loadOverview()
+  } catch (e: unknown) {
+    categoriesError.value = apiMsg(e, 'Impossible de supprimer la catégorie.')
+  } finally {
+    categoriesBusy.value = false
+  }
+}
+
 async function submitForm() {
   formError.value = null
   const t = token.value
   if (!t) return
+  if (!form.categoryId) {
+    formError.value = 'Choisissez une catégorie.'
+    return
+  }
   formSubmitting.value = true
   try {
     const body = {
@@ -684,7 +888,7 @@ async function submitForm() {
       endDate: form.endDate || null,
       location: form.location,
       assignedStaff: form.assignedStaff,
-      category: form.category,
+      categoryId: form.categoryId,
       status: form.status,
       levelIds: form.levelIds,
     }
@@ -704,10 +908,7 @@ async function submitForm() {
     formOpen.value = false
     await loadOverview()
   } catch (e: unknown) {
-    const err = e as { data?: { message?: string | string[] } }
-    const raw = err?.data?.message
-    formError.value =
-      typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0] : 'Impossible d’enregistrer le programme.'
+    formError.value = apiMsg(e, 'Impossible d’enregistrer le programme.')
   } finally {
     formSubmitting.value = false
   }
@@ -747,10 +948,7 @@ async function loadOverview() {
     overview.value = data
     staffOptions.value = data.staffOptions ?? []
   } catch (e: unknown) {
-    const err = e as { data?: { message?: string | string[] } }
-    const raw = err?.data?.message
-    loadError.value =
-      typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0] : 'Impossible de charger le programme.'
+    loadError.value = apiMsg(e, 'Impossible de charger le programme.')
     overview.value = null
   } finally {
     pending.value = false

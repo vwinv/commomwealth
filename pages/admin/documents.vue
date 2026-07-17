@@ -85,27 +85,47 @@
               <th class="px-4 py-3 font-semibold">Date</th>
               <th class="px-4 py-3 font-semibold">Titre</th>
               <th class="px-4 py-3 font-semibold">Type</th>
-              <th class="px-4 py-3 font-semibold">Classe</th>
+              <th class="px-4 py-3 font-semibold">Destinataires</th>
+              <th class="px-4 py-3 font-semibold">Signature</th>
               <th class="px-4 py-3 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 bg-white">
             <template v-if="pending">
               <tr v-for="n in 7" :key="'s-' + n">
-                <td v-for="c in 5" :key="c" class="px-4 py-3">
+                <td v-for="c in 6" :key="c" class="px-4 py-3">
                   <span class="inline-block h-4 w-full max-w-[7rem] animate-pulse rounded bg-slate-200" />
                 </td>
               </tr>
             </template>
             <tr v-else-if="!rows.length">
-              <td colspan="5" class="px-4 py-12 text-center text-slate-500">Aucun document.</td>
+              <td colspan="6" class="px-4 py-12 text-center text-slate-500">Aucun document.</td>
             </tr>
             <tr v-for="row in rows" v-else :key="row.id" class="text-slate-700">
               <td class="whitespace-nowrap px-4 py-3">{{ row.dateLabel }}</td>
               <td class="px-4 py-3 font-semibold">{{ row.title }}</td>
               <td class="px-4 py-3">{{ row.kindLabel }}</td>
-              <td class="max-w-[220px] px-4 py-3 text-slate-600">
-                {{ row.levelLabels.length ? row.levelLabels.join(', ') : 'Tous les niveaux' }}
+              <td class="max-w-[260px] px-4 py-3 text-slate-600">
+                <span class="line-clamp-2" :title="row.audienceLabels.join(' · ')">
+                  {{ row.audienceLabels.length ? row.audienceLabels.join(' · ') : 'Tous les niveaux' }}
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <template v-if="row.requiresParentSignature">
+                  <button
+                    type="button"
+                    class="inline-flex flex-col items-start gap-0.5 rounded-lg border border-[#216EC2]/30 bg-[#216EC2]/5 px-2.5 py-1.5 text-left transition hover:bg-[#216EC2]/10"
+                    :disabled="!row.published"
+                    @click="openSignaturesModal(row)"
+                  >
+                    <span class="text-xs font-bold text-[#216EC2]">Requise</span>
+                    <span class="text-[11px] font-medium text-slate-600">
+                      {{ row.signaturesSigned }}/{{ row.signaturesTotal }} signés
+                      <template v-if="row.signaturesPending"> · {{ row.signaturesPending }} en attente</template>
+                    </span>
+                  </button>
+                </template>
+                <span v-else class="text-xs font-medium text-slate-400">Non</span>
               </td>
               <td class="px-4 py-3">
                 <div class="flex flex-wrap items-center gap-2">
@@ -131,6 +151,14 @@
                     @click="togglePublish(row, false)"
                   >
                     Dépublier
+                  </button>
+                  <button
+                    v-if="row.requiresParentSignature"
+                    type="button"
+                    class="inline-flex items-center gap-1 rounded-lg border border-[#216EC2]/40 bg-white px-2.5 py-1.5 text-xs font-bold text-[#216EC2] transition hover:bg-[#216EC2]/5"
+                    @click="openSignaturesModal(row)"
+                  >
+                    Signatures
                   </button>
                   <button
                     type="button"
@@ -243,24 +271,99 @@
                 </span>
               </div>
             </label>
-            <label class="block">
-              <span class="mb-1 block text-sm font-semibold text-[#1e3a6e]">Niveau <span class="font-normal text-slate-500">(optionnel)</span></span>
-              <div class="relative">
-                <select
-                  v-model="addForm.levelId"
-                  class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-10 text-sm text-slate-800 outline-none ring-[#216EC2]/20 focus:border-[#216EC2] focus:ring-2"
-                  :disabled="catalogPending"
-                >
-                  <option value="">— Aucun rattachement —</option>
-                  <option v-for="lv in catalogLevels" :key="lv.id" :value="lv.id">{{ lv.name }}</option>
-                </select>
-                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
-                </span>
+
+            <div class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3">
+              <div>
+                <p class="text-sm font-semibold text-[#1e3a6e]">Destinataires</p>
+                <p class="mt-0.5 text-xs text-slate-500">
+                  Laissez vide pour tous les parents. Sinon : union des niveaux, classes et parents cochés.
+                </p>
               </div>
-              <p v-if="catalogPending" class="mt-1 text-xs text-slate-500">Chargement des niveaux…</p>
+
+              <div>
+                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Niveaux</span>
+                <p v-if="catalogPending" class="text-xs text-slate-500">Chargement…</p>
+                <div v-else class="max-h-36 space-y-1.5 overflow-y-auto rounded-lg border border-slate-200 bg-white p-2">
+                  <label
+                    v-for="lv in catalogLevels"
+                    :key="lv.id"
+                    class="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-sm hover:bg-slate-50"
+                  >
+                    <input v-model="addForm.levelIds" type="checkbox" class="rounded border-slate-300 text-[#216EC2]" :value="lv.id">
+                    <span>{{ lv.name }}</span>
+                  </label>
+                  <p v-if="!catalogLevels.length" class="px-1.5 py-2 text-xs text-slate-400">Aucun niveau.</p>
+                </div>
+              </div>
+
+              <div>
+                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Classes</span>
+                <div class="max-h-40 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-white p-2">
+                  <template v-if="catalogLevels.some((l) => (l.classes?.length ?? 0) > 0)">
+                    <div v-for="lv in catalogLevelsWithClasses" :key="'cls-' + lv.id">
+                      <p class="px-1.5 text-[11px] font-bold text-slate-500">{{ lv.name }}</p>
+                      <label
+                        v-for="c in lv.classes"
+                        :key="c.id"
+                        class="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1 text-sm text-slate-800 hover:bg-slate-50"
+                      >
+                        <input v-model="addForm.classIds" type="checkbox" class="rounded border-slate-300 text-[#216EC2]" :value="c.id">
+                        <span>{{ c.name }}</span>
+                      </label>
+                    </div>
+                  </template>
+                  <p v-else class="px-1.5 py-2 text-xs text-slate-500">
+                    Aucune classe en base. Créez-les dans Paramétrage → niveaux / classes.
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Parents (tous niveaux)</span>
+                <input
+                  v-model="parentSearchInput"
+                  type="search"
+                  class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-[#216EC2]/20 focus:border-[#216EC2] focus:ring-2"
+                  placeholder="Rechercher un parent…"
+                  autocomplete="off"
+                >
+                <ul v-if="parentOptions.length" class="mt-1 max-h-32 overflow-y-auto rounded-lg border border-slate-200 bg-white">
+                  <li v-for="p in parentOptions" :key="p.id">
+                    <button
+                      type="button"
+                      class="flex w-full flex-col items-start gap-0.5 px-3 py-2 text-left text-sm hover:bg-[#216EC2]/5"
+                      @click="addParent(p)"
+                    >
+                      <span class="font-semibold text-slate-800">{{ p.fullName }}</span>
+                      <span class="text-xs text-slate-500">{{ p.email }}{{ p.hint ? ` · ${p.hint}` : '' }}</span>
+                    </button>
+                  </li>
+                </ul>
+                <div v-if="selectedParents.length" class="mt-2 flex flex-wrap gap-1.5">
+                  <span
+                    v-for="p in selectedParents"
+                    :key="p.id"
+                    class="inline-flex items-center gap-1 rounded-full bg-[#216EC2]/10 px-2.5 py-1 text-xs font-semibold text-[#216EC2]"
+                  >
+                    {{ p.fullName }}
+                    <button type="button" class="leading-none hover:text-red-600" aria-label="Retirer" @click="removeParent(p.id)">×</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <label class="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+              <input
+                v-model="addForm.requiresParentSignature"
+                type="checkbox"
+                class="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#216EC2] focus:ring-[#216EC2]"
+              >
+              <span>
+                <span class="block text-sm font-semibold text-[#1e3a6e]">Signature parent requise</span>
+                <span class="mt-0.5 block text-xs text-slate-500">
+                  Si coché, chaque parent concerné devra signer ce document dans son espace.
+                </span>
+              </span>
             </label>
             <div>
               <span class="mb-2 block text-sm font-semibold text-[#1e3a6e]">Document</span>
@@ -307,6 +410,127 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- Modal signatures -->
+    <Teleport to="body">
+      <div
+        v-if="sigOpen"
+        class="fixed inset-0 z-[200] flex items-center justify-center bg-[#216EC2]/25 p-4 backdrop-blur-md supports-[backdrop-filter]:bg-[#216EC2]/20"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="doc-sig-title"
+        @click.self="closeSignaturesModal"
+      >
+        <div
+          class="relative z-[201] flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/60 bg-white shadow-2xl shadow-[#216EC2]/20"
+        >
+          <div class="flex items-start justify-between gap-3 border-b border-slate-100 px-6 py-4">
+            <div>
+              <h2 id="doc-sig-title" class="text-lg font-bold text-[#1e3a6e]">Signatures</h2>
+              <p class="mt-0.5 text-sm text-slate-600">{{ sigDocTitle }}</p>
+            </div>
+            <button
+              type="button"
+              class="rounded-lg p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+              aria-label="Fermer"
+              @click="closeSignaturesModal"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-4 overflow-y-auto px-6 py-4">
+            <p v-if="sigError" class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{{ sigError }}</p>
+
+            <div class="grid gap-3 sm:grid-cols-3">
+              <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <p class="text-xs font-medium text-slate-500">Total</p>
+                <p class="text-2xl font-bold text-slate-900">{{ sigOverview?.stats.total ?? '—' }}</p>
+              </div>
+              <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                <p class="text-xs font-medium text-amber-800">À signer</p>
+                <p class="text-2xl font-bold text-amber-900">{{ sigOverview?.stats.pending ?? '—' }}</p>
+              </div>
+              <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+                <p class="text-xs font-medium text-emerald-800">Signés</p>
+                <p class="text-2xl font-bold text-emerald-900">{{ sigOverview?.stats.signed ?? '—' }}</p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <input
+                v-model="sigSearchInput"
+                type="search"
+                class="min-w-[200px] flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none ring-[#216EC2]/20 focus:border-[#216EC2] focus:ring-2"
+                placeholder="Rechercher un parent…"
+              >
+              <select
+                v-model="sigStatus"
+                class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-[#216EC2]"
+              >
+                <option value="">Tous</option>
+                <option value="PENDING">À signer</option>
+                <option value="SIGNED">Signés</option>
+              </select>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+              <table class="w-full min-w-[640px] text-left text-sm">
+                <thead>
+                  <tr class="bg-[#216EC2] text-white">
+                    <th class="px-3 py-2.5 font-semibold">Parent</th>
+                    <th class="px-3 py-2.5 font-semibold">Enfants</th>
+                    <th class="px-3 py-2.5 font-semibold">Statut</th>
+                    <th class="px-3 py-2.5 font-semibold">Date</th>
+                    <th class="px-3 py-2.5 font-semibold">Signature</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr v-if="sigPending">
+                    <td colspan="5" class="px-3 py-8 text-center text-slate-500">Chargement…</td>
+                  </tr>
+                  <tr v-else-if="!(sigOverview?.items.length)">
+                    <td colspan="5" class="px-3 py-8 text-center text-slate-500">Aucune signature pour ce filtre.</td>
+                  </tr>
+                  <tr v-for="item in sigOverview?.items ?? []" v-else :key="item.id" class="text-slate-700">
+                    <td class="px-3 py-2.5">
+                      <p class="font-semibold">{{ item.parent.fullName }}</p>
+                      <p class="text-xs text-slate-500">{{ item.parent.email }}</p>
+                    </td>
+                    <td class="max-w-[220px] px-3 py-2.5 text-xs text-slate-600">
+                      {{ item.parent.childrenLabels.length ? item.parent.childrenLabels.join(', ') : '—' }}
+                    </td>
+                    <td class="px-3 py-2.5">
+                      <span
+                        class="inline-flex rounded-full px-2 py-0.5 text-xs font-bold"
+                        :class="item.status === 'SIGNED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'"
+                      >
+                        {{ item.statusLabel }}
+                      </span>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-2.5 text-xs">{{ item.signedAtLabel || '—' }}</td>
+                    <td class="px-3 py-2.5">
+                      <a
+                        v-if="item.signatureUrl"
+                        :href="documentPublicUrl(item.signatureUrl)"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-xs font-bold text-[#216EC2] hover:underline"
+                      >
+                        Voir
+                      </a>
+                      <span v-else class="text-xs text-slate-400">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -325,15 +549,49 @@ type OverviewDto = {
     kind: string
     kindLabel: string
     published: boolean
+    requiresParentSignature: boolean
+    signaturesPending: number
+    signaturesSigned: number
+    signaturesTotal: number
     dateLabel: string
     levelLabels: string[]
+    classLabels?: string[]
+    parentLabels?: string[]
+    audienceLabels: string[]
   }>
   total: number
   page: number
   limit: number
 }
 
-type CatalogLevel = { id: string; name: string }
+type SignaturesDto = {
+  document: { id: string; title: string; requiresParentSignature: boolean }
+  stats: { pending: number; signed: number; total: number }
+  items: Array<{
+    id: string
+    status: 'PENDING' | 'SIGNED'
+    statusLabel: string
+    signatureUrl: string | null
+    signedAtLabel: string | null
+    parent: {
+      id: string
+      fullName: string
+      email: string
+      childrenLabels: string[]
+    }
+  }>
+  total: number
+  page: number
+  limit: number
+}
+
+type CatalogLevel = {
+  id: string
+  name: string
+  classes?: Array<{ id: string; name: string }>
+}
+
+type ParentOption = { id: string; fullName: string; email: string; hint?: string }
 
 const { token } = useAuth()
 const config = useRuntimeConfig()
@@ -355,6 +613,9 @@ const addError = ref<string | null>(null)
 const addSubmitting = ref(false)
 const catalogLevels = ref<CatalogLevel[]>([])
 const catalogPending = ref(false)
+const catalogLevelsWithClasses = computed(() =>
+  catalogLevels.value.filter((l) => (l.classes?.length ?? 0) > 0),
+)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const addFile = ref<File | null>(null)
 const addFileName = computed(() => addFile.value?.name ?? '')
@@ -362,7 +623,36 @@ const addForm = reactive({
   title: '',
   url: '',
   kind: 'ADMIN' as 'SCHOOL' | 'ADMIN',
-  levelId: '',
+  levelIds: [] as string[],
+  classIds: [] as string[],
+  requiresParentSignature: false,
+})
+const selectedParents = ref<ParentOption[]>([])
+const parentSearchInput = ref('')
+const parentOptions = ref<ParentOption[]>([])
+let parentSearchTimer: ReturnType<typeof setTimeout> | null = null
+watch(parentSearchInput, (v) => {
+  if (parentSearchTimer) clearTimeout(parentSearchTimer)
+  parentSearchTimer = setTimeout(() => {
+    void searchParents(v)
+  }, 300)
+})
+
+const sigOpen = ref(false)
+const sigDocId = ref<string | null>(null)
+const sigDocTitle = ref('')
+const sigOverview = ref<SignaturesDto | null>(null)
+const sigPending = ref(false)
+const sigError = ref<string | null>(null)
+const sigStatus = ref('')
+const sigSearchInput = ref('')
+const sigDebouncedSearch = ref('')
+let sigSearchTimer: ReturnType<typeof setTimeout> | null = null
+watch(sigSearchInput, (v) => {
+  if (sigSearchTimer) clearTimeout(sigSearchTimer)
+  sigSearchTimer = setTimeout(() => {
+    sigDebouncedSearch.value = v
+  }, 350)
 })
 
 function documentPublicUrl(url: string) {
@@ -420,16 +710,53 @@ async function loadCatalogLevels() {
   if (!t) return
   catalogPending.value = true
   try {
-    const data = await $fetch<{ levels: CatalogLevel[] }>(`${config.public.apiBase}/admin/settings/levels`, {
-      headers: { Authorization: `Bearer ${t}` },
-    })
-    catalogLevels.value = data.levels
+    const data = await $fetch<{ levels: CatalogLevel[] }>(
+      `${config.public.apiBase}/admin/documents/audience-options`,
+      {
+        headers: { Authorization: `Bearer ${t}` },
+      },
+    )
+    catalogLevels.value = data.levels ?? []
   } catch {
     catalogLevels.value = []
-    addError.value = 'Impossible de charger les niveaux.'
+    addError.value = 'Impossible de charger les niveaux et classes.'
   } finally {
     catalogPending.value = false
   }
+}
+
+async function searchParents(q: string) {
+  const t = token.value
+  if (!t) return
+  const query = q.trim()
+  if (query.length < 2) {
+    parentOptions.value = []
+    return
+  }
+  try {
+    const data = await $fetch<{ items: ParentOption[] }>(
+      `${config.public.apiBase}/admin/documents/parent-options`,
+      {
+        headers: { Authorization: `Bearer ${t}` },
+        query: { search: query },
+      },
+    )
+    const selected = new Set(selectedParents.value.map((p) => p.id))
+    parentOptions.value = (data.items ?? []).filter((p) => !selected.has(p.id))
+  } catch {
+    parentOptions.value = []
+  }
+}
+
+function addParent(p: ParentOption) {
+  if (selectedParents.value.some((x) => x.id === p.id)) return
+  selectedParents.value = [...selectedParents.value, p]
+  parentOptions.value = []
+  parentSearchInput.value = ''
+}
+
+function removeParent(id: string) {
+  selectedParents.value = selectedParents.value.filter((p) => p.id !== id)
 }
 
 function openAddModal() {
@@ -437,7 +764,12 @@ function openAddModal() {
   addForm.title = ''
   addForm.url = ''
   addForm.kind = 'ADMIN'
-  addForm.levelId = ''
+  addForm.levelIds = []
+  addForm.classIds = []
+  addForm.requiresParentSignature = false
+  selectedParents.value = []
+  parentSearchInput.value = ''
+  parentOptions.value = []
   addFile.value = null
   if (fileInputRef.value) fileInputRef.value.value = ''
   addOpen.value = true
@@ -469,9 +801,12 @@ async function submitAdd() {
       title: addForm.title,
       url,
       kind: addForm.kind,
-      published: false,
+      published: true,
+      requiresParentSignature: addForm.requiresParentSignature,
+      levelIds: [...addForm.levelIds],
+      classIds: [...addForm.classIds],
+      parentIds: selectedParents.value.map((p) => p.id),
     }
-    if (addForm.levelId) body.levelId = addForm.levelId
 
     await $fetch(`${config.public.apiBase}/admin/documents`, {
       method: 'POST',
@@ -490,6 +825,56 @@ async function submitAdd() {
     addSubmitting.value = false
   }
 }
+
+function openSignaturesModal(row: OverviewDto['items'][0]) {
+  sigDocId.value = row.id
+  sigDocTitle.value = row.title
+  sigStatus.value = ''
+  sigSearchInput.value = ''
+  sigDebouncedSearch.value = ''
+  sigError.value = null
+  sigOpen.value = true
+  void loadSignatures()
+}
+
+function closeSignaturesModal() {
+  sigOpen.value = false
+  sigDocId.value = null
+  sigOverview.value = null
+}
+
+async function loadSignatures() {
+  const t = token.value
+  const id = sigDocId.value
+  if (!t || !id) return
+  sigPending.value = true
+  sigError.value = null
+  try {
+    sigOverview.value = await $fetch<SignaturesDto>(
+      `${config.public.apiBase}/admin/documents/${id}/signatures`,
+      {
+        headers: { Authorization: `Bearer ${t}` },
+        query: {
+          status: sigStatus.value || undefined,
+          search: sigDebouncedSearch.value.trim() || undefined,
+          limit: 100,
+        },
+      },
+    )
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string | string[] } }
+    const raw = err?.data?.message
+    sigError.value =
+      typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0] : 'Impossible de charger les signatures.'
+    sigOverview.value = null
+  } finally {
+    sigPending.value = false
+  }
+}
+
+watch([sigStatus, sigDebouncedSearch], () => {
+  if (sigOpen.value && sigDocId.value) void loadSignatures()
+})
 
 async function togglePublish(row: OverviewDto['items'][0], published: boolean) {
   const t = token.value

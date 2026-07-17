@@ -30,28 +30,37 @@
 
     <!-- Tabs + CTA -->
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <div class="inline-flex items-center rounded-full border-2 border-[#216EC2]/30 bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <div class="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition"
-          :class="tab === 'ateliers' ? 'bg-[#216EC2] text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+          class="inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-bold transition"
+          :class="
+            tab === 'ateliers'
+              ? 'bg-[#216EC2] text-white shadow-sm'
+              : 'border border-[#D0D8E8] bg-white text-[#1E2A44] hover:bg-slate-50'
+          "
           @click="tab = 'ateliers'"
         >
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="4" y="11" width="16" height="9" rx="1.5" />
+            <path d="M8 11V7M12 11V4M16 11V8" stroke-linecap="round" />
           </svg>
           Ateliers
         </button>
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition"
-          :class="tab === 'reservations' ? 'bg-[#216EC2] text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+          class="inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-sm font-bold transition"
+          :class="
+            tab === 'reservations'
+              ? 'bg-[#216EC2] text-white shadow-sm'
+              : 'border border-[#D0D8E8] bg-white text-[#1E2A44] hover:bg-slate-50'
+          "
           @click="tab = 'reservations'"
         >
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M3 7h18v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
-            <path d="M3 7l2.5-3h13L21 7" />
-            <path d="M9 12h6" stroke-linecap="round" />
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 9a2 2 0 0 0 2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2" />
+            <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
+            <path d="M3 9a2 2 0 0 1 2 2 2 2 0 0 0 2 2h10a2 2 0 0 0 2-2 2 2 0 0 1 2-2" />
           </svg>
           Réservations
         </button>
@@ -63,14 +72,17 @@
         @click="openCreateForm"
       >
         <span class="text-lg leading-none">+</span>
-        Nouvelle Atelier
+        Nouvel Atelier
       </button>
     </div>
 
-    <!-- Filters -->
-    <section class="rounded-xl border-2 border-[#216EC2]/30 bg-white p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-4">
-      <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <div class="relative min-w-0 flex-1">
+    <!-- Ateliers tab — table (maquette) -->
+    <section
+      v-if="tab === 'ateliers'"
+      class="overflow-hidden rounded-xl border-2 border-[#216EC2]/30 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
+    >
+      <div class="flex flex-col gap-3 border-b border-[#EEF2F7] p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative min-w-0 flex-1 sm:max-w-md">
           <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8" />
@@ -85,147 +97,282 @@
             autocomplete="off"
           />
         </div>
+        <select
+          v-model="sort"
+          class="h-[42px] shrink-0 rounded-xl border border-[#F9994B] bg-[#F9994B] px-4 text-sm font-bold text-white outline-none"
+        >
+          <option value="date_desc">Trier par</option>
+          <option value="date_asc">Plus ancien</option>
+          <option value="name_asc">Nom A → Z</option>
+          <option value="status">Statut</option>
+        </select>
+      </div>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <label class="inline-flex h-[42px] items-center overflow-hidden rounded-xl border border-[#216EC2] bg-white text-sm shadow-sm">
-            <span class="inline-flex h-full items-center gap-1.5 bg-[#216EC2] px-3 font-semibold text-white">
-              Du
-              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <path d="M16 2v4M8 2v4M3 10h18" />
-              </svg>
-            </span>
-            <input
-              v-model="dateFrom"
-              type="date"
-              class="h-full min-w-[9.5rem] bg-white px-3 text-sm font-medium text-slate-600 outline-none"
-            />
-          </label>
-          <label class="inline-flex h-[42px] items-center overflow-hidden rounded-xl border border-[#216EC2] bg-white text-sm shadow-sm">
-            <span class="inline-flex h-full items-center gap-1.5 bg-[#216EC2] px-3 font-semibold text-white">
-              Au
-              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <path d="M16 2v4M8 2v4M3 10h18" />
-              </svg>
-            </span>
-            <input
-              v-model="dateTo"
-              type="date"
-              class="h-full min-w-[9.5rem] bg-white px-3 text-sm font-medium text-slate-600 outline-none"
-            />
-          </label>
-          <select
-            v-model="sort"
-            class="h-[42px] rounded-xl border border-[#F9994B] bg-[#F9994B] px-4 text-sm font-bold text-white outline-none"
-          >
-            <option value="date_desc">Trier par</option>
-            <option value="date_asc">Plus ancien</option>
-            <option value="name_asc">Nom A → Z</option>
-            <option value="status">Statut</option>
-          </select>
-        </div>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[960px] text-left text-sm">
+          <thead>
+            <tr class="bg-[#216EC2] text-white">
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Ateliers</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Âge</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Date et Heure</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Places</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Statut</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#EEF2F7]">
+            <tr v-if="!paginatedAteliers.length">
+              <td colspan="6" class="px-4 py-12 text-center text-slate-500">Aucun atelier trouvé.</td>
+            </tr>
+            <tr
+              v-for="atelier in paginatedAteliers"
+              :key="atelier.id"
+              class="bg-white"
+              :class="atelier.published ? 'text-slate-700' : 'text-slate-400'"
+            >
+              <td class="px-4 py-3.5">
+                <div class="flex items-center gap-3">
+                  <img
+                    class="h-11 w-11 rounded-lg object-cover ring-1 ring-[#E2E8F0]"
+                    :src="mediaUrl(atelier.image)"
+                    :alt="atelier.title"
+                  />
+                  <div class="min-w-0">
+                    <p class="truncate text-[13px] font-bold" :class="atelier.published ? 'text-slate-900' : 'text-slate-500'">
+                      {{ atelier.title }}
+                    </p>
+                    <p class="truncate text-[11px] text-slate-400">{{ atelier.description }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-4 py-3.5 text-[13px] font-medium">{{ atelier.ageLabel }}</td>
+              <td class="whitespace-nowrap px-4 py-3.5 text-[13px]">{{ atelierSessionLabel(atelier) }}</td>
+              <td class="px-4 py-3.5">
+                <div class="min-w-[88px]">
+                  <p class="text-[13px] font-semibold text-slate-800">{{ atelier.booked }}/{{ atelier.capacity }}</p>
+                  <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#E8F1FB]">
+                    <div
+                      class="h-full rounded-full bg-[#22C55E] transition-all"
+                      :style="{ width: `${placesPct(atelier)}%` }"
+                    />
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3.5">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] font-bold transition disabled:opacity-50"
+                  :class="
+                    atelier.published
+                      ? 'bg-[#E8F8EF] text-[#16A34A]'
+                      : 'bg-[#FEECE8] text-[#E85D4C]'
+                  "
+                  :title="atelier.published ? 'Dépublier' : 'Publier'"
+                  :disabled="actionId === atelier.id"
+                  @click="togglePublish(atelier)"
+                >
+                  <span
+                    class="relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition"
+                    :class="atelier.published ? 'bg-[#22C55E]' : 'bg-[#F97316]'"
+                    aria-hidden="true"
+                  >
+                    <span
+                      class="absolute h-3 w-3 rounded-full bg-white shadow transition"
+                      :class="atelier.published ? 'right-0.5' : 'left-0.5'"
+                    />
+                  </span>
+                  {{ atelier.published ? 'Actif' : 'Inactif' }}
+                </button>
+              </td>
+              <td class="px-4 py-3.5">
+                <div class="flex items-center gap-2">
+                  <NuxtLink
+                    :to="`/admin/ateliers/${atelier.id}`"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE]"
+                    title="Voir"
+                  >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </NuxtLink>
+                  <button
+                    type="button"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE] disabled:opacity-50"
+                    title="Modifier"
+                    :disabled="actionId === atelier.id"
+                    @click="openEditForm(atelier)"
+                  >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M12 20h9" stroke-linecap="round" />
+                      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-full border transition disabled:opacity-50"
+                    :class="
+                      atelier.closed
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                        : 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                    "
+                    :title="atelier.closed ? 'Rouvrir les inscriptions' : 'Clôturer les inscriptions'"
+                    :disabled="actionId === atelier.id"
+                    @click="toggleClosed(atelier)"
+                  >
+                    <!-- Fermé : cadenas ouvert (rouvrir) / Ouvert : cadenas fermé (clôturer) -->
+                    <svg
+                      v-if="atelier.closed"
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <rect x="5" y="11" width="14" height="10" rx="2" />
+                      <path d="M7 11V8a5 5 0 0 1 9.9-1" stroke-linecap="round" />
+                    </svg>
+                    <svg
+                      v-else
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <rect x="5" y="11" width="14" height="10" rx="2" />
+                      <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke-linecap="round" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100 disabled:opacity-50"
+                    title="Supprimer"
+                    :disabled="actionId === atelier.id"
+                    @click="deleteAtelier(atelier)"
+                  >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M3 6h18" stroke-linecap="round" />
+                      <path d="M8 6V4h8v2" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M19 6l-1 14H6L5 6" stroke-linejoin="round" />
+                      <path d="M10 11v6M14 11v6" stroke-linecap="round" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        v-if="filteredAteliers.length"
+        class="flex items-center justify-end gap-3 border-t border-[#EEF2F7] px-4 py-3 text-sm text-slate-500"
+      >
+        <span>{{ pageRangeLabel }}</span>
+        <button
+          type="button"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+          :disabled="atelierPage <= 1"
+          aria-label="Page précédente"
+          @click="atelierPage--"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+          :disabled="atelierPage >= atelierPageCount"
+          aria-label="Page suivante"
+          @click="atelierPage++"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
       </div>
     </section>
 
-    <!-- Ateliers tab -->
-    <section v-if="tab === 'ateliers'" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      <article
-        v-for="atelier in filteredAteliers"
-        :key="atelier.id"
-        class="overflow-hidden rounded-xl border-2 border-[#216EC2]/30 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md"
-      >
-        <div class="h-40 overflow-hidden bg-slate-100">
-          <img class="h-full w-full object-cover" :src="mediaUrl(atelier.image)" :alt="atelier.title" />
-        </div>
-        <div class="p-4">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h3 class="text-base font-bold text-slate-900">{{ atelier.title }}</h3>
-              <p class="mt-1 text-xs text-slate-500">{{ atelier.description }}</p>
-            </div>
-            <span class="rounded-full bg-[#216EC2]/10 px-2.5 py-1 text-[10px] font-bold text-[#216EC2]">
-              {{ atelier.ageLabel }}
+    <!-- Filters (réservations) -->
+    <section v-else class="space-y-5">
+      <section class="rounded-xl border-2 border-[#216EC2]/30 bg-white p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-4">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div class="relative min-w-0 flex-1">
+            <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" stroke-linecap="round" />
+              </svg>
             </span>
+            <input
+              v-model="search"
+              type="search"
+              class="w-full rounded-xl border border-[#E2E8F0] bg-white py-2.5 pl-10 pr-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
+              placeholder="Search"
+              autocomplete="off"
+            />
           </div>
-          <div class="mt-3 flex flex-wrap gap-2 text-[11px] font-semibold">
-            <span class="rounded-md bg-[#FFF1E8] px-2 py-1 text-[#E87A3A]">{{ atelier.dateLabel }}</span>
-            <span class="rounded-md bg-[#E8F1FB] px-2 py-1 text-[#216EC2]">{{ atelier.timeLabel }}</span>
-            <span class="rounded-md bg-[#F3EBFA] px-2 py-1 text-[#7B4DB8]">{{ atelier.priceLabel }}</span>
-          </div>
-          <div class="mt-4 flex items-center justify-between gap-2 border-t border-[#E2E8F0] pt-3 text-xs text-slate-500">
-            <span>{{ atelier.booked }}/{{ atelier.capacity }} places</span>
-            <div class="flex items-center gap-1.5">
-              <span :class="atelier.published ? 'font-semibold text-emerald-600' : 'font-semibold text-amber-600'">
-                {{ atelier.published ? 'Publié' : 'Brouillon' }}
+
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="inline-flex h-[42px] items-center overflow-hidden rounded-xl border border-[#216EC2] bg-white text-sm shadow-sm">
+              <span class="inline-flex h-full items-center gap-1.5 bg-[#216EC2] px-3 font-semibold text-white">
+                Du
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
               </span>
-              <button
-                type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE] disabled:opacity-50"
-                title="Modifier"
-                :disabled="actionId === atelier.id"
-                @click="openEditForm(atelier)"
-              >
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M12 20h9" stroke-linecap="round" />
-                  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linejoin="round" />
+              <input
+                v-model="dateFrom"
+                type="date"
+                class="h-full min-w-[9.5rem] bg-white px-3 text-sm font-medium text-slate-600 outline-none"
+              />
+            </label>
+            <label class="inline-flex h-[42px] items-center overflow-hidden rounded-xl border border-[#216EC2] bg-white text-sm shadow-sm">
+              <span class="inline-flex h-full items-center gap-1.5 bg-[#216EC2] px-3 font-semibold text-white">
+                Au
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
-              </button>
-              <button
-                type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#FDE68A] bg-[#FFFBEB] text-[#B45309] transition hover:bg-[#FEF3C7] disabled:opacity-50"
-                :title="atelier.published ? 'Dépublier' : 'Publier'"
-                :disabled="actionId === atelier.id"
-                @click="togglePublish(atelier)"
-              >
-                <svg v-if="atelier.published" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-5 0-9.27-3.11-11-8 1.02-2.89 2.98-5.18 5.47-6.53" stroke-linecap="round" />
-                  <path d="M1 1l22 22" stroke-linecap="round" />
-                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c5 0 9.27 3.11 11 8a11.5 11.5 0 0 1-2.16 3.19" stroke-linecap="round" />
-                  <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" stroke-linecap="round" />
-                </svg>
-                <svg v-else class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-red-200 bg-red-50 text-red-600 transition hover:bg-red-100 disabled:opacity-50"
-                title="Supprimer"
-                :disabled="actionId === atelier.id"
-                @click="deleteAtelier(atelier)"
-              >
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <path d="M3 6h18" stroke-linecap="round" />
-                  <path d="M8 6V4h8v2" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M19 6l-1 14H6L5 6" stroke-linejoin="round" />
-                  <path d="M10 11v6M14 11v6" stroke-linecap="round" />
-                </svg>
-              </button>
-            </div>
+              </span>
+              <input
+                v-model="dateTo"
+                type="date"
+                class="h-full min-w-[9.5rem] bg-white px-3 text-sm font-medium text-slate-600 outline-none"
+              />
+            </label>
+            <select
+              v-model="sort"
+              class="h-[42px] rounded-xl border border-[#F9994B] bg-[#F9994B] px-4 text-sm font-bold text-white outline-none"
+            >
+              <option value="date_desc">Trier par</option>
+              <option value="date_asc">Plus ancien</option>
+              <option value="name_asc">Nom A → Z</option>
+              <option value="status">Statut</option>
+            </select>
           </div>
         </div>
-      </article>
-      <p v-if="!filteredAteliers.length" class="col-span-full rounded-xl border-2 border-dashed border-[#216EC2]/30 bg-white px-6 py-12 text-center text-sm text-slate-500">
-        Aucun atelier trouvé.
-      </p>
-    </section>
+      </section>
 
-    <!-- Réservations tab -->
-    <section v-else class="overflow-hidden rounded-xl border-2 border-[#216EC2]/30 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+      <!-- Réservations table -->
+      <section class="overflow-hidden rounded-xl border-2 border-[#216EC2]/30 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <div class="overflow-x-auto">
         <table class="w-full min-w-[1100px] text-left text-sm">
           <thead>
             <tr class="bg-[#216EC2] text-white">
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Reservation ID</th>
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Ateliers</th>
-              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Enfants</th>
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Parents / contact</th>
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Date &amp; Heure</th>
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Places</th>
-              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Statut</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Âge</th>
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Réservé le</th>
+              <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Statut</th>
               <th class="px-4 py-3.5 text-[12px] font-semibold tracking-wide">Actions</th>
             </tr>
           </thead>
@@ -248,27 +395,33 @@
                   </div>
                 </div>
               </td>
-              <td class="whitespace-nowrap px-4 py-3.5">
-                <p class="text-[13px] font-bold text-slate-900">{{ row.childName }}</p>
-                <p class="text-[11px] text-slate-400">{{ row.childAge }}ans</p>
-              </td>
               <td class="px-4 py-3.5">
                 <p class="text-[13px] font-bold text-slate-900">{{ row.parentName }}</p>
-                <p class="text-[11px] text-slate-400">{{ row.parentPhone }}</p>
+                <p class="text-[11px] text-slate-400">{{ row.parentPhone || '—' }}</p>
               </td>
-              <td class="whitespace-nowrap px-4 py-3.5 text-[13px] text-slate-700">{{ row.sessionLabel }}</td>
-              <td class="whitespace-nowrap px-4 py-3.5 text-[13px] font-semibold text-slate-800">{{ row.places }}</td>
               <td class="whitespace-nowrap px-4 py-3.5">
-                <span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold" :class="statusClass(row.status)">
-                  {{ statusLabel(row.status) }}
+                <p class="text-[13px] font-medium text-slate-800">{{ row.sessionDateLabel || row.sessionLabel }}</p>
+                <p class="text-[11px] text-slate-400">{{ row.sessionTimeLabel }}</p>
+              </td>
+              <td class="whitespace-nowrap px-4 py-3.5 text-[13px] font-semibold text-slate-800">{{ row.places }}</td>
+              <td class="whitespace-nowrap px-4 py-3.5 text-[13px] text-slate-700">{{ row.ageRange }}</td>
+              <td class="whitespace-nowrap px-4 py-3.5">
+                <p class="text-[13px] font-medium text-slate-800">{{ row.reservedAtDate || row.reservedAt }}</p>
+                <p class="text-[11px] text-slate-400">{{ row.reservedAtTime }}</p>
+              </td>
+              <td class="whitespace-nowrap px-4 py-3.5">
+                <span
+                  class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold"
+                  :class="accountKindClass(row.accountKind)"
+                >
+                  {{ accountKindLabel(row.accountKind) }}
                 </span>
               </td>
-              <td class="whitespace-nowrap px-4 py-3.5 text-[12px] text-slate-500">{{ row.reservedAt }}</td>
               <td class="px-4 py-3.5">
-                <div class="flex items-center gap-2">
+                <div class="relative flex items-center gap-2">
                   <button
                     type="button"
-                    class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE]"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE]"
                     title="Voir"
                     @click="selectedReservation = row"
                   >
@@ -279,21 +432,50 @@
                   </button>
                   <button
                     type="button"
-                    class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE]"
-                    title="Plus"
+                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] text-[#216EC2] transition hover:bg-[#DBEAFE]"
+                    title="Actions"
+                    :aria-expanded="actionId === row.id"
+                    @click="actionId = actionId === row.id ? null : row.id"
                   >
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <circle cx="12" cy="5" r="1.5" />
                       <circle cx="12" cy="12" r="1.5" />
                       <circle cx="12" cy="19" r="1.5" />
                     </svg>
                   </button>
+                  <div
+                    v-if="actionId === row.id"
+                    class="absolute right-0 top-10 z-20 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+                  >
+                    <button
+                      type="button"
+                      class="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                      @click="setReservationStatus(row, 'VALIDEE')"
+                    >
+                      Valider
+                    </button>
+                    <button
+                      type="button"
+                      class="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                      @click="setReservationStatus(row, 'EN_ATTENTE')"
+                    >
+                      En attente
+                    </button>
+                    <button
+                      type="button"
+                      class="block w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                      @click="setReservationStatus(row, 'ANNULEE')"
+                    >
+                      Annuler
+                    </button>
+                  </div>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      </section>
     </section>
 
     <!-- Popup nouvel atelier -->
@@ -509,11 +691,17 @@
               </section>
 
               <!-- Places et tarification -->
-              <section class="rounded-xl border-2 border-[#216EC2]/30 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6">
-                <h2 class="text-lg font-bold text-[#216EC2]">Places et tarification</h2>
+              <section class="rounded-xl border border-[#BFD6F0] bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6">
+                <h2 class="flex items-center gap-2 text-lg font-bold text-[#216EC2]">
+                  <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round" />
+                  </svg>
+                  Places et tarification
+                </h2>
                 <div class="mt-5 space-y-4">
                   <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">
+                    <label class="mb-1.5 block text-sm font-medium text-slate-800">
                       Nombre total de places <span class="text-red-500">*</span>
                     </label>
                     <input
@@ -522,22 +710,12 @@
                       type="number"
                       min="1"
                       placeholder="Ex: 12"
-                      class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
+                      class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
                     />
                   </div>
                   <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Atelier gratuit</label>
-                    <select
-                      v-model="form.isFree"
-                      class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
-                    >
-                      <option :value="true">Oui — atelier gratuit</option>
-                      <option :value="false">Non — atelier payant</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">
-                      Prix de l'atelier <span class="text-red-500">*</span>
+                    <label class="mb-1.5 block text-sm font-medium text-slate-800">
+                      Prix de l’atelier <span class="text-red-500">*</span>
                     </label>
                     <input
                       v-model="form.price"
@@ -545,8 +723,16 @@
                       :disabled="form.isFree"
                       type="text"
                       placeholder="Ex: 250 000 FCFA"
-                      class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15 disabled:bg-slate-50 disabled:text-slate-400"
+                      class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15 disabled:bg-slate-50 disabled:text-slate-400"
                     />
+                    <label class="mt-3 flex cursor-pointer items-center gap-2.5 select-none">
+                      <input
+                        v-model="form.isFree"
+                        type="checkbox"
+                        class="h-4 w-4 shrink-0 rounded border-[#93C5FD] text-[#216EC2] accent-[#216EC2] focus:ring-[#216EC2]/30"
+                      />
+                      <span class="text-sm font-medium text-[#6B9BD1]">Cocher ici si l’atelier est gratuit</span>
+                    </label>
                   </div>
                 </div>
               </section>
@@ -592,10 +778,11 @@
           <h2 class="text-xl font-bold text-[#216EC2]">{{ selectedReservation.code }}</h2>
           <dl class="mt-4 space-y-3 text-sm">
             <div><dt class="text-xs font-semibold text-slate-400">Atelier</dt><dd class="font-medium">{{ selectedReservation.atelierTitle }}</dd></div>
-            <div><dt class="text-xs font-semibold text-slate-400">Enfant</dt><dd>{{ selectedReservation.childName }}, {{ selectedReservation.childAge }} ans</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-400">Enfant</dt><dd>{{ selectedReservation.childName }}{{ selectedReservation.childAge ? `, ${selectedReservation.childAge} ans` : '' }}</dd></div>
             <div><dt class="text-xs font-semibold text-slate-400">Parent</dt><dd>{{ selectedReservation.parentName }} — {{ selectedReservation.parentPhone }}</dd></div>
             <div><dt class="text-xs font-semibold text-slate-400">Session</dt><dd>{{ selectedReservation.sessionLabel }}</dd></div>
-            <div><dt class="text-xs font-semibold text-slate-400">Statut</dt><dd>{{ statusLabel(selectedReservation.status) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-400">Compte</dt><dd>{{ accountKindLabel(selectedReservation.accountKind) }}</dd></div>
+            <div><dt class="text-xs font-semibold text-slate-400">Statut réservation</dt><dd>{{ statusLabel(selectedReservation.status) }}</dd></div>
           </dl>
           <div class="mt-6 flex justify-end">
             <button type="button" class="rounded-xl bg-[#216EC2] px-4 py-2.5 text-sm font-bold text-white" @click="selectedReservation = null">
@@ -639,6 +826,7 @@ type Atelier = {
   capacity: number
   booked: number
   published: boolean
+  closed?: boolean
 }
 
 type Reservation = {
@@ -653,10 +841,15 @@ type Reservation = {
   parentPhone: string
   sessionLabel: string
   sessionDate: string
+  sessionDateLabel?: string
+  sessionTimeLabel?: string
   places: string
   ageRange: string
   status: ReservationStatus
+  accountKind?: 'PARENT' | 'VISITEUR'
   reservedAt: string
+  reservedAtDate?: string
+  reservedAtTime?: string
 }
 
 type OverviewDto = {
@@ -676,6 +869,8 @@ type OverviewDto = {
 
 const { token } = useAuth()
 const config = useRuntimeConfig()
+const route = useRoute()
+const router = useRouter()
 
 const tab = ref<TabKey>('ateliers')
 const search = ref('')
@@ -687,6 +882,8 @@ const editingId = ref<string | null>(null)
 const existingImageUrl = ref('')
 const actionId = ref<string | null>(null)
 const selectedReservation = ref<Reservation | null>(null)
+const atelierPage = ref(1)
+const atelierPageSize = 10
 const imageInput = ref<HTMLInputElement | null>(null)
 const imageError = ref('')
 const imageFile = ref<File | null>(null)
@@ -711,7 +908,7 @@ const form = reactive({
   endTime: '',
   recommendedAge: '',
   capacity: 12,
-  isFree: true,
+  isFree: false,
   price: '',
 })
 
@@ -740,7 +937,7 @@ function resetForm() {
   form.endTime = ''
   form.recommendedAge = ''
   form.capacity = 12
-  form.isFree = true
+  form.isFree = false
   form.price = ''
   imageError.value = ''
   imageFile.value = null
@@ -911,9 +1108,49 @@ const filteredAteliers = computed(() => {
   )
   if (sort.value === 'name_asc') list = [...list].sort((a, b) => a.title.localeCompare(b.title, 'fr'))
   else if (sort.value === 'date_asc') list = [...list].sort((a, b) => a.dateValue.localeCompare(b.dateValue))
+  else if (sort.value === 'status')
+    list = [...list].sort((a, b) => Number(b.published) - Number(a.published) || a.title.localeCompare(b.title, 'fr'))
   else list = [...list].sort((a, b) => b.dateValue.localeCompare(a.dateValue))
   return list
 })
+
+const atelierPageCount = computed(() => Math.max(1, Math.ceil(filteredAteliers.value.length / atelierPageSize)))
+
+const paginatedAteliers = computed(() => {
+  const start = (atelierPage.value - 1) * atelierPageSize
+  return filteredAteliers.value.slice(start, start + atelierPageSize)
+})
+
+const pageRangeLabel = computed(() => {
+  const total = filteredAteliers.value.length
+  if (!total) return '0 pour 0'
+  const start = (atelierPage.value - 1) * atelierPageSize + 1
+  const end = Math.min(atelierPage.value * atelierPageSize, total)
+  return `${start}–${end} pour ${total}`
+})
+
+watch([search, sort, dateFrom, dateTo], () => {
+  atelierPage.value = 1
+})
+
+watch(atelierPageCount, (count) => {
+  if (atelierPage.value > count) atelierPage.value = count
+})
+
+function placesPct(atelier: Atelier) {
+  if (!atelier.capacity) return 0
+  return Math.min(100, Math.round((atelier.booked / atelier.capacity) * 100))
+}
+
+function atelierSessionLabel(atelier: Atelier) {
+  const d = atelier.dateValue ? new Date(`${atelier.dateValue}T12:00:00`) : null
+  const datePart = d && !Number.isNaN(d.getTime())
+    ? d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+    : atelier.dateLabel
+  const start = atelier.startTime || '—'
+  const end = atelier.endTime || '—'
+  return `${datePart}, ${start} - ${end}`
+}
 
 const filteredReservations = computed(() => {
   let list = reservations.value.filter(
@@ -938,6 +1175,32 @@ function statusClass(status: ReservationStatus) {
   if (status === 'VALIDEE') return 'bg-emerald-50 text-emerald-700'
   if (status === 'EN_ATTENTE') return 'bg-orange-50 text-orange-700'
   return 'bg-slate-100 text-slate-600'
+}
+
+function accountKindLabel(kind?: 'PARENT' | 'VISITEUR') {
+  return kind === 'VISITEUR' ? 'Visiteur' : 'Parent'
+}
+
+function accountKindClass(kind?: 'PARENT' | 'VISITEUR') {
+  if (kind === 'VISITEUR') return 'border border-[#216EC2] bg-white text-[#216EC2]'
+  return 'bg-emerald-50 text-emerald-700'
+}
+
+async function setReservationStatus(row: Reservation, status: ReservationStatus) {
+  actionId.value = null
+  try {
+    await $fetch(`${config.public.apiBase}/admin/ateliers/reservations/${row.id}`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: { status },
+    })
+    row.status = status
+    if (selectedReservation.value?.id === row.id) {
+      selectedReservation.value = { ...selectedReservation.value, status }
+    }
+  } catch (e: unknown) {
+    loadError.value = apiErrorMessage(e, 'Impossible de mettre à jour le statut.')
+  }
 }
 
 function apiErrorMessage(e: unknown, fallback: string) {
@@ -1049,6 +1312,32 @@ async function togglePublish(atelier: Atelier) {
   }
 }
 
+async function toggleClosed(atelier: Atelier) {
+  const nextClosed = !atelier.closed
+  if (
+    nextClosed &&
+    !confirm(
+      `Clôturer l’atelier « ${atelier.title} » ? Il restera visible, mais le bouton Inscription sera grisé (plus de réservation).`,
+    )
+  ) {
+    return
+  }
+  actionId.value = atelier.id
+  loadError.value = null
+  try {
+    await $fetch(`${config.public.apiBase}/admin/ateliers/${atelier.id}/close`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: { closed: nextClosed },
+    })
+    await loadOverview()
+  } catch (e: unknown) {
+    loadError.value = apiErrorMessage(e, "Impossible de mettre à jour la clôture.")
+  } finally {
+    actionId.value = null
+  }
+}
+
 async function deleteAtelier(atelier: Atelier) {
   if (!confirm(`Supprimer l'atelier « ${atelier.title} » ? Cette action est irréversible.`)) return
   actionId.value = atelier.id
@@ -1066,7 +1355,13 @@ async function deleteAtelier(atelier: Atelier) {
   }
 }
 
-onMounted(() => {
-  void loadOverview()
+onMounted(async () => {
+  await loadOverview()
+  const editId = String(route.query.edit || '')
+  if (editId) {
+    const found = ateliers.value.find((a) => a.id === editId)
+    if (found) openEditForm(found)
+    await router.replace({ path: '/admin/ateliers', query: {} })
+  }
 })
 </script>

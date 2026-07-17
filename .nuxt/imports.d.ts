@@ -48,6 +48,7 @@ export { ENROLLMENT_AUTHORIZATIONS, authorizationLabel, formatServiceSelectionLa
 export { healthRecordToEnrollmentDraft } from '../utils/parent-health-mapper';
 export { extractInvoicePdfParts, buildParentInvoiceHtml, formatXofFromCents, tuitionAnnualDueDateFr, monthEndDateFr, schoolTrimesterFromMonth, stableInvoiceNumber, matriculeFromEnrollmentId, ParentInvoiceLine, ParentInvoiceHtmlInput } from '../utils/parentInvoiceHtml';
 export { formatPaymentModeFromTransactionRef, parseMedicalTags, stableReceiptNumber, buildParentReceiptHtml, ParentReceiptLine, ParentReceiptHtmlInput } from '../utils/parentReceiptHtml';
+export { buildProgrammeIcs, downloadProgrammeIcs, ProgrammeIcsEvent } from '../utils/programmeCalendarIcs';
 export { SCHOOL_CONTACT_DEFAULTS, phoneToTelHref, emailToMailtoHref, resolveSchoolContact, SchoolContactInfo } from '../utils/school-contact';
 export { useI18n } from '../node_modules/vue-i18n/dist/vue-i18n';
 export { useRouteBaseName, useLocalePath, useLocaleRoute, useSwitchLocalePath, useLocaleHead, useBrowserLocale, useCookieLocale, useSetI18nParams, defineI18nRoute, defineI18nLocale, defineI18nConfig } from '../node_modules/@nuxtjs/i18n/dist/runtime/composables/index';

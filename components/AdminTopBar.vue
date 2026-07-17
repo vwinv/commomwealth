@@ -51,16 +51,6 @@
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" stroke-linecap="round" />
         </svg>
       </button>
-
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 rounded-xl bg-[#216EC2] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-105"
-      >
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-        Exporter
-      </button>
     </div>
   </header>
 </template>

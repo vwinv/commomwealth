@@ -16,8 +16,8 @@
           <h2 class="text-xl font-bold text-slate-900 sm:text-2xl">Carnet de suivi virtuel</h2>
         </div>
         <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">
-          Le journal quotidien de l'enfant tenu par la maîtresse. Publiez une note pour la rendre visible aux parents
-          dans leur espace.
+          Le journal quotidien de l'enfant tenu par la maîtresse. Chaque note ajoutée est publiée immédiatement
+          et visible dans l’espace parent.
         </p>
       </div>
       <button
@@ -88,11 +88,44 @@
             {{ cat.label }}
           </button>
         </div>
+
+        <div class="mb-4">
+          <p class="mb-2 text-sm font-semibold text-slate-700">Évaluation</p>
+          <div class="flex items-center gap-1" role="group" aria-label="Note sur 5">
+            <button
+              v-for="star in 5"
+              :key="star"
+              type="button"
+              class="rounded-lg p-1 transition hover:scale-110"
+              :aria-label="`${star} étoile${star > 1 ? 's' : ''}`"
+              @click="newNote.rating = star"
+            >
+              <svg
+                class="h-8 w-8"
+                viewBox="0 0 24 24"
+                :class="star <= newNote.rating ? 'text-amber-400' : 'text-slate-300'"
+                :fill="star <= newNote.rating ? 'currentColor' : 'none'"
+                stroke="currentColor"
+                stroke-width="1.75"
+              >
+                <path
+                  d="m12 2 2.9 5.88 6.5.95-4.7 4.58 1.1 6.42L12 17.77l-5.8 3.06 1.1-6.42-4.7-4.58 6.5-.95L12 2Z"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <span class="ml-2 text-sm font-semibold text-slate-600">
+              {{ newNote.rating > 0 ? `${newNote.rating}/5` : 'Choisir…' }}
+            </span>
+          </div>
+          <p class="mt-2 text-xs text-slate-500">Le commentaire est optionnel.</p>
+        </div>
+
         <textarea
           v-model="newNote.content"
-          rows="4"
+          rows="3"
           class="w-full resize-y rounded-2xl border-2 border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
-          placeholder="Note du jour"
+          placeholder="Commentaire optionnel…"
         />
         <p v-if="formError" class="mt-3 text-sm text-red-600">{{ formError }}</p>
         <div class="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -163,6 +196,26 @@
                     <span class="font-bold text-slate-900">{{ categoryMeta(note.category).label }}</span>
                     <span class="text-sm font-medium text-slate-500">{{ note.timeLabel }}</span>
                     <span
+                      v-if="note.rating != null"
+                      class="inline-flex items-center gap-0.5 text-amber-500"
+                      :aria-label="`${note.rating} sur 5`"
+                    >
+                      <svg
+                        v-for="star in 5"
+                        :key="star"
+                        class="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        :fill="star <= note.rating! ? 'currentColor' : 'none'"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path
+                          d="m12 2 2.9 5.88 6.5.95-4.7 4.58 1.1 6.42L12 17.77l-5.8 3.06 1.1-6.42-4.7-4.58 6.5-.95L12 2Z"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    <span
                       class="rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide"
                       :class="
                         note.status === 'PUBLISHED'
@@ -173,7 +226,7 @@
                       {{ note.status === 'PUBLISHED' ? 'Publié' : 'Brouillon' }}
                     </span>
                   </div>
-                  <p class="mt-2 text-sm leading-relaxed text-slate-700">{{ note.content }}</p>
+                  <p v-if="note.content" class="mt-2 text-sm leading-relaxed text-slate-700">{{ note.content }}</p>
                 </div>
               </div>
 
@@ -226,6 +279,7 @@ export type FollowUpNote = {
   id: string
   category: FollowUpCategory
   content: string
+  rating: number | null
   status: 'DRAFT' | 'PUBLISHED'
   noteDate: string
   timeLabel: string
@@ -262,6 +316,7 @@ const activeFilter = ref<'all' | FollowUpCategory>('all')
 
 const newNote = reactive({
   category: 'ACTIVITY' as FollowUpCategory,
+  rating: 0,
   content: '',
 })
 
@@ -427,6 +482,7 @@ async function loadNotes() {
 function openAddForm() {
   formError.value = null
   newNote.category = 'ACTIVITY'
+  newNote.rating = 0
   newNote.content = ''
   showAddForm.value = true
 }
@@ -441,21 +497,22 @@ async function saveNewNote() {
   const t = token.value
   const id = props.childId
   if (!t || !id) return
-  const content = newNote.content.trim()
-  if (!content) {
-    formError.value = 'Saisissez le contenu de la note.'
+  if (newNote.rating < 1 || newNote.rating > 5) {
+    formError.value = 'Choisissez une note entre 1 et 5 étoiles.'
     return
   }
+  const content = newNote.content.trim()
   saving.value = true
   formError.value = null
   try {
     await $fetch(`${config.public.apiBase}/admin/students/${id}/follow-up-notes`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${t}` },
-      body: { category: newNote.category, content },
+      body: { category: newNote.category, rating: newNote.rating, content },
     })
     showAddForm.value = false
     newNote.content = ''
+    newNote.rating = 0
     await loadNotes()
   } catch (e: unknown) {
     const err = e as { data?: { message?: string | string[] } }

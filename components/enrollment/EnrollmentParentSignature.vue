@@ -181,10 +181,40 @@ function onFileSelect(e: Event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = () => {
-    signatureDataUrl.value = String(reader.result ?? '');
-    mode.value = 'upload';
+    const raw = String(reader.result ?? '');
+    void compressSignatureDataUrl(raw).then((dataUrl) => {
+      signatureDataUrl.value = dataUrl;
+      mode.value = 'upload';
+    });
   };
   reader.readAsDataURL(file);
+}
+
+/** Réduit les photos importées pour éviter « request entity too large ». */
+function compressSignatureDataUrl(dataUrl: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 900;
+      const scale = img.width > maxW ? maxW / img.width : 1;
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(dataUrl);
+        return;
+      }
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
 }
 
 function clearSignature() {

@@ -159,7 +159,25 @@
                 </div>
                 <time class="carnet-entry__time">{{ note.timeLabel }}</time>
               </div>
-              <p class="carnet-entry__content">{{ note.content }}</p>
+
+              <div
+                v-if="noteRating(note) > 0"
+                class="carnet-entry__rating"
+                :aria-label="`${noteRating(note)} sur 5`"
+              >
+                <div class="carnet-entry__stars">
+                  <span
+                    v-for="star in 5"
+                    :key="star"
+                    class="carnet-entry__star"
+                    :class="{ 'carnet-entry__star--on': star <= noteRating(note) }"
+                    aria-hidden="true"
+                  >★</span>
+                </div>
+                <span class="carnet-entry__score">{{ noteRating(note) }}/5</span>
+              </div>
+
+              <p v-if="note.content" class="carnet-entry__content">{{ note.content }}</p>
               <footer class="carnet-entry__foot">
                 <button
                   type="button"
@@ -207,11 +225,18 @@ const likedIds = ref(new Set<string>());
 
 const categoryFilters: { id: CategoryFilter; label: string }[] = [
   { id: 'ALL', label: 'Toutes' },
+  { id: 'ACTIVITY', label: 'Activité' },
   { id: 'MEAL', label: 'Repas' },
   { id: 'NAP', label: 'Sieste' },
   { id: 'MOOD', label: 'Humeur' },
   { id: 'CARE', label: 'Soin' },
 ];
+
+function noteRating(note: FollowUpNoteItem): number {
+  const n = Number(note.rating);
+  if (!Number.isFinite(n) || n < 1) return 0;
+  return Math.min(5, Math.round(n));
+}
 
 function categoryLabel(cat: FollowUpNoteItem['category']): string {
   const map: Record<FollowUpNoteItem['category'], string> = {
@@ -902,10 +927,44 @@ function toggleLike(id: string) {
   white-space: nowrap;
 }
 
+.carnet-entry__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.15rem 0 0.55rem;
+}
+
+.carnet-entry__stars {
+  display: inline-flex;
+  gap: 0.1rem;
+  line-height: 1;
+}
+
+.carnet-entry__star {
+  font-size: 1.25rem;
+  color: #dbe3ec;
+  user-select: none;
+}
+
+.carnet-entry__star--on {
+  color: #f59e0b;
+}
+
+.carnet-entry__score {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #b45309;
+}
+
 .carnet-entry__content {
   font-size: 0.875rem;
   line-height: 1.6;
   color: #475569;
+}
+
+.carnet-entry__content--muted {
+  font-style: italic;
+  color: #94a3b8;
 }
 
 .carnet-entry__foot {

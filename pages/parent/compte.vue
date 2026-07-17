@@ -65,6 +65,16 @@
         >
       </label>
       <label class="block">
+        <span class="mb-1 block text-sm font-medium text-slate-700">E-mail</span>
+        <input
+          :value="form.email"
+          type="email"
+          readonly
+          class="w-full cursor-default rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none"
+        >
+        <span class="mt-1 block text-xs text-slate-500">Adresse utilisée pour la connexion (non modifiable).</span>
+      </label>
+      <label class="block">
         <span class="mb-1 block text-sm font-medium text-slate-700">Telephone</span>
         <input
           v-model.trim="form.phone"
@@ -109,6 +119,7 @@ const photoPreview = ref('');
 const photoInput = ref<HTMLInputElement | null>(null);
 const form = reactive({
   fullName: '',
+  email: '',
   phone: '',
   address: '',
   profilePhotoUrl: '',
@@ -116,8 +127,15 @@ const form = reactive({
 
 onMounted(async () => {
   try {
-    const me = await authFetch<{ fullName: string | null; phone: string | null; address: string | null; profilePhotoUrl: string | null }>('/parent/me');
+    const me = await authFetch<{
+      fullName: string | null
+      email: string
+      phone: string | null
+      address: string | null
+      profilePhotoUrl: string | null
+    }>('/parent/me');
     form.fullName = me?.fullName ?? '';
+    form.email = me?.email ?? '';
     form.phone = me?.phone ?? '';
     form.address = me?.address ?? '';
     form.profilePhotoUrl = me?.profilePhotoUrl ?? '';

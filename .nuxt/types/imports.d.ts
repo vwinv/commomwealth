@@ -17,6 +17,7 @@ declare global {
   const bloodGroupLabel: typeof import('../../utils/enrollment-health').bloodGroupLabel
   const buildParentInvoiceHtml: typeof import('../../utils/parentInvoiceHtml').buildParentInvoiceHtml
   const buildParentReceiptHtml: typeof import('../../utils/parentReceiptHtml').buildParentReceiptHtml
+  const buildProgrammeIcs: typeof import('../../utils/programmeCalendarIcs').buildProgrammeIcs
   const callOnce: typeof import('../../node_modules/nuxt/dist/app/composables/once').callOnce
   const canAccessHomeFromSession: typeof import('../../utils/admin-permissions').canAccessHomeFromSession
   const cancelIdleCallback: typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback').cancelIdleCallback
@@ -45,6 +46,7 @@ declare global {
   const definePayloadPlugin: typeof import('../../node_modules/nuxt/dist/app/nuxt').definePayloadPlugin
   const definePayloadReducer: typeof import('../../node_modules/nuxt/dist/app/composables/payload').definePayloadReducer
   const definePayloadReviver: typeof import('../../node_modules/nuxt/dist/app/composables/payload').definePayloadReviver
+  const downloadProgrammeIcs: typeof import('../../utils/programmeCalendarIcs').downloadProgrammeIcs
   const effect: typeof import('../../node_modules/vue').effect
   const effectScope: typeof import('../../node_modules/vue').effectScope
   const emailToMailtoHref: typeof import('../../utils/school-contact').emailToMailtoHref
@@ -275,6 +277,9 @@ declare global {
   export type { ParentReceiptLine, ParentReceiptHtmlInput } from '../../utils/parentReceiptHtml'
   import('../../utils/parentReceiptHtml')
   // @ts-ignore
+  export type { ProgrammeIcsEvent } from '../../utils/programmeCalendarIcs'
+  import('../../utils/programmeCalendarIcs')
+  // @ts-ignore
   export type { SchoolContactInfo } from '../../utils/school-contact'
   import('../../utils/school-contact')
 }
@@ -298,6 +303,7 @@ declare module 'vue' {
     readonly bloodGroupLabel: UnwrapRef<typeof import('../../utils/enrollment-health')['bloodGroupLabel']>
     readonly buildParentInvoiceHtml: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['buildParentInvoiceHtml']>
     readonly buildParentReceiptHtml: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['buildParentReceiptHtml']>
+    readonly buildProgrammeIcs: UnwrapRef<typeof import('../../utils/programmeCalendarIcs')['buildProgrammeIcs']>
     readonly callOnce: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/once')['callOnce']>
     readonly canAccessHomeFromSession: UnwrapRef<typeof import('../../utils/admin-permissions')['canAccessHomeFromSession']>
     readonly cancelIdleCallback: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/idle-callback')['cancelIdleCallback']>
@@ -326,6 +332,7 @@ declare module 'vue' {
     readonly definePayloadPlugin: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/nuxt')['definePayloadPlugin']>
     readonly definePayloadReducer: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReducer']>
     readonly definePayloadReviver: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['definePayloadReviver']>
+    readonly downloadProgrammeIcs: UnwrapRef<typeof import('../../utils/programmeCalendarIcs')['downloadProgrammeIcs']>
     readonly effect: UnwrapRef<typeof import('../../node_modules/vue')['effect']>
     readonly effectScope: UnwrapRef<typeof import('../../node_modules/vue')['effectScope']>
     readonly emailToMailtoHref: UnwrapRef<typeof import('../../utils/school-contact')['emailToMailtoHref']>

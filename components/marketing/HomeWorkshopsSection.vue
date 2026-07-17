@@ -80,11 +80,25 @@
               </div>
 
               <NuxtLink
+                v-if="(w.placesRemaining ?? 0) > 0"
                 class="motion-btn mt-4 inline-flex h-10 w-full items-center justify-center rounded-lg bg-brandBlue text-sm font-semibold text-white"
-                to="/inscription"
+                :to="`/ateliers/${w.id}`"
               >
                 {{ t('home.workshops.cta') }}
               </NuxtLink>
+              <span
+                v-else
+                class="mt-4 block"
+                title="Plus de places disponibles"
+              >
+                <button
+                  type="button"
+                  disabled
+                  class="inline-flex h-10 w-full cursor-not-allowed items-center justify-center rounded-lg bg-slate-300 text-sm font-semibold text-slate-500"
+                >
+                  Complet
+                </button>
+              </span>
             </article>
           </RevealSection>
         </div>
@@ -114,6 +128,7 @@ type PublicWorkshop = {
   time: string
   age: string
   price: string
+  placesRemaining?: number
 }
 
 const { t } = useI18n()

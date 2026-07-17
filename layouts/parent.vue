@@ -51,6 +51,17 @@
           >
             Documents
           </NuxtLink>
+          <NuxtLink
+            to="/parent/ateliers"
+            class="border-b-2 py-1 font-medium transition-colors"
+            :class="
+              isAteliers
+                ? 'border-brandOrange text-brandOrange'
+                : 'border-transparent text-slate-600 hover:text-brandBlue'
+            "
+          >
+            Ateliers
+          </NuxtLink>
         </nav>
 
         <div class="order-2 flex items-center gap-2 md:order-3 md:gap-3">
@@ -256,6 +267,9 @@ const isEnfants = computed(
 );
 const isPaiements = computed(() => pathNorm.value === '/parent/paiements');
 const isDocuments = computed(() => pathNorm.value === '/parent/documents');
+const isAteliers = computed(
+  () => pathNorm.value === '/parent/ateliers' || pathNorm.value.startsWith('/parent/ateliers/'),
+);
 
 const me = ref<{ fullName: string | null; email: string; profilePhotoUrl: string | null } | null>(null);
 const notifUnreadCount = ref(0);

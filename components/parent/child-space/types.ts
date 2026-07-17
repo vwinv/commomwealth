@@ -38,6 +38,7 @@ export type FollowUpNoteItem = {
   id: string;
   category: 'ACTIVITY' | 'MEAL' | 'NAP' | 'MOOD' | 'CARE';
   content: string;
+  rating: number | null;
   noteDate: string;
   timeLabel: string;
   publishedAt: string | null;

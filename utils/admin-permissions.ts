@@ -4,6 +4,7 @@ export type AppModuleRoleCode =
   | 'ELEVES'
   | 'PARENTS'
   | 'PROGRAMME'
+  | 'ATELIERS'
   | 'UTILISATEURS'
   | 'FINANCE'
   | 'DOCUMENTS'
@@ -14,6 +15,7 @@ export const APP_MODULE_ROLE_LABELS: Record<AppModuleRoleCode, string> = {
   ELEVES: 'Élèves',
   PARENTS: 'Parents',
   PROGRAMME: 'Programme',
+  ATELIERS: 'Gestion des ateliers',
   UTILISATEURS: 'Utilisateurs',
   FINANCE: 'Paiements & Comptabilité',
   DOCUMENTS: 'Documents',
@@ -25,6 +27,7 @@ export const ALL_APP_MODULE_ROLE_CODES: AppModuleRoleCode[] = [
   'ELEVES',
   'PARENTS',
   'PROGRAMME',
+  'ATELIERS',
   'UTILISATEURS',
   'FINANCE',
   'DOCUMENTS',
@@ -39,7 +42,7 @@ export const ADMIN_LANDING_ROUTE_ORDER: Array<{ prefix: string; module: AppModul
   { prefix: '/admin/students', module: 'ELEVES' },
   { prefix: '/admin/parents', module: 'PARENTS' },
   { prefix: '/admin/programme', module: 'PROGRAMME' },
-  { prefix: '/admin/ateliers', module: 'PROGRAMME' },
+  { prefix: '/admin/ateliers', module: 'ATELIERS' },
   { prefix: '/admin/utilisateurs', module: 'UTILISATEURS' },
   { prefix: '/admin/payments', module: 'FINANCE' },
   { prefix: '/admin/comptabilite', module: 'FINANCE' },
@@ -53,7 +56,7 @@ export const ADMIN_ROUTE_MODULES: Array<{ prefix: string; module: AppModuleRoleC
   { prefix: '/admin/students', module: 'ELEVES' },
   { prefix: '/admin/parents', module: 'PARENTS' },
   { prefix: '/admin/programme', module: 'PROGRAMME' },
-  { prefix: '/admin/ateliers', module: 'PROGRAMME' },
+  { prefix: '/admin/ateliers', module: 'ATELIERS' },
   { prefix: '/admin/utilisateurs', module: 'UTILISATEURS' },
   { prefix: '/admin/payments', module: 'FINANCE' },
   { prefix: '/admin/comptabilite', module: 'FINANCE' },
