@@ -25,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import aproposImg from '~/assets/images/apropos.png';
+import aproposFallback from '~/assets/images/apropos.png';
 const { t } = useI18n();
+const { imageSrc } = useLandingImages();
+const aproposImg = computed(() => imageSrc('about', aproposFallback));
 </script>

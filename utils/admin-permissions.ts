@@ -5,6 +5,7 @@ export type AppModuleRoleCode =
   | 'PARENTS'
   | 'PROGRAMME'
   | 'ATELIERS'
+  | 'LANDING'
   | 'UTILISATEURS'
   | 'FINANCE'
   | 'DOCUMENTS'
@@ -16,6 +17,7 @@ export const APP_MODULE_ROLE_LABELS: Record<AppModuleRoleCode, string> = {
   PARENTS: 'Parents',
   PROGRAMME: 'Programme',
   ATELIERS: 'Gestion des ateliers',
+  LANDING: 'Landing page',
   UTILISATEURS: 'Utilisateurs',
   FINANCE: 'Paiements & Comptabilité',
   DOCUMENTS: 'Documents',
@@ -28,6 +30,7 @@ export const ALL_APP_MODULE_ROLE_CODES: AppModuleRoleCode[] = [
   'PARENTS',
   'PROGRAMME',
   'ATELIERS',
+  'LANDING',
   'UTILISATEURS',
   'FINANCE',
   'DOCUMENTS',
@@ -38,6 +41,7 @@ export const DIRECTOR_JOB_TITLE = 'Directeur'
 
 /** Ordre de redirection après connexion si l’utilisateur n’a pas accès au Home. */
 export const ADMIN_LANDING_ROUTE_ORDER: Array<{ prefix: string; module: AppModuleRoleCode }> = [
+  { prefix: '/admin/landing', module: 'LANDING' },
   { prefix: '/admin/inscriptions', module: 'INSCRIPTIONS' },
   { prefix: '/admin/students', module: 'ELEVES' },
   { prefix: '/admin/parents', module: 'PARENTS' },
@@ -52,6 +56,7 @@ export const ADMIN_LANDING_ROUTE_ORDER: Array<{ prefix: string; module: AppModul
 
 /** Préfixe de route admin → module requis (null = Home, réservé admin + directeur). */
 export const ADMIN_ROUTE_MODULES: Array<{ prefix: string; module: AppModuleRoleCode | null }> = [
+  { prefix: '/admin/landing', module: 'LANDING' },
   { prefix: '/admin/inscriptions', module: 'INSCRIPTIONS' },
   { prefix: '/admin/students', module: 'ELEVES' },
   { prefix: '/admin/parents', module: 'PARENTS' },

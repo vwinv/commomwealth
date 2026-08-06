@@ -33,8 +33,9 @@ import north from '~/assets/images/north.png';
 import pg from '~/assets/images/pg.png';
 
 const { t } = useI18n();
+const { imageList } = useLandingImages();
 
-const partners = [
+const defaultPartners = [
   { name: 'BMW', logo: bmw },
   { name: '7 Wolves', logo: sevenWolves },
   { name: "Domino's", logo: domino },
@@ -42,4 +43,15 @@ const partners = [
   { name: 'The North Face', logo: north },
   { name: 'P&G', logo: pg },
 ];
+
+const partners = computed(() => {
+  const logos = imageList(
+    'partners',
+    defaultPartners.map((p) => p.logo),
+  );
+  return defaultPartners.map((p, i) => ({
+    name: p.name,
+    logo: logos[i] ?? p.logo,
+  }));
+});
 </script>

@@ -27,6 +27,7 @@ interface _GlobalComponents {
   AdminServiceEditModal: typeof import("../../components/admin/AdminServiceEditModal.vue")['default']
   AdminStudentCarnetSuivi: typeof import("../../components/admin/AdminStudentCarnetSuivi.vue")['default']
   AdminStudentFicheSante: typeof import("../../components/admin/AdminStudentFicheSante.vue")['default']
+  AdminImageUploadBlock: typeof import("../../components/admin/ImageUploadBlock.vue")['default']
   EnrollmentFamilySectionHeader: typeof import("../../components/enrollment/EnrollmentFamilySectionHeader.vue")['default']
   EnrollmentField: typeof import("../../components/enrollment/EnrollmentField.vue")['default']
   EnrollmentNavFooter: typeof import("../../components/enrollment/EnrollmentNavFooter.vue")['default']
@@ -108,6 +109,7 @@ interface _GlobalComponents {
   LazyAdminServiceEditModal: LazyComponent<typeof import("../../components/admin/AdminServiceEditModal.vue")['default']>
   LazyAdminStudentCarnetSuivi: LazyComponent<typeof import("../../components/admin/AdminStudentCarnetSuivi.vue")['default']>
   LazyAdminStudentFicheSante: LazyComponent<typeof import("../../components/admin/AdminStudentFicheSante.vue")['default']>
+  LazyAdminImageUploadBlock: LazyComponent<typeof import("../../components/admin/ImageUploadBlock.vue")['default']>
   LazyEnrollmentFamilySectionHeader: LazyComponent<typeof import("../../components/enrollment/EnrollmentFamilySectionHeader.vue")['default']>
   LazyEnrollmentField: LazyComponent<typeof import("../../components/enrollment/EnrollmentField.vue")['default']>
   LazyEnrollmentNavFooter: LazyComponent<typeof import("../../components/enrollment/EnrollmentNavFooter.vue")['default']>

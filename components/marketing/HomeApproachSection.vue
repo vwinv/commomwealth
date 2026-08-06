@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import approachImg from '~/assets/images/notreapproche.png';
+import approachFallback from '~/assets/images/notreapproche.png';
 const { t } = useI18n();
+const { imageSrc } = useLandingImages();
+const approachImg = computed(() => imageSrc('approach', approachFallback));
 </script>

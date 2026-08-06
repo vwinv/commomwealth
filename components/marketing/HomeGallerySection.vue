@@ -7,16 +7,16 @@
 
       <div class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <RevealSection extra-class="motion-img-wrap overflow-hidden rounded-2xl shadow-sm sm:row-span-1" variant="pop" :delay="40">
-          <img class="h-[220px] w-full object-cover sm:h-[260px]" :src="photo1" alt="" />
+          <img class="h-[220px] w-full object-cover sm:h-[260px]" :src="photo1Src" alt="" />
         </RevealSection>
         <RevealSection extra-class="motion-img-wrap overflow-hidden rounded-2xl shadow-sm" variant="pop" :delay="110">
-          <img class="h-[220px] w-full object-cover sm:h-[260px]" :src="photo2" alt="" />
+          <img class="h-[220px] w-full object-cover sm:h-[260px]" :src="photo2Src" alt="" />
         </RevealSection>
         <RevealSection extra-class="motion-img-wrap overflow-hidden rounded-2xl shadow-sm" variant="pop" :delay="180">
-          <img class="h-[220px] w-full object-cover sm:h-[260px]" :src="photo3" alt="" />
+          <img class="h-[220px] w-full object-cover sm:h-[260px]" :src="photo3Src" alt="" />
         </RevealSection>
         <RevealSection extra-class="motion-img-wrap overflow-hidden rounded-2xl shadow-sm sm:col-span-2" variant="blur" :delay="250">
-          <img class="h-[220px] w-full object-cover sm:h-[280px]" :src="photo4" alt="" />
+          <img class="h-[220px] w-full object-cover sm:h-[280px]" :src="photo4Src" alt="" />
         </RevealSection>
         <RevealSection extra-class="motion-img-wrap overflow-hidden rounded-2xl shadow-sm" variant="pop" :delay="320">
           <img class="h-[220px] w-full object-cover sm:h-[280px]" :src="aproposImg" alt="" />
@@ -37,7 +37,16 @@ import photo1 from '~/assets/images/photo1.png';
 import photo2 from '~/assets/images/photo2.png';
 import photo3 from '~/assets/images/photo3.png';
 import photo4 from '~/assets/images/photo4.png';
-import aproposImg from '~/assets/images/apropos.png';
+import aproposFallback from '~/assets/images/apropos.png';
 
 const { t } = useI18n();
+const { imageList, imageSrc } = useLandingImages();
+
+const galleryFallback = [photo1, photo2, photo3, photo4, aproposFallback];
+const gallery = computed(() => imageList('gallery', galleryFallback));
+const photo1Src = computed(() => gallery.value[0] ?? photo1);
+const photo2Src = computed(() => gallery.value[1] ?? photo2);
+const photo3Src = computed(() => gallery.value[2] ?? photo3);
+const photo4Src = computed(() => gallery.value[3] ?? photo4);
+const aproposImg = computed(() => gallery.value[4] ?? imageSrc('about', aproposFallback));
 </script>

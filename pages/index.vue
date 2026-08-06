@@ -23,6 +23,8 @@ definePageMeta({ layout: 'marketing' });
 const { t } = useI18n();
 const { ready: pageReady } = usePageLoadMotion();
 
+await loadLandingContent();
+
 const pageTitle = computed(() => t('meta.homeTitle'));
 const pageDescription = computed(() => t('meta.homeDescription'));
 

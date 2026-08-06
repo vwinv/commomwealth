@@ -49,9 +49,11 @@
 </template>
 
 <script setup lang="ts">
-import suggestionImg from '~/assets/images/suggestion.png';
+import suggestionFallback from '~/assets/images/suggestion.png';
 
 const { t } = useI18n();
+const { imageSrc } = useLandingImages();
+const suggestionImg = computed(() => imageSrc('suggestions', suggestionFallback));
 const message = ref('');
 const sent = ref(false);
 

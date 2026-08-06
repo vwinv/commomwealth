@@ -34,6 +34,7 @@ export { useAccountingRefresh } from '../composables/useAccountingRefresh';
 export { useAdminPermissions } from '../composables/useAdminPermissions';
 export { useAuth, AdminLoginResult } from '../composables/useAuth';
 export { ENROLLMENT_STEPS, formatSchoolYearLabel, currentSchoolYear, useEnrollmentWizard, EnrollmentRecapRow, EnrollmentGender, EnrollmentChildDraft, EnrollmentParentDraft, EnrollmentGuardian2Draft, EnrollmentEmergencyDraft, EnrollmentHealthDraft, EnrollmentOptionsDraft, EnrollmentEngagementDraft, EnrollmentStepId } from '../composables/useEnrollmentWizard';
+export { loadLandingContent, useLandingImages, LandingImages, LandingContentPayload, LandingApiResponse } from '../composables/useLandingContent';
 export { usePageLoadMotion } from '../composables/usePageLoadMotion';
 export { useParentAuth } from '../composables/useParentAuth';
 export { useParentDocumentUrl } from '../composables/useParentDocumentUrl';

@@ -78,6 +78,7 @@ declare global {
   const isShallow: typeof import('../../node_modules/vue').isShallow
   const isVue2: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi').isVue2
   const isVue3: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi').isVue3
+  const loadLandingContent: typeof import('../../composables/useLandingContent').loadLandingContent
   const loadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload').loadPayload
   const markRaw: typeof import('../../node_modules/vue').markRaw
   const matriculeFromEnrollmentId: typeof import('../../utils/parentInvoiceHtml').matriculeFromEnrollmentId
@@ -161,6 +162,7 @@ declare global {
   const useHydration: typeof import('../../node_modules/nuxt/dist/app/composables/hydrate').useHydration
   const useI18n: typeof import('../../node_modules/vue-i18n/dist/vue-i18n').useI18n
   const useId: typeof import('../../node_modules/vue').useId
+  const useLandingImages: typeof import('../../composables/useLandingContent').useLandingImages
   const useLazyAsyncData: typeof import('../../node_modules/nuxt/dist/app/composables/asyncData').useLazyAsyncData
   const useLazyFetch: typeof import('../../node_modules/nuxt/dist/app/composables/fetch').useLazyFetch
   const useLink: typeof import('../../node_modules/vue-router').useLink
@@ -255,6 +257,9 @@ declare global {
   // @ts-ignore
   export type { EnrollmentRecapRow, EnrollmentGender, EnrollmentChildDraft, EnrollmentParentDraft, EnrollmentGuardian2Draft, EnrollmentEmergencyDraft, EnrollmentHealthDraft, EnrollmentOptionsDraft, EnrollmentEngagementDraft, EnrollmentStepId } from '../../composables/useEnrollmentWizard'
   import('../../composables/useEnrollmentWizard')
+  // @ts-ignore
+  export type { LandingImages, LandingContentPayload, LandingApiResponse } from '../../composables/useLandingContent'
+  import('../../composables/useLandingContent')
   // @ts-ignore
   export type { BillingContactDto, TuitionChargeInvoiceDto, MonthlyInstallmentInvoiceDto, LegacyPaymentInvoiceDto, ParentInvoiceSource, ParentInvoiceDocument, ParentReceiptDocument } from '../../composables/useParentSchoolInvoice'
   import('../../composables/useParentSchoolInvoice')
@@ -364,6 +369,7 @@ declare module 'vue' {
     readonly isShallow: UnwrapRef<typeof import('../../node_modules/vue')['isShallow']>
     readonly isVue2: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue2']>
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
+    readonly loadLandingContent: UnwrapRef<typeof import('../../composables/useLandingContent')['loadLandingContent']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
     readonly markRaw: UnwrapRef<typeof import('../../node_modules/vue')['markRaw']>
     readonly matriculeFromEnrollmentId: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['matriculeFromEnrollmentId']>
@@ -447,6 +453,7 @@ declare module 'vue' {
     readonly useHydration: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/hydrate')['useHydration']>
     readonly useI18n: UnwrapRef<typeof import('../../node_modules/vue-i18n/dist/vue-i18n')['useI18n']>
     readonly useId: UnwrapRef<typeof import('../../node_modules/vue')['useId']>
+    readonly useLandingImages: UnwrapRef<typeof import('../../composables/useLandingContent')['useLandingImages']>
     readonly useLazyAsyncData: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/asyncData')['useLazyAsyncData']>
     readonly useLazyFetch: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/fetch')['useLazyFetch']>
     readonly useLink: UnwrapRef<typeof import('../../node_modules/vue-router')['useLink']>
