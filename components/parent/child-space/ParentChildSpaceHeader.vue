@@ -6,7 +6,13 @@
 
     <div class="child-header__body">
       <div class="child-header__avatar" aria-hidden="true">
-        {{ initials }}
+        <img
+          v-if="child.photoUrl"
+          :src="child.photoUrl"
+          :alt="child.fullName"
+          class="child-header__avatar-img"
+        >
+        <template v-else>{{ initials }}</template>
       </div>
 
       <div class="child-header__row">
@@ -131,6 +137,7 @@ const subtitleLine = computed(() => {
   justify-content: center;
   width: 5.5rem;
   height: 5.5rem;
+  overflow: hidden;
   border-radius: 1.25rem;
   border: 4px solid #fff;
   background: #216ec2;
@@ -139,6 +146,12 @@ const subtitleLine = computed(() => {
   font-weight: 700;
   line-height: 1;
   box-shadow: 0 10px 24px rgba(33, 110, 194, 0.28);
+}
+
+.child-header__avatar-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .child-header__row {

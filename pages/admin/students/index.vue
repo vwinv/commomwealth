@@ -83,7 +83,21 @@
               <td colspan="5" class="px-4 py-12 text-center text-slate-500">Aucun élève.</td>
             </tr>
             <tr v-for="row in rows" v-else :key="row.childId" class="text-slate-700">
-              <td class="px-4 py-3 font-semibold">{{ row.studentName }}</td>
+              <td class="px-4 py-3 font-semibold">
+                <span class="inline-flex items-center gap-3">
+                  <img
+                    v-if="row.photoUrl"
+                    :src="row.photoUrl"
+                    alt=""
+                    class="h-9 w-9 rounded-lg object-cover"
+                  >
+                  <span
+                    v-else
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#216EC2]/10 text-xs font-bold text-[#216EC2]"
+                  >{{ studentInitials(row.studentName) }}</span>
+                  {{ row.studentName }}
+                </span>
+              </td>
               <td class="px-4 py-3">{{ row.age }}</td>
               <td class="px-4 py-3">{{ row.className }}</td>
               <td class="whitespace-nowrap px-4 py-3">{{ row.schoolYear }}</td>
@@ -146,6 +160,7 @@ type OverviewDto = {
     childId: string
     enrollmentId: string
     studentName: string
+    photoUrl: string | null
     age: string
     className: string
     schoolYear: string
@@ -189,6 +204,14 @@ const statCards = computed(() => {
 })
 
 const rows = computed(() => overview.value?.items ?? [])
+
+function studentInitials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  const a = parts[0]?.[0] ?? ''
+  const b = parts.length > 1 ? parts[parts.length - 1]![0] : ''
+  return `${a}${b}`.toUpperCase() || '?'
+}
+
 const pageStart = computed(() => {
   if (!overview.value?.total) return 0
   return (overview.value.page - 1) * overview.value.limit + 1

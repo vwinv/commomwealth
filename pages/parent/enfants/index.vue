@@ -56,6 +56,7 @@ type OverviewChild = {
   lastName: string;
   birthDate: string | null;
   gender: Gender;
+  photoUrl?: string | null;
   enrollments: Array<{
     schoolYear: string;
     status: EnrollmentStatus;

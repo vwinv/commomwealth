@@ -1,7 +1,15 @@
 <template>
   <article class="child-card overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
     <div class="child-card__header" :class="headerClass">
-      <span class="child-card__avatar">{{ initials }}</span>
+      <span class="child-card__avatar">
+        <img
+          v-if="child.photoUrl"
+          :src="child.photoUrl"
+          :alt="`${child.firstName} ${child.lastName}`"
+          class="child-card__avatar-img"
+        >
+        <template v-else>{{ initials }}</template>
+      </span>
       <span v-if="presenceLabel" class="child-card__presence">
         <span class="child-card__presence-dot" aria-hidden="true" />
         {{ presenceLabel }}
@@ -61,6 +69,7 @@ export type ParentChildCardData = {
   lastName: string;
   birthDate: string | null;
   gender: Gender;
+  photoUrl?: string | null;
   enrollments: Array<{
     schoolYear: string;
     status: EnrollmentStatus;
@@ -149,12 +158,19 @@ const subtitleLine = computed(() => {
   width: 3rem;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   border-radius: 0.625rem;
   background: #fff;
   font-size: 0.95rem;
   font-weight: 800;
   color: #216ec2;
   box-shadow: 0 4px 12px rgb(15 23 42 / 0.12);
+}
+
+.child-card__avatar-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .child-card__header--orange .child-card__avatar {

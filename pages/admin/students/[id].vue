@@ -71,6 +71,7 @@
             @dragover.prevent="photoDragOver = true"
             @dragleave.prevent="photoDragOver = false"
             @drop.prevent="onPhotoDrop"
+            :disabled="uploadingPhoto"
           >
             <img
               v-if="photoPreview"
@@ -78,6 +79,12 @@
               alt="Photo de l'élève"
               class="absolute inset-0 h-full w-full object-cover"
             >
+            <div
+              v-if="uploadingPhoto"
+              class="absolute inset-0 flex items-center justify-center bg-white/70 text-xs font-bold text-[#216EC2]"
+            >
+              Envoi…
+            </div>
             <template v-else>
               <svg class="h-14 w-14 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="12" r="8.5" fill="currentColor" opacity="0.28" />
@@ -110,6 +117,7 @@
             @change="onPhotoSelect"
           >
           <div class="flex w-full min-w-0 flex-1 flex-col gap-3">
+            <p v-if="photoError" class="text-center text-xs font-medium text-rose-600 sm:text-left">{{ photoError }}</p>
             <div class="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
               <p
                 class="min-w-0 text-center text-[1.35rem] font-bold leading-tight text-[#216EC2] sm:text-left sm:text-2xl sm:leading-tight"
@@ -740,29 +748,58 @@ const profileTabs = computed(() => [
 const photoInput = ref<HTMLInputElement | null>(null)
 const photoPreview = ref('')
 const photoDragOver = ref(false)
+const uploadingPhoto = ref(false)
+const photoError = ref<string | null>(null)
 
 function openPhotoPicker() {
+  if (uploadingPhoto.value) return
   photoInput.value?.click()
 }
 
-function readPhotoFile(file: File | undefined) {
+async function uploadStudentPhoto(file: File | undefined) {
   if (!file || !file.type.startsWith('image/')) return
+  const t = token.value
+  const id = childId.value
+  if (!t || !id) return
+  uploadingPhoto.value = true
+  photoError.value = null
+  const previous = photoPreview.value
   const reader = new FileReader()
   reader.onload = () => {
     photoPreview.value = String(reader.result ?? '')
   }
   reader.readAsDataURL(file)
+  try {
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await $fetch<{ photoUrl: string | null }>(`${config.public.apiBase}/admin/students/${id}/photo`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${t}` },
+      body: fd,
+    })
+    const url = res?.photoUrl ?? ''
+    photoPreview.value = url
+    if (profile.value) profile.value.photoUrl = url
+  } catch (e: unknown) {
+    photoPreview.value = previous
+    const err = e as { data?: { message?: string | string[] } }
+    const raw = err?.data?.message
+    photoError.value =
+      typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0] : 'Impossible d’enregistrer la photo.'
+  } finally {
+    uploadingPhoto.value = false
+  }
 }
 
 function onPhotoSelect(e: Event) {
   const input = e.target as HTMLInputElement
-  readPhotoFile(input.files?.[0])
+  void uploadStudentPhoto(input.files?.[0])
   input.value = ''
 }
 
 function onPhotoDrop(e: DragEvent) {
   photoDragOver.value = false
-  readPhotoFile(e.dataTransfer?.files?.[0])
+  void uploadStudentPhoto(e.dataTransfer?.files?.[0])
 }
 
 type ProfileDto = {
@@ -770,6 +807,7 @@ type ProfileDto = {
   firstName: string
   lastName: string
   fullName: string
+  photoUrl: string | null
   matricule: string
   ageLabel: string
   birthDisplay: string
@@ -1084,6 +1122,7 @@ async function loadProfile() {
     profile.value = await $fetch<ProfileDto>(`${config.public.apiBase}/admin/students/${id}`, {
       headers: { Authorization: `Bearer ${t}` },
     })
+    photoPreview.value = profile.value?.photoUrl ?? ''
   } catch (e: unknown) {
     const err = e as { data?: { message?: string | string[] }; statusCode?: number }
     const raw = err?.data?.message
@@ -1096,6 +1135,7 @@ async function loadProfile() {
             ? raw[0]
             : 'Impossible de charger le profil.'
     profile.value = null
+    photoPreview.value = ''
   } finally {
     pending.value = false
   }

@@ -25,6 +25,7 @@ export type ChildSpaceChild = {
   allergiesRaw: string | null;
   matricule: string;
   address: string | null;
+  photoUrl: string | null;
 };
 
 export type ChildSpaceParent = {
