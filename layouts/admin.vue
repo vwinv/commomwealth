@@ -24,6 +24,10 @@
 const menuOpen = useState('admin_menu_open', () => false)
 const route = useRoute()
 
+useHead({
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
+
 watch(
   () => route.path,
   () => {

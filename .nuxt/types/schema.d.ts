@@ -38,6 +38,10 @@ import { NuxtModule, ModuleDependencyMeta } from '@nuxt/schema'
 
    schoolPaymentModes: string,
 
+   siteUrl: string,
+
+   siteName: string,
+
    i18n: {
       baseUrl: string,
 

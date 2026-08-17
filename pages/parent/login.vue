@@ -97,6 +97,11 @@ definePageMeta({
   layout: 'default',
 });
 
+useHead({
+  title: 'Espace parent',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+});
+
 const { isLoggedIn, login } = useParentAuth();
 const email = ref('');
 const password = ref('');

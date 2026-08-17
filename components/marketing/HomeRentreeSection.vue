@@ -26,7 +26,6 @@
               <h3 class="text-xs font-bold uppercase tracking-wide sm:text-sm">{{ level.title }}</h3>
               <p class="mt-2 flex-1 text-xs leading-5 text-white/90 sm:text-[13px]">{{ level.description }}</p>
               <div class="mt-3 flex flex-wrap gap-2">
-                <span class="rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-semibold">{{ level.price }}</span>
                 <span class="rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-semibold">{{ level.status }}</span>
               </div>
               <NuxtLink
@@ -63,6 +62,7 @@ import cardImg from '~/assets/images/photo1.png';
 import { formatSchoolYearLabel } from '~/composables/useEnrollmentWizard';
 
 const { t } = useI18n();
+const { rentreeImage } = useLandingImages();
 
 const schoolYearDisplay = computed(() => {
   const d = new Date();
@@ -99,15 +99,15 @@ const IconStar: FunctionalComponent = () =>
   ]);
 
 const levels = computed(() => [
-  { id: 'enfants', key: 'enfants', bgClass: 'bg-brandBlue', icon: IconBaby, image: cardImg },
-  { id: 'petits', key: 'petits', bgClass: 'bg-brandGreen', icon: IconChild, image: cardImg },
-  { id: 'moyens', key: 'moyens', bgClass: 'bg-brandOrange', icon: IconChild, image: cardImg },
-  { id: 'grands', key: 'grands', bgClass: 'bg-brandPurple', icon: IconChild, image: cardImg },
+  { id: 'enfants', key: 'enfants' as const, bgClass: 'bg-brandBlue', icon: IconBaby },
+  { id: 'petits', key: 'petits' as const, bgClass: 'bg-brandGreen', icon: IconChild },
+  { id: 'moyens', key: 'moyens' as const, bgClass: 'bg-brandOrange', icon: IconChild },
+  { id: 'grands', key: 'grands' as const, bgClass: 'bg-brandPurple', icon: IconChild },
 ].map((l) => ({
   ...l,
+  image: rentreeImage(l.key, cardImg),
   title: t(`home.rentree.levels.${l.key}.title`),
   description: t(`home.rentree.levels.${l.key}.body`),
-  price: t(`home.rentree.levels.${l.key}.price`),
   status: t(`home.rentree.levels.${l.key}.status`),
   imageAlt: t(`home.rentree.levels.${l.key}.imageAlt`),
 })));

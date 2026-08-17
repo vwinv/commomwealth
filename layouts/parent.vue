@@ -3,7 +3,7 @@
     <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-white shadow-sm">
       <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <NuxtLink to="/parent" class="flex shrink-0 items-center gap-2" aria-label="Espace parent — accueil">
-          <img class="h-11 w-auto object-contain" :src="logoUrl" alt="" />
+          <img class="h-11 w-auto object-contain" :src="logoUrl" alt="Commonwealth" />
         </NuxtLink>
 
         <nav class="order-3 flex w-full justify-center gap-6 text-[15px] md:order-2 md:w-auto md:justify-center md:gap-10" aria-label="Espace parent">
@@ -255,6 +255,10 @@ type NotificationsPayload = {
 
 const route = useRoute();
 const { authFetch, logout } = useParentAuth();
+
+useHead({
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+});
 
 const pathNorm = computed(() => {
   const p = route.path.replace(/\/$/, '');

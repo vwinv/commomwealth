@@ -151,6 +151,7 @@ definePageMeta({
 })
 
 useHead({
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
   link: [
     {
       rel: 'stylesheet',

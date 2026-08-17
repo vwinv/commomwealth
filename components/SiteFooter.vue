@@ -3,7 +3,7 @@
     <div class="mx-auto w-full max-w-[1200px] px-6 py-10 sm:py-12">
       <div class="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex shrink-0 items-center">
-          <img class="h-[72px] w-[72px] rounded-2xl bg-white object-contain p-2" :src="logoImg" alt="Logo" />
+          <img class="h-[72px] w-[72px] rounded-2xl bg-white object-contain p-2" :src="logoImg" alt="Commonwealth" />
         </div>
 
         <div class="flex flex-1 flex-col gap-6 lg:max-w-[720px] lg:items-end">

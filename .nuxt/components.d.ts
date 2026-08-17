@@ -45,7 +45,6 @@ export const EnrollmentStepper: typeof import("../components/enrollment/Enrollme
 export const EnrollmentWizardHeader: typeof import("../components/enrollment/EnrollmentWizardHeader.vue")['default']
 export const MarketingHomeAboutSection: typeof import("../components/marketing/HomeAboutSection.vue")['default']
 export const MarketingHomeApproachSection: typeof import("../components/marketing/HomeApproachSection.vue")['default']
-export const MarketingHomeClassesSection: typeof import("../components/marketing/HomeClassesSection.vue")['default']
 export const MarketingHomeGallerySection: typeof import("../components/marketing/HomeGallerySection.vue")['default']
 export const MarketingHomeHeroSection: typeof import("../components/marketing/HomeHeroSection.vue")['default']
 export const MarketingHomePartnersSection: typeof import("../components/marketing/HomePartnersSection.vue")['default']
@@ -127,7 +126,6 @@ export const LazyEnrollmentStepper: LazyComponent<typeof import("../components/e
 export const LazyEnrollmentWizardHeader: LazyComponent<typeof import("../components/enrollment/EnrollmentWizardHeader.vue")['default']>
 export const LazyMarketingHomeAboutSection: LazyComponent<typeof import("../components/marketing/HomeAboutSection.vue")['default']>
 export const LazyMarketingHomeApproachSection: LazyComponent<typeof import("../components/marketing/HomeApproachSection.vue")['default']>
-export const LazyMarketingHomeClassesSection: LazyComponent<typeof import("../components/marketing/HomeClassesSection.vue")['default']>
 export const LazyMarketingHomeGallerySection: LazyComponent<typeof import("../components/marketing/HomeGallerySection.vue")['default']>
 export const LazyMarketingHomeHeroSection: LazyComponent<typeof import("../components/marketing/HomeHeroSection.vue")['default']>
 export const LazyMarketingHomePartnersSection: LazyComponent<typeof import("../components/marketing/HomePartnersSection.vue")['default']>

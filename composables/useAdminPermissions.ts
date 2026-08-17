@@ -27,6 +27,9 @@ export function useAdminPermissions() {
   }
 
   function canAccessAdminPath(path: string): boolean {
+    if (path === '/admin/donnees' || path.startsWith('/admin/donnees/')) {
+      return isSuperAdmin.value
+    }
     const mod = moduleForAdminPath(path)
     if (mod === undefined) return true
     if (mod === null) return canAccessHome.value

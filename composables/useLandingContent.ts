@@ -4,6 +4,7 @@ export type LandingImages = {
   suggestions?: string
   gallery?: string[]
   partners?: string[]
+  rentree?: Partial<Record<'enfants' | 'petits' | 'moyens' | 'grands', string>>
 }
 
 export type LandingContentPayload = {
@@ -97,5 +98,14 @@ export function useLandingImages() {
     return fallback
   }
 
-  return { images, imageSrc, imageList, resolveMediaUrl }
+  function rentreeImage(level: 'enfants' | 'petits' | 'moyens' | 'grands', fallback: string) {
+    const map = images.value.rentree
+    if (map && typeof map === 'object') {
+      const u = map[level]
+      if (typeof u === 'string' && u.trim()) return resolveMediaUrl(u, fallback)
+    }
+    return fallback
+  }
+
+  return { images, imageSrc, imageList, rentreeImage, resolveMediaUrl }
 }

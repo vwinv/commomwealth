@@ -186,27 +186,14 @@
             <p class="text-sm font-bold text-slate-800">Niveau : {{ key }}</p>
             <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Titre</span><input v-model="home.rentree.levels[key].title" class="field-input" type="text"></label>
             <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Description</span><textarea v-model="home.rentree.levels[key].body" rows="2" class="field-input" /></label>
-            <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Prix</span><input v-model="home.rentree.levels[key].price" class="field-input" type="text"></label>
             <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Statut</span><input v-model="home.rentree.levels[key].status" class="field-input" type="text"></label>
-          </div>
-        </template>
-
-        <template v-else-if="activeTab === 'classes'">
-          <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Titre</span><input v-model="home.classes.title" class="field-input" type="text"></label>
-          <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Intro</span><textarea v-model="home.classes.intro" rows="3" class="field-input" /></label>
-          <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Corps</span><textarea v-model="home.classes.body" rows="3" class="field-input" /></label>
-          <div v-for="key in classKeys" :key="key" class="space-y-3 rounded-xl border border-slate-100 bg-slate-50/80 p-4">
-            <p class="text-sm font-bold text-slate-800">Classe : {{ key }}</p>
-            <label class="block"><span class="mb-1 block text-sm font-medium text-slate-700">Titre</span><input v-model="home.classes.items[key].title" class="field-input" type="text"></label>
-            <label class="block">
-              <span class="mb-1 block text-sm font-medium text-slate-700">Puces (une par ligne)</span>
-              <textarea
-                :value="(home.classes.items[key].bullets || []).join('\n')"
-                rows="4"
-                class="field-input"
-                @input="onBullets(key, ($event.target as HTMLTextAreaElement).value)"
-              />
-            </label>
+            <AdminImageUploadBlock
+              label="Photo de la carte"
+              :url="rentreeImageUrl(key)"
+              :fallback="defaultRentreeImg"
+              @upload="uploadRentree(key, $event)"
+              @clear="clearRentree(key)"
+            />
           </div>
         </template>
       </div>
@@ -238,6 +225,7 @@ const { token } = useAuth()
 
 const defaultGalleryImgs = [photo1, photo2, photo3, photo4, defaultAboutImg]
 const defaultPartnerImgs = [bmw, sevenWolves, domino, gopro, north, pg]
+const defaultRentreeImg = photo1
 
 const locales: Locale[] = ['fr', 'en']
 const locale = ref<Locale>('fr')
@@ -263,7 +251,6 @@ const tabs = [
   { id: 'approach', label: 'Approche' },
   { id: 'values', label: 'Valeurs' },
   { id: 'rentree', label: 'Rentrée' },
-  { id: 'classes', label: 'Classes' },
   { id: 'workshops', label: 'Ateliers' },
   { id: 'gallery', label: 'Galerie' },
   { id: 'partners', label: 'Partenaires' },
@@ -271,7 +258,6 @@ const tabs = [
 ]
 
 const levelKeys = ['enfants', 'petits', 'moyens', 'grands'] as const
-const classKeys = ['graines', 'pousses', 'branches', 'feuilles'] as const
 
 const home = computed(() => content.value?.[locale.value] as Record<string, any>)
 
@@ -303,11 +289,6 @@ function syncSlotsToContent() {
   delete content.value.images.hero
   content.value.images.gallery = gallerySlots.value.filter(Boolean)
   content.value.images.partners = partnerSlots.value.filter(Boolean)
-}
-
-function onBullets(key: string, raw: string) {
-  if (!home.value?.classes?.items?.[key]) return
-  home.value.classes.items[key].bullets = raw.split('\n').map((s) => s.trim()).filter(Boolean)
 }
 
 function setGallery(i: number, v: string) {
@@ -413,6 +394,38 @@ async function uploadKeyed(key: 'about' | 'approach' | 'suggestions', file: File
   } finally {
     busy.value = false
   }
+}
+
+function ensureRentreeImages() {
+  if (!content.value) return
+  if (!content.value.images.rentree || typeof content.value.images.rentree !== 'object') {
+    content.value.images.rentree = {}
+  }
+}
+
+function rentreeImageUrl(key: (typeof levelKeys)[number]) {
+  const map = content.value?.images?.rentree
+  if (map && typeof map === 'object') return String(map[key] || '')
+  return ''
+}
+
+async function uploadRentree(key: (typeof levelKeys)[number], file: File) {
+  if (!content.value) return
+  busy.value = true
+  try {
+    ensureRentreeImages()
+    content.value.images.rentree[key] = await uploadFile(file)
+  } catch (e: any) {
+    errorMsg.value = e?.data?.message || 'Upload échoué.'
+  } finally {
+    busy.value = false
+  }
+}
+
+function clearRentree(key: (typeof levelKeys)[number]) {
+  if (!content.value) return
+  ensureRentreeImages()
+  content.value.images.rentree[key] = ''
 }
 
 async function onGalleryUpload(i: number, file: File) {

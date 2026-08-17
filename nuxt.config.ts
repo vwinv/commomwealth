@@ -69,6 +69,8 @@ export default defineNuxtConfig({
       schoolPaymentModes:
         process.env.NUXT_PUBLIC_SCHOOL_PAYMENT_MODES ||
         "Virement bancaire · Wave · Orange Money · Espèces (caisse de l'école)",
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://commonwealth-school.com',
+      siteName: process.env.NUXT_PUBLIC_SITE_NAME || 'Commonwealth',
     },
   },
   vite: {
@@ -134,9 +136,40 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'Gestion scolaire',
-      meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }]
-    }
-  }
+      htmlAttrs: { lang: 'fr' },
+      title: 'Commonwealth',
+      titleTemplate: '%s',
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'description',
+          content:
+            'Commonwealth Preschool of Abidjan est une école maternelle bilingue (Anglais – Français) qui accueille les enfants de 6 mois à 6 ans.',
+        },
+        { name: 'theme-color', content: '#216EC2' },
+        { property: 'og:site_name', content: 'Commonwealth' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:title', content: 'Commonwealth' },
+        {
+          property: 'og:description',
+          content:
+            'Commonwealth Preschool of Abidjan est une école maternelle bilingue (Anglais – Français) qui accueille les enfants de 6 mois à 6 ans.',
+        },
+        { property: 'og:url', content: 'https://commonwealth-school.com/' },
+        { property: 'og:image', content: 'https://commonwealth-school.com/logo.png' },
+        { property: 'og:image:alt', content: 'Commonwealth' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:title', content: 'Commonwealth' },
+        { name: 'twitter:image', content: 'https://commonwealth-school.com/logo.png' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48x48.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'shortcut icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
+    },
+  },
 })
 

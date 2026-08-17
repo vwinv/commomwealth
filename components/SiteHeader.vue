@@ -3,14 +3,13 @@
     <div
       class="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-6 lg:px-8 xl:gap-10 xl:px-10"
     >
-      <NuxtLink class="flex shrink-0 items-center" to="/" :aria-label="t('header.home')">
-        <img class="h-11 w-auto object-contain sm:h-14 xl:h-16" :src="logoUrl" alt="Logo" />
+      <NuxtLink class="flex shrink-0 items-center" to="/" aria-label="Commonwealth">
+        <img class="h-11 w-auto object-contain sm:h-14 xl:h-16" :src="logoUrl" alt="Commonwealth" />
       </NuxtLink>
 
       <nav class="hidden min-w-0 flex-nowrap items-center justify-center gap-4 lg:flex xl:gap-7" :aria-label="t('header.navAria')">
         <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/">{{ t('header.home') }}</NuxtLink>
         <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#apropos">{{ t('header.about') }}</NuxtLink>
-        <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#classes">{{ t('header.classes') }}</NuxtLink>
         <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#values">{{ t('header.values') }}</NuxtLink>
         <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#ateliers">{{ t('header.workshops') }}</NuxtLink>
         <NuxtLink class="whitespace-nowrap px-2 py-2 text-xs font-normal text-slate-600 hover:text-slate-900 xl:px-3 xl:py-2.5 xl:text-[13px]" to="/#partenariat">{{ t('header.partnership') }}</NuxtLink>
@@ -91,7 +90,6 @@
           @click="closeMenu"
           >{{ t('header.about') }}</NuxtLink
         >
-        <NuxtLink class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50" to="/#classes" @click="closeMenu">{{ t('header.classes') }}</NuxtLink>
         <NuxtLink class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50" to="/#values" @click="closeMenu">{{ t('header.values') }}</NuxtLink>
         <NuxtLink class="rounded-lg px-4 py-3.5 text-base font-medium text-slate-700 hover:bg-slate-50" to="/#ateliers" @click="closeMenu">{{ t('header.workshops') }}</NuxtLink>
         <NuxtLink

@@ -45,7 +45,6 @@ interface _GlobalComponents {
   EnrollmentWizardHeader: typeof import("../../components/enrollment/EnrollmentWizardHeader.vue")['default']
   MarketingHomeAboutSection: typeof import("../../components/marketing/HomeAboutSection.vue")['default']
   MarketingHomeApproachSection: typeof import("../../components/marketing/HomeApproachSection.vue")['default']
-  MarketingHomeClassesSection: typeof import("../../components/marketing/HomeClassesSection.vue")['default']
   MarketingHomeGallerySection: typeof import("../../components/marketing/HomeGallerySection.vue")['default']
   MarketingHomeHeroSection: typeof import("../../components/marketing/HomeHeroSection.vue")['default']
   MarketingHomePartnersSection: typeof import("../../components/marketing/HomePartnersSection.vue")['default']
@@ -127,7 +126,6 @@ interface _GlobalComponents {
   LazyEnrollmentWizardHeader: LazyComponent<typeof import("../../components/enrollment/EnrollmentWizardHeader.vue")['default']>
   LazyMarketingHomeAboutSection: LazyComponent<typeof import("../../components/marketing/HomeAboutSection.vue")['default']>
   LazyMarketingHomeApproachSection: LazyComponent<typeof import("../../components/marketing/HomeApproachSection.vue")['default']>
-  LazyMarketingHomeClassesSection: LazyComponent<typeof import("../../components/marketing/HomeClassesSection.vue")['default']>
   LazyMarketingHomeGallerySection: LazyComponent<typeof import("../../components/marketing/HomeGallerySection.vue")['default']>
   LazyMarketingHomeHeroSection: LazyComponent<typeof import("../../components/marketing/HomeHeroSection.vue")['default']>
   LazyMarketingHomePartnersSection: LazyComponent<typeof import("../../components/marketing/HomePartnersSection.vue")['default']>
