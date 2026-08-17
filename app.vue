@@ -7,7 +7,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 const siteName = String(config.public.siteName || 'Commonwealth')
-const siteUrl = String(config.public.siteUrl || 'https://commonwealth-school.com').replace(/\/$/, '')
+const siteUrl = String(config.public.siteUrl || 'https://www.commonwealth-school.com').replace(/\/$/, '')
 
 useHead({
   titleTemplate: (title) => {

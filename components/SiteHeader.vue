@@ -3,8 +3,9 @@
     <div
       class="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-6 lg:px-8 xl:gap-10 xl:px-10"
     >
-      <NuxtLink class="flex shrink-0 items-center" to="/" aria-label="Commonwealth">
-        <img class="h-11 w-auto object-contain sm:h-14 xl:h-16" :src="logoUrl" alt="Commonwealth" />
+      <NuxtLink class="flex shrink-0 items-center gap-2.5" to="/" aria-label="Commonwealth">
+        <img class="h-11 w-auto object-contain sm:h-14 xl:h-16" :src="logoUrl" alt="Commonwealth" width="89" height="75" />
+        <span class="text-[15px] font-extrabold tracking-tight text-brandBlue sm:text-base">Commonwealth</span>
       </NuxtLink>
 
       <nav class="hidden min-w-0 flex-nowrap items-center justify-center gap-4 lg:flex xl:gap-7" :aria-label="t('header.navAria')">

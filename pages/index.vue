@@ -22,7 +22,7 @@ definePageMeta({ layout: 'marketing' });
 const { t } = useI18n();
 const { ready: pageReady } = usePageLoadMotion();
 const config = useRuntimeConfig();
-const siteUrl = String(config.public.siteUrl || 'https://commonwealth-school.com').replace(/\/$/, '');
+const siteUrl = String(config.public.siteUrl || 'https://www.commonwealth-school.com').replace(/\/$/, '');
 
 await loadLandingContent();
 
