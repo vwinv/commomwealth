@@ -130,12 +130,26 @@ export function formatSchoolYearLabel(schoolYear: string): string {
   return schoolYear;
 }
 
+/** Fallback calendaire si l’API année ouverte est indisponible. */
 export function currentSchoolYear(): string {
   const d = new Date();
   const y = d.getFullYear();
   const m = d.getMonth();
+  // Année scolaire : septembre (8) → août de l’année suivante
   if (m >= 8) return `${y}-${y + 1}`;
   return `${y - 1}-${y}`;
+}
+
+async function fetchActiveSchoolYearLabel(apiBase: string): Promise<string | null> {
+  try {
+    const res = await $fetch<{ active: { label: string } | null }>(
+      `${apiBase}/public/catalog/school-year/active`,
+    );
+    const label = res.active?.label?.trim();
+    return label || null;
+  } catch {
+    return null;
+  }
 }
 
 function formatDateFr(iso: string): string {
@@ -347,6 +361,19 @@ export function useEnrollmentWizard() {
   const resumeToken = ref('');
   const enrollmentFromParentAccount = ref(false);
 
+  const activeSchoolYearLabel = ref(currentSchoolYear());
+  const { data: activeYearFromApi } = useAsyncData(
+    'enrollment-active-school-year',
+    () => fetchActiveSchoolYearLabel(String(config.public.apiBase)),
+  );
+  watch(
+    activeYearFromApi,
+    (label) => {
+      if (label?.trim()) activeSchoolYearLabel.value = label.trim();
+    },
+    { immediate: true },
+  );
+
   const child = reactive<EnrollmentChildDraft>({
     firstName: '',
     lastName: '',
@@ -417,7 +444,7 @@ export function useEnrollmentWizard() {
     return {
       version: 2,
       step: step.value,
-      schoolYear: currentSchoolYear(),
+      schoolYear: activeSchoolYearLabel.value,
       child: { ...child },
       parent: { ...parent },
       guardian2: { ...guardian2 },
@@ -537,7 +564,7 @@ export function useEnrollmentWizard() {
   }
 
   function applyDraft(draft: EnrollmentDraftSnapshot) {
-    if (draft.schoolYear !== currentSchoolYear()) return;
+    if (draft.schoolYear !== activeSchoolYearLabel.value) return;
     Object.assign(child, draft.child);
     Object.assign(parent, draft.parent);
     Object.assign(guardian2, draft.guardian2);
@@ -569,7 +596,7 @@ export function useEnrollmentWizard() {
       const data = await $fetch<EnrollmentResumePayload>(
         `${config.public.apiBase}/public/enrollments/resume/${encodeURIComponent(token)}`,
       );
-      if (data.schoolYear !== currentSchoolYear()) {
+      if (data.schoolYear !== activeSchoolYearLabel.value) {
         return 'Ce dossier concerne une autre année scolaire. Veuillez contacter l’administration.';
       }
       applyResume(data);
@@ -586,6 +613,11 @@ export function useEnrollmentWizard() {
   }
 
   onMounted(async () => {
+    if (!activeYearFromApi.value) {
+      const fromApi = await fetchActiveSchoolYearLabel(String(config.public.apiBase));
+      if (fromApi) activeSchoolYearLabel.value = fromApi;
+    }
+
     const route = useRoute();
     const token = typeof route.query.resume === 'string' ? route.query.resume.trim() : '';
     if (token) {
@@ -605,7 +637,7 @@ export function useEnrollmentWizard() {
     if (draft) applyDraft(draft);
   });
 
-  const schoolYear = computed(() => currentSchoolYear());
+  const schoolYear = computed(() => activeSchoolYearLabel.value);
   const schoolYearLabel = computed(() => formatSchoolYearLabel(schoolYear.value));
 
   const childDisplayName = computed(() => {

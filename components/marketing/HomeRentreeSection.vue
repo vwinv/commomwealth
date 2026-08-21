@@ -59,16 +59,21 @@
 <script setup lang="ts">
 import type { FunctionalComponent } from 'vue';
 import cardImg from '~/assets/images/photo1.png';
-import { formatSchoolYearLabel } from '~/composables/useEnrollmentWizard';
+import { currentSchoolYear, formatSchoolYearLabel } from '~/composables/useEnrollmentWizard';
 
 const { t } = useI18n();
 const { rentreeImage } = useLandingImages();
+const config = useRuntimeConfig();
+
+const { data: activeYear } = await useAsyncData('public-active-school-year', () =>
+  $fetch<{ active: { label: string } | null }>(`${config.public.apiBase}/public/catalog/school-year/active`).catch(
+    () => ({ active: null }),
+  ),
+);
 
 const schoolYearDisplay = computed(() => {
-  const d = new Date();
-  const y = d.getFullYear();
-  const upcoming = d.getMonth() < 8 ? `${y}-${y + 1}` : `${y + 1}-${y + 2}`;
-  return formatSchoolYearLabel(upcoming).replace('–', ' ');
+  const label = activeYear.value?.active?.label?.trim() || currentSchoolYear();
+  return formatSchoolYearLabel(label).replace('–', ' ');
 });
 
 const IconBaby: FunctionalComponent = () =>
