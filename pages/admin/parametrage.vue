@@ -193,7 +193,7 @@
                       v-for="schedule in row.schedules"
                       :key="schedule.id"
                       class="inline-flex max-w-full items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
-                      :title="`${schedule.label}${schedule.timeDescription ? ' — ' + schedule.timeDescription : ''} · Inscription ${intFr.format(schedule.annualXof)} · Mensualité ${intFr.format(schedule.monthlyXof)} XOF`"
+                      :title="`${schedule.label}${schedule.timeDescription ? ' — ' + schedule.timeDescription : ''} · Scolarité ${intFr.format(schedule.annualXof)} XOF · Mensualité ${intFr.format(schedule.monthlyXof)} XOF / mois`"
                     >
                       <span class="truncate font-semibold">{{ schedule.label }}</span>
                       <span v-if="schedule.timeDescription" class="ml-1 truncate text-slate-400">· {{ schedule.timeDescription }}</span>
@@ -516,6 +516,9 @@
 
             <div class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
               <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Horaires & tarifs</p>
+              <p class="text-xs leading-relaxed text-slate-500">
+                Les frais de scolarité (une fois) et la mensualité s’appliquent toujours. Sans échéancier : une facture annuelle = scolarité + mensualité × 10 mois (sept. à juin). Avec échéancier : une facture de scolarité + une facture par mois.
+              </p>
               <div v-for="(row, index) in newLevelSchedules" :key="index" class="grid gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:grid-cols-2">
                 <label class="block sm:col-span-2">
                   <span class="mb-1 block text-xs font-semibold text-slate-600">Libellé</span>
@@ -526,7 +529,7 @@
                   <input v-model.trim="row.timeDescription" type="text" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder="8h00 – 17h00">
                 </label>
                 <label class="block">
-                  <span class="mb-1 block text-xs font-semibold text-slate-600">Inscription (XOF)</span>
+                  <span class="mb-1 block text-xs font-semibold text-slate-600">Frais de scolarité (XOF)</span>
                   <input v-model.number="row.annualXof" required type="number" min="0" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
                 </label>
                 <label class="block">

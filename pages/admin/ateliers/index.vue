@@ -146,7 +146,7 @@
                 </div>
               </td>
               <td class="whitespace-nowrap px-4 py-3.5 text-[13px] font-medium">{{ atelier.ageLabel }}</td>
-              <td class="whitespace-nowrap px-4 py-3.5 text-[13px]">{{ atelierSessionLabel(atelier) }}</td>
+              <td class="min-w-[11rem] px-4 py-3.5 text-[13px] leading-snug">{{ atelierSessionLabel(atelier) }}</td>
               <td class="px-4 py-3.5">
                 <div class="min-w-[88px]">
                   <p class="text-[13px] font-semibold text-slate-800">{{ atelier.booked }}/{{ atelier.capacity }}</p>
@@ -399,8 +399,8 @@
                 <p class="text-[13px] font-bold text-slate-900">{{ row.parentName }}</p>
                 <p class="text-[11px] text-slate-400">{{ row.parentPhone || '—' }}</p>
               </td>
-              <td class="whitespace-nowrap px-4 py-3.5">
-                <p class="text-[13px] font-medium text-slate-800">{{ row.sessionDateLabel || row.sessionLabel }}</p>
+              <td class="min-w-[10rem] px-4 py-3.5">
+                <p class="text-[13px] font-medium leading-snug text-slate-800">{{ row.sessionDateLabel || row.sessionLabel }}</p>
                 <p class="text-[11px] text-slate-400">{{ row.sessionTimeLabel }}</p>
               </td>
               <td class="whitespace-nowrap px-4 py-3.5 text-[13px] font-semibold text-slate-800">{{ row.places }}</td>
@@ -592,23 +592,46 @@
               <section class="rounded-xl border-2 border-[#216EC2]/30 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:p-6">
                 <h2 class="text-lg font-bold text-[#216EC2]">Informations pratiques</h2>
                 <div class="mt-5 space-y-4">
-                  <div>
-                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">
-                      Date <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                      <input
-                        v-model="form.date"
-                        required
-                        type="date"
-                        class="w-full rounded-xl border border-slate-200 px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
-                      />
-                      <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#216EC2]" aria-hidden="true">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <rect x="3" y="4" width="18" height="18" rx="2" />
-                          <path d="M16 2v4M8 2v4M3 10h18" />
-                        </svg>
-                      </span>
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label class="mb-1.5 block text-sm font-semibold text-slate-700">
+                        Date de commencement <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <input
+                          v-model="form.date"
+                          required
+                          type="date"
+                          class="w-full rounded-xl border border-slate-200 px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
+                        />
+                        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#216EC2]" aria-hidden="true">
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <path d="M16 2v4M8 2v4M3 10h18" />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="mb-1.5 block text-sm font-semibold text-slate-700">
+                        Date de fin <span class="text-red-500">*</span>
+                      </label>
+                      <div class="relative">
+                        <input
+                          v-model="form.endDate"
+                          required
+                          type="date"
+                          :min="form.date || undefined"
+                          class="w-full rounded-xl border border-slate-200 px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-[#216EC2] focus:ring-2 focus:ring-[#216EC2]/15"
+                        />
+                        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#216EC2]" aria-hidden="true">
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <path d="M16 2v4M8 2v4M3 10h18" />
+                          </svg>
+                        </span>
+                      </div>
+                      <p class="mt-1 text-xs text-slate-500">Même jour pour un atelier d’une journée, ou jusqu’à 1–2 semaines plus tard.</p>
                     </div>
                   </div>
 
@@ -814,6 +837,7 @@ type Atelier = {
   image: string
   dateLabel: string
   dateValue: string
+  endDateValue?: string
   timeLabel: string
   startTime?: string
   endTime?: string
@@ -841,6 +865,7 @@ type Reservation = {
   parentPhone: string
   sessionLabel: string
   sessionDate: string
+  sessionEndDate?: string
   sessionDateLabel?: string
   sessionTimeLabel?: string
   places: string
@@ -903,6 +928,7 @@ const form = reactive({
   importantInfo: '',
   imagePreview: '' as string,
   date: '',
+  endDate: '',
   location: '',
   startTime: '',
   endTime: '',
@@ -932,6 +958,7 @@ function resetForm() {
   form.importantInfo = ''
   form.imagePreview = ''
   form.date = ''
+  form.endDate = ''
   form.location = ''
   form.startTime = ''
   form.endTime = ''
@@ -962,6 +989,7 @@ function openEditForm(atelier: Atelier) {
   form.importantInfo = atelier.importantInfo || ''
   form.imagePreview = mediaUrl(atelier.image)
   form.date = atelier.dateValue
+  form.endDate = atelier.endDateValue || atelier.dateValue
   form.location = atelier.location || ''
   form.startTime = atelier.startTime || ''
   form.endTime = atelier.endTime || ''
@@ -1096,15 +1124,19 @@ function matchesSearch(text: string) {
   return text.toLowerCase().includes(q)
 }
 
-function inDateRange(value: string) {
-  if (dateFrom.value && value < dateFrom.value) return false
-  if (dateTo.value && value > dateTo.value) return false
+function inDateRange(start: string, end = start) {
+  const from = dateFrom.value
+  const to = dateTo.value
+  if (from && end < from) return false
+  if (to && start > to) return false
   return true
 }
 
 const filteredAteliers = computed(() => {
   let list = ateliers.value.filter(
-    (a) => matchesSearch(`${a.title} ${a.description}`) && inDateRange(a.dateValue),
+    (a) =>
+      matchesSearch(`${a.title} ${a.description}`) &&
+      inDateRange(a.dateValue, a.endDateValue || a.dateValue),
   )
   if (sort.value === 'name_asc') list = [...list].sort((a, b) => a.title.localeCompare(b.title, 'fr'))
   else if (sort.value === 'date_asc') list = [...list].sort((a, b) => a.dateValue.localeCompare(b.dateValue))
@@ -1133,6 +1165,13 @@ watch([search, sort, dateFrom, dateTo], () => {
   atelierPage.value = 1
 })
 
+watch(
+  () => form.date,
+  (d) => {
+    if (d && (!form.endDate || form.endDate < d)) form.endDate = d
+  },
+)
+
 watch(atelierPageCount, (count) => {
   if (atelierPage.value > count) atelierPage.value = count
 })
@@ -1143,10 +1182,7 @@ function placesPct(atelier: Atelier) {
 }
 
 function atelierSessionLabel(atelier: Atelier) {
-  const d = atelier.dateValue ? new Date(`${atelier.dateValue}T12:00:00`) : null
-  const datePart = d && !Number.isNaN(d.getTime())
-    ? d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
-    : atelier.dateLabel
+  const datePart = atelier.dateLabel
   const start = atelier.startTime || '—'
   const end = atelier.endTime || '—'
   return `${datePart}, ${start} - ${end}`
@@ -1156,7 +1192,7 @@ const filteredReservations = computed(() => {
   let list = reservations.value.filter(
     (r) =>
       matchesSearch(`${r.code} ${r.atelierTitle} ${r.childName} ${r.parentName}`) &&
-      inDateRange(r.sessionDate),
+      inDateRange(r.sessionDate, r.sessionEndDate || r.sessionDate),
   )
   if (sort.value === 'name_asc') list = [...list].sort((a, b) => a.atelierTitle.localeCompare(b.atelierTitle, 'fr'))
   else if (sort.value === 'date_asc') list = [...list].sort((a, b) => a.sessionDate.localeCompare(b.sessionDate))
@@ -1222,8 +1258,12 @@ async function saveAtelier() {
     formError.value = 'Complétez le titre et la description.'
     return
   }
-  if (!form.date || !form.startTime || !form.endTime || !form.location.trim()) {
-    formError.value = 'Complétez la date, les horaires et le lieu.'
+  if (!form.date || !form.endDate || !form.startTime || !form.endTime || !form.location.trim()) {
+    formError.value = 'Complétez les dates, les horaires et le lieu.'
+    return
+  }
+  if (form.endDate < form.date) {
+    formError.value = 'La date de fin doit être postérieure ou égale à la date de commencement.'
     return
   }
   if (!form.ageRange || !form.recommendedAge) {
@@ -1259,6 +1299,7 @@ async function saveAtelier() {
       importantInfo: form.importantInfo.trim() || undefined,
       imageUrl,
       date: form.date,
+      endDate: form.endDate,
       startTime: form.startTime,
       endTime: form.endTime,
       location: form.location.trim(),

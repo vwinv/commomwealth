@@ -80,6 +80,7 @@ declare global {
   const isVue3: typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi').isVue3
   const loadLandingContent: typeof import('../../composables/useLandingContent').loadLandingContent
   const loadPayload: typeof import('../../node_modules/nuxt/dist/app/composables/payload').loadPayload
+  const looksLikeTechnicalId: typeof import('../../utils/strip-technical-ids').looksLikeTechnicalId
   const markRaw: typeof import('../../node_modules/vue').markRaw
   const matriculeFromEnrollmentId: typeof import('../../utils/parentInvoiceHtml').matriculeFromEnrollmentId
   const moduleForAdminPath: typeof import('../../utils/admin-permissions').moduleForAdminPath
@@ -133,6 +134,7 @@ declare global {
   const showError: typeof import('../../node_modules/nuxt/dist/app/composables/error').showError
   const stableInvoiceNumber: typeof import('../../utils/parentInvoiceHtml').stableInvoiceNumber
   const stableReceiptNumber: typeof import('../../utils/parentReceiptHtml').stableReceiptNumber
+  const stripTechnicalIds: typeof import('../../utils/strip-technical-ids').stripTechnicalIds
   const syncEmergencyFromSource: typeof import('../../utils/enrollment-family').syncEmergencyFromSource
   const toRaw: typeof import('../../node_modules/vue').toRaw
   const toRef: typeof import('../../node_modules/vue').toRef
@@ -371,6 +373,7 @@ declare module 'vue' {
     readonly isVue3: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/compat/vue-demi')['isVue3']>
     readonly loadLandingContent: UnwrapRef<typeof import('../../composables/useLandingContent')['loadLandingContent']>
     readonly loadPayload: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/payload')['loadPayload']>
+    readonly looksLikeTechnicalId: UnwrapRef<typeof import('../../utils/strip-technical-ids')['looksLikeTechnicalId']>
     readonly markRaw: UnwrapRef<typeof import('../../node_modules/vue')['markRaw']>
     readonly matriculeFromEnrollmentId: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['matriculeFromEnrollmentId']>
     readonly moduleForAdminPath: UnwrapRef<typeof import('../../utils/admin-permissions')['moduleForAdminPath']>
@@ -424,6 +427,7 @@ declare module 'vue' {
     readonly showError: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/error')['showError']>
     readonly stableInvoiceNumber: UnwrapRef<typeof import('../../utils/parentInvoiceHtml')['stableInvoiceNumber']>
     readonly stableReceiptNumber: UnwrapRef<typeof import('../../utils/parentReceiptHtml')['stableReceiptNumber']>
+    readonly stripTechnicalIds: UnwrapRef<typeof import('../../utils/strip-technical-ids')['stripTechnicalIds']>
     readonly syncEmergencyFromSource: UnwrapRef<typeof import('../../utils/enrollment-family')['syncEmergencyFromSource']>
     readonly toRaw: UnwrapRef<typeof import('../../node_modules/vue')['toRaw']>
     readonly toRef: UnwrapRef<typeof import('../../node_modules/vue')['toRef']>

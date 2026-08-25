@@ -84,7 +84,17 @@
               <td colspan="6" class="px-4 py-12 text-center text-slate-500">Aucun parent.</td>
             </tr>
             <tr v-for="row in rows" v-else :key="row.id" class="text-slate-700">
-              <td class="px-4 py-3 font-semibold">{{ row.fullName }}</td>
+              <td class="px-4 py-3 font-semibold">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span>{{ row.fullName }}</span>
+                  <span
+                    v-if="row.monthlyPaymentPlanEnabled"
+                    class="rounded-md bg-[#216EC2]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#216EC2]"
+                  >
+                    Échéancier
+                  </span>
+                </div>
+              </td>
               <td class="px-4 py-3">{{ row.relationLabel }}</td>
               <td class="whitespace-nowrap px-4 py-3">{{ row.phone || '—' }}</td>
               <td class="px-4 py-3">{{ enfantsLabel(row.childrenCount) }}</td>
@@ -357,6 +367,7 @@ type OverviewDto = {
     /** Tous les enfants rattachés au compte. */
     totalChildrenCount: number
     blocked: boolean
+    monthlyPaymentPlanEnabled?: boolean
   }>
   total: number
   page: number

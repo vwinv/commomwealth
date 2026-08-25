@@ -12,40 +12,43 @@
 
       <div class="grid gap-4 sm:grid-cols-2">
         <EnrollmentField label="Prénom et nom" required>
-          <input
-            v-model.trim="parent.fullName"
-            type="text"
-            class="enrollment-input"
-            placeholder="Paul Howard"
-            autocomplete="name"
-          />
+        <input
+          id="enrollment-parent-name"
+          v-model.trim="parent.fullName"
+          type="text"
+          class="enrollment-input"
+          placeholder="Paul Howard"
+          autocomplete="name"
+        />
         </EnrollmentField>
         <EnrollmentField label="Lien avec l'enfant" required>
-          <select v-model="parent.relation" class="enrollment-input bg-white">
+          <select id="enrollment-parent-relation" v-model="parent.relation" class="enrollment-input bg-white">
             <option value="" disabled>Sélectionner</option>
             <option value="FATHER">Père</option>
             <option value="MOTHER">Mère</option>
           </select>
         </EnrollmentField>
         <EnrollmentField label="Téléphone principal" required>
-          <input
-            v-model.trim="parent.phone"
-            type="tel"
-            class="enrollment-input"
-            placeholder="(307) 555-0133"
-            autocomplete="tel"
-          />
+        <input
+          id="enrollment-parent-phone"
+          v-model.trim="parent.phone"
+          type="tel"
+          class="enrollment-input"
+          placeholder="(307) 555-0133"
+          autocomplete="tel"
+        />
         </EnrollmentField>
         <EnrollmentField label="E-mail" required>
-          <input
-            v-model.trim="parent.email"
-            type="email"
-            class="enrollment-input"
-            :class="{ 'bg-slate-50 text-slate-600': parentAccountLocked }"
-            placeholder="email@exemple.com"
-            autocomplete="email"
-            :readonly="parentAccountLocked"
-          />
+        <input
+          id="enrollment-parent-email"
+          v-model.trim="parent.email"
+          type="email"
+          class="enrollment-input"
+          :class="{ 'bg-slate-50 text-slate-600': parentAccountLocked }"
+          placeholder="email@exemple.com"
+          autocomplete="email"
+          :readonly="parentAccountLocked"
+        />
         </EnrollmentField>
         <EnrollmentField label="Profession">
           <input
@@ -122,7 +125,7 @@
         </p>
       </div>
 
-      <EnrollmentField label="Reprendre un responsable déjà saisi" required>
+      <EnrollmentField id="enrollment-emergency" label="Reprendre un responsable déjà saisi" required>
         <div class="grid gap-3 sm:grid-cols-3">
           <button
             v-for="choice in emergencyChoices"

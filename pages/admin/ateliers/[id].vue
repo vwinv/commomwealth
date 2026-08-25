@@ -298,6 +298,7 @@ type AtelierDetail = {
   image: string
   dateLabel: string
   dateValue: string
+  endDateValue?: string
   timeLabel: string
   sessionLabel: string
   startTime: string

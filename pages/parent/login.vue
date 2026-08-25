@@ -73,9 +73,13 @@
             />
             <span class="text-sm text-slate-500">Se souvenir de moi</span>
           </label>
-          <NuxtLink class="text-sm font-medium text-brandBlue hover:underline" to="/contact">
+          <button
+            type="button"
+            class="text-sm font-medium text-brandBlue hover:underline"
+            @click="openForgot"
+          >
             Mot de passe oublié ?
-          </NuxtLink>
+          </button>
         </div>
 
         <button
@@ -89,6 +93,56 @@
         <p v-if="error" class="text-center text-sm text-red-600">{{ error }}</p>
       </form>
     </div>
+
+    <Teleport to="body">
+      <div
+        v-if="forgotOpen"
+        class="fixed inset-0 z-[80] flex items-center justify-center bg-slate-900/40 px-4 backdrop-blur-[1px]"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="forgot-title"
+        @click.self="closeForgot"
+      >
+        <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+          <h2 id="forgot-title" class="text-lg font-semibold text-[#2c3e50]">Mot de passe oublié</h2>
+          <p class="mt-2 text-sm leading-relaxed text-slate-500">
+            Saisissez l’adresse e-mail de votre espace parent. Nous vous enverrons un mot de passe
+            provisoire. Vous pourrez le modifier une fois connecté.
+          </p>
+
+          <form class="mt-5 grid gap-4" @submit.prevent="onForgotSubmit">
+            <label class="grid gap-2">
+              <span class="text-sm font-semibold text-[#2c3e50]">Adresse Email</span>
+              <input
+                v-model="forgotEmail"
+                class="w-full rounded-lg border border-[#c5d3e3] bg-white px-3.5 py-3 text-[15px] text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-brandBlue focus:ring-2 focus:ring-brandBlue/20"
+                type="email"
+                autocomplete="email"
+                required
+              />
+            </label>
+            <p v-if="forgotError" class="text-sm text-red-600">{{ forgotError }}</p>
+            <p v-if="forgotOk" class="text-sm text-emerald-700">{{ forgotOk }}</p>
+            <div class="flex items-center justify-end gap-3 pt-1">
+              <button
+                type="button"
+                class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                @click="closeForgot"
+              >
+                Fermer
+              </button>
+              <button
+                type="submit"
+                class="rounded-lg bg-brandOrange px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-white disabled:opacity-60"
+                :disabled="forgotLoading"
+              >
+                {{ forgotLoading ? 'Envoi…' : 'Envoyer' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -102,13 +156,18 @@ useHead({
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 });
 
-const { isLoggedIn, login } = useParentAuth();
+const { isLoggedIn, login, requestPasswordReset } = useParentAuth();
 const email = ref('');
 const password = ref('');
 const rememberMe = ref(true);
 const showPassword = ref(false);
 const loading = ref(false);
 const error = ref<string | null>(null);
+const forgotOpen = ref(false);
+const forgotEmail = ref('');
+const forgotLoading = ref(false);
+const forgotError = ref<string | null>(null);
+const forgotOk = ref<string | null>(null);
 
 onMounted(() => {
   if (isLoggedIn.value) {
@@ -120,7 +179,7 @@ async function onSubmit() {
   error.value = null;
   loading.value = true;
   try {
-    await login(email.value.trim().toLowerCase(), password.value, rememberMe.value);
+    await login(email.value.trim().toLowerCase(), password.value.trim(), rememberMe.value);
     await navigateTo('/parent');
   } catch (e: unknown) {
     const err = e as { data?: { message?: string }; message?: string };
@@ -128,6 +187,36 @@ async function onSubmit() {
     error.value = typeof m === 'string' ? m : 'Connexion impossible. Vérifiez vos identifiants.';
   } finally {
     loading.value = false;
+  }
+}
+
+function openForgot() {
+  forgotOpen.value = true;
+  forgotError.value = null;
+  forgotOk.value = null;
+  forgotEmail.value = email.value.trim();
+}
+
+function closeForgot() {
+  forgotOpen.value = false;
+  forgotLoading.value = false;
+}
+
+async function onForgotSubmit() {
+  forgotError.value = null;
+  forgotOk.value = null;
+  forgotLoading.value = true;
+  try {
+    const res = await requestPasswordReset(forgotEmail.value.trim().toLowerCase());
+    forgotOk.value =
+      res.message ||
+      'Si un compte existe, un mot de passe provisoire a été envoyé. Vérifiez aussi les indésirables.';
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string }; message?: string };
+    const m = err?.data?.message ?? err?.message;
+    forgotError.value = typeof m === 'string' ? m : 'Envoi impossible. Réessayez plus tard.';
+  } finally {
+    forgotLoading.value = false;
   }
 }
 </script>

@@ -30,7 +30,7 @@
           role="dialog"
           aria-modal="true"
           :aria-labelledby="confirmModal === 'approve' ? 'confirm-approve-title' : 'confirm-reject-title'"
-          class="relative w-full max-w-[420px] rounded-[28px] bg-white px-7 pb-8 pt-6 shadow-xl"
+          class="relative w-full max-w-[480px] rounded-[28px] bg-white px-7 pb-8 pt-6 shadow-xl"
           @click.stop
         >
           <div class="mb-5 flex items-start justify-between gap-4">
@@ -57,8 +57,12 @@
           </div>
 
           <p v-if="confirmModal === 'approve'" class="mb-6 text-center text-[15px] leading-relaxed text-slate-500">
-            Voulez-vous vraiment valider cette inscription&nbsp;? La facturation sera générée si les barèmes sont
-            configurés.
+            Voulez-vous vraiment valider l’inscription de
+            <span class="font-semibold text-slate-800">{{ childFullName }}</span>
+            <template v-if="classOrLevelName !== '—'">
+              ({{ classOrLevelName }}{{ schoolYearLabel !== '—' ? ` · ${schoolYearLabel}` : '' }})
+            </template>
+            &nbsp;? La facturation sera générée si les barèmes sont configurés.
           </p>
           <template v-else>
             <p class="mb-4 text-center text-[15px] leading-relaxed text-slate-500">
@@ -163,8 +167,25 @@
     <template v-if="!pending && enrollment">
       <section>
         <div class="flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 class="text-xl font-bold text-[#216EC2] sm:text-2xl">Informations de la demande</h2>
+          <h2 class="text-xl font-bold text-[#216EC2] sm:text-2xl">
+            Informations de la demande
+            <span v-if="childFullName !== '—'" class="block text-base font-semibold text-slate-700 sm:inline sm:text-xl">
+              <span class="hidden sm:inline"> — </span>{{ childFullName }}
+            </span>
+          </h2>
           <div v-if="enrollment.status === 'PENDING'" class="flex flex-wrap gap-3">
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 rounded-xl border-2 border-[#216EC2]/40 bg-white px-5 py-2.5 text-sm font-bold text-[#216EC2] transition hover:bg-[#216EC2]/5 disabled:opacity-50"
+              :disabled="actionLoading"
+              @click="dossierEditOpen = true"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9" stroke-linecap="round" />
+                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              Modifier le dossier
+            </button>
             <button
               type="button"
               class="inline-flex items-center gap-2 rounded-xl bg-[#216EC2] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:brightness-105 disabled:opacity-50"
@@ -198,60 +219,34 @@
           <!-- Élève -->
           <div class="rounded-2xl border-2 border-[#216EC2]/35 bg-white p-5 shadow-sm">
             <h3 class="mb-4 text-sm font-bold text-[#216EC2]">Informations de l'élève</h3>
+            <div class="mb-4 flex items-center gap-3">
+              <img
+                v-if="childPhoto"
+                :src="childPhoto"
+                :alt="childFullName"
+                class="h-14 w-14 rounded-xl object-cover ring-1 ring-[#216EC2]/20"
+              />
+              <div
+                v-else
+                class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#216EC2]/10 text-[#216EC2]"
+                aria-hidden="true"
+              >
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div class="min-w-0">
+                <p class="text-xl font-bold text-slate-900">{{ childFullName }}</p>
+                <p class="text-xs font-medium text-slate-500">{{ classOrLevelName }}</p>
+              </div>
+            </div>
             <ul class="space-y-4 text-sm text-slate-700">
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Demandé le</p>
-                  <p class="font-medium">{{ formatDate(enrollment.createdAt) }}</p>
-                </div>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Date de naissance</p>
-                  <p class="font-medium">{{ birthDisplay }}</p>
-                </div>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-1 inline-block h-2.5 w-2.5 shrink-0 rounded-full" :class="genderDotClass" aria-hidden="true" />
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Genre</p>
-                  <p class="font-medium">{{ genderLabel }}</p>
-                </div>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                    <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Classe demandée</p>
-                  <p class="font-medium">{{ classOrLevelName }}</p>
-                </div>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="7" width="20" height="14" rx="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Année scolaire demandée</p>
-                  <p class="font-medium">{{ schoolYearLabel }}</p>
+              <li v-for="row in studentRows" :key="row.label" class="flex gap-3">
+                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true" v-html="row.icon" />
+                <div class="min-w-0">
+                  <p class="text-xs font-medium text-[#216EC2]">{{ row.label }}</p>
+                  <p class="font-medium whitespace-pre-wrap">{{ row.value }}</p>
                 </div>
               </li>
             </ul>
@@ -294,41 +289,11 @@
               </a>
             </div>
             <ul class="space-y-4 text-sm text-slate-700">
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Adresse</p>
-                  <p class="font-medium">{{ parentAddress }}</p>
-                </div>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">E-mail</p>
-                  <p class="font-medium break-all">{{ parentEmail || '—' }}</p>
-                </div>
-              </li>
-              <li class="flex gap-3">
-                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path
-                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"
-                    />
-                  </svg>
-                </span>
-                <div>
-                  <p class="text-xs font-medium text-[#216EC2]">Numéro de téléphone</p>
-                  <p class="font-medium">{{ parentPhone || '—' }}</p>
+              <li v-for="row in parentRows" :key="row.label" class="flex gap-3">
+                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true" v-html="row.icon" />
+                <div class="min-w-0">
+                  <p class="text-xs font-medium text-[#216EC2]">{{ row.label }}</p>
+                  <p class="font-medium break-all whitespace-pre-wrap">{{ row.value }}</p>
                 </div>
               </li>
             </ul>
@@ -364,6 +329,95 @@
           </div>
         </div>
 
+        <div class="grid gap-4 px-5 pb-5 lg:grid-cols-3">
+          <div class="rounded-2xl border-2 border-[#216EC2]/35 bg-white p-5 shadow-sm">
+            <h3 class="mb-4 text-sm font-bold text-[#216EC2]">Famille & contacts</h3>
+            <ul class="space-y-4 text-sm text-slate-700">
+              <li v-for="row in familyRows" :key="row.label" class="flex gap-3">
+                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true" v-html="row.icon" />
+                <div class="min-w-0">
+                  <p class="text-xs font-medium text-[#216EC2]">{{ row.label }}</p>
+                  <p class="font-medium whitespace-pre-wrap">{{ row.value }}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border-2 border-[#216EC2]/35 bg-white p-5 shadow-sm">
+            <h3 class="mb-4 text-sm font-bold text-[#216EC2]">Santé</h3>
+            <ul class="space-y-4 text-sm text-slate-700">
+              <li v-for="row in healthRows" :key="row.label" class="flex gap-3">
+                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true" v-html="row.icon" />
+                <div class="min-w-0">
+                  <p class="text-xs font-medium text-[#216EC2]">{{ row.label }}</p>
+                  <p class="font-medium whitespace-pre-wrap">{{ row.value }}</p>
+                </div>
+              </li>
+            </ul>
+            <ul v-if="vaccinationRows.length" class="mt-4 space-y-2 border-t border-slate-100 pt-4">
+              <li
+                v-for="vax in vaccinationRows"
+                :key="vax.name"
+                class="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm"
+              >
+                <span class="font-medium text-slate-800">{{ vax.name }}</span>
+                <span
+                  class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide"
+                  :class="vax.done ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'"
+                >
+                  {{ vax.done ? vax.dateLabel || 'À jour' : 'Manquant' }}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="rounded-2xl border-2 border-[#216EC2]/35 bg-white p-5 shadow-sm">
+            <h3 class="mb-4 text-sm font-bold text-[#216EC2]">Options & autorisations</h3>
+            <ul class="space-y-4 text-sm text-slate-700">
+              <li v-for="row in optionsRows" :key="row.label" class="flex gap-3">
+                <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true" v-html="row.icon" />
+                <div class="min-w-0">
+                  <p class="text-xs font-medium text-[#216EC2]">{{ row.label }}</p>
+                  <p class="font-medium whitespace-pre-wrap">{{ row.value }}</p>
+                </div>
+              </li>
+            </ul>
+            <div v-if="authorizationTags.length" class="mt-4 flex flex-wrap gap-2">
+              <span
+                v-for="tag in authorizationTags"
+                :key="tag.label"
+                class="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                :class="tag.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'"
+              >
+                {{ tag.ok ? 'Oui' : 'Non' }} · {{ tag.label }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="engagementRows.length || engagementSignature" class="px-5 pb-5">
+          <div class="rounded-2xl border-2 border-[#216EC2]/35 bg-white p-5 shadow-sm">
+            <h3 class="mb-4 text-sm font-bold text-[#216EC2]">Engagement & signature</h3>
+            <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
+              <ul class="space-y-4 text-sm text-slate-700">
+                <li v-for="row in engagementRows" :key="row.label" class="flex gap-3">
+                  <span class="mt-0.5 shrink-0 text-slate-400" aria-hidden="true" v-html="row.icon" />
+                  <div class="min-w-0">
+                    <p class="text-xs font-medium text-[#216EC2]">{{ row.label }}</p>
+                    <p class="font-medium whitespace-pre-wrap">{{ row.value }}</p>
+                  </div>
+                </li>
+              </ul>
+              <img
+                v-if="engagementSignature"
+                :src="engagementSignature"
+                alt="Signature du parent"
+                class="max-h-28 w-full rounded-xl border border-slate-200 bg-slate-50 object-contain p-2"
+              />
+            </div>
+          </div>
+        </div>
+
         <div v-if="enrollment.status === 'APPROVED'" class="border-t border-slate-100 px-5 pb-5 pt-2">
           <div class="rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50/90 to-white p-5 shadow-sm">
             <div class="mb-3 flex flex-wrap items-start gap-3">
@@ -379,9 +433,9 @@
               <div class="min-w-0 flex-1">
                 <h3 class="text-sm font-bold text-slate-900">Facturation</h3>
                 <p class="mt-1 text-sm leading-relaxed text-slate-600">
-                  Supprime les lignes <strong class="text-slate-800">non payées</strong> (scolarité annuelle et mensualités
-                  en attente), puis les recrée selon le <strong class="text-slate-800">paramétrage actuel</strong> des
-                  niveaux. Les paiements déjà encaissés ne sont pas modifiés.
+                  Supprime les lignes <strong class="text-slate-800">non payées</strong>, puis les recrée selon le
+                  <strong class="text-slate-800">paramétrage actuel</strong> et le mode de paiement du parent
+                  (facture annuelle par défaut, ou scolarité + mensualités si échéancier). Les paiements déjà encaissés ne sont pas modifiés.
                 </p>
               </div>
             </div>
@@ -402,10 +456,22 @@
         </div>
       </section>
     </template>
+
+    <AdminEnrollmentDossierEdit
+      v-if="dossierEditOpen && enrollment && token"
+      :enrollment="enrollment"
+      :token="token || ''"
+      @close="dossierEditOpen = false"
+      @saved="onDossierSaved"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import AdminEnrollmentDossierEdit from '~/components/admin/AdminEnrollmentDossierEdit.vue'
+import { ENROLLMENT_AUTHORIZATIONS } from '~/utils/enrollment-options'
+import { bloodGroupLabel } from '~/utils/enrollment-health'
+
 definePageMeta({
   layout: 'admin',
   middleware: ['admin'],
@@ -418,6 +484,7 @@ type EnrollmentDetail = {
   status: string
   createdAt: string
   schoolYear: string
+  wizardData?: Record<string, unknown> | null
   pendingParentEmail: string | null
   pendingParentFirstName: string | null
   pendingParentLastName: string | null
@@ -425,10 +492,13 @@ type EnrollmentDetail = {
   pendingParentRelation: 'FATHER' | 'MOTHER' | null
   pendingParentAddress: string | null
   child: {
+    id?: string
     firstName: string
     lastName: string
     birthDate: string | null
     gender: string
+    photoUrl?: string | null
+    allergies?: string | null
     parent: {
       fullName: string | null
       email: string
@@ -436,9 +506,30 @@ type EnrollmentDetail = {
       parentRelation: 'FATHER' | 'MOTHER' | null
       address: string | null
     } | null
+    healthRecord?: {
+      bloodGroup: string | null
+      doctorName: string | null
+      doctorPhone: string | null
+      knownAllergies: string | null
+      ongoingTreatments: string | null
+      dietaryRegime: string | null
+      instructions: string | null
+      vaccinations?: Array<{
+        name: string
+        status: string
+        vaccinatedAt: string | null
+      }>
+    } | null
   }
-  level: { name: string }
+  level: { id: string; name: string }
   class: { name: string } | null
+  schedule?: { id: string; label: string; timeDescription: string | null } | null
+  serviceSubscriptions?: Array<{
+    serviceTariffId?: string
+    variantId?: string | null
+    serviceTariff: { id?: string; label: string; code: string }
+    variant?: { id?: string; label: string } | null
+  }>
 }
 
 type DetailDto = {
@@ -463,6 +554,7 @@ const billingLoading = ref(false)
 
 const confirmModal = ref<null | 'approve' | 'reject'>(null)
 const rejectNote = ref('')
+const dossierEditOpen = ref(false)
 
 function closeConfirmModal() {
   confirmModal.value = null
@@ -560,13 +652,6 @@ const genderLabel = computed(() => {
   return '—'
 })
 
-const genderDotClass = computed(() => {
-  const g = enrollment.value?.child.gender
-  if (g === 'FEMALE') return 'bg-pink-500'
-  if (g === 'MALE') return 'bg-blue-500'
-  return 'bg-slate-300'
-})
-
 const birthDisplay = computed(() => {
   const e = enrollment.value?.child
   if (!e?.birthDate) return ageLabelDetailed(null)
@@ -620,6 +705,193 @@ const parentAddress = computed(() => {
   if (fromUser) return fromUser
   const pending = e.pendingParentAddress?.trim()
   return pending || '—'
+})
+
+const childFullName = computed(() => {
+  const c = enrollment.value?.child
+  if (!c) return '—'
+  const name = `${c.firstName} ${c.lastName}`.trim()
+  return name || '—'
+})
+
+type InfoRow = { label: string; value: string; icon: string }
+
+const ICON = {
+  calendar: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`,
+  school: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>`,
+  bag: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
+  pin: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  mail: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
+  phone: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>`,
+  user: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  users: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  heart: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566 5 5 0 0 1 7.5 6.566z"/></svg>`,
+  clock: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>`,
+  check: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  brief: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>`,
+  flag: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`,
+  file: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`,
+}
+
+function dash(v: unknown): string {
+  const s = String(v ?? '').trim()
+  return s || '—'
+}
+
+function mediaUrl(url: string | null | undefined): string {
+  if (!url) return ''
+  if (/^https?:\/\//i.test(url) || url.startsWith('data:')) return url
+  const base = String(config.public.apiBase ?? '').replace(/\/api\/?$/, '')
+  return `${base}${url.startsWith('/') ? '' : '/'}${url}`
+}
+
+type WizardSlice = {
+  childExtras?: {
+    birthPlace?: string
+    nationality?: string
+    homeLanguages?: string
+    matricule?: string
+    childAddress?: string
+    previousSchool?: string
+  }
+  parentExtras?: { profession?: string }
+  guardian2?: { fullName?: string; relation?: string; phone?: string; email?: string }
+  emergency?: { source?: string; fullName?: string; relation?: string; phone?: string }
+  options?: {
+    scheduleLabel?: string
+    comment?: string
+    authorizations?: {
+      photosInternal?: boolean
+      photosCommunication?: boolean
+      outings?: boolean
+      firstAid?: boolean
+    }
+  }
+  engagement?: {
+    certified?: boolean
+    signedPlace?: string
+    signedAt?: string
+    signatureMode?: string
+    parentSignatureUrl?: string
+  }
+}
+
+const wizard = computed((): WizardSlice => {
+  const raw = enrollment.value?.wizardData
+  if (!raw || typeof raw !== 'object') return {}
+  return raw as WizardSlice
+})
+
+const childPhoto = computed(() => mediaUrl(enrollment.value?.child.photoUrl))
+
+const studentRows = computed((): InfoRow[] => {
+  const e = enrollment.value
+  if (!e) return []
+  const extras = wizard.value.childExtras ?? {}
+  return [
+    { label: 'Demandé le', value: formatDate(e.createdAt), icon: ICON.calendar },
+    { label: 'Date de naissance', value: birthDisplay.value, icon: ICON.calendar },
+    { label: 'Lieu de naissance', value: dash(extras.birthPlace), icon: ICON.pin },
+    { label: 'Nationalité', value: dash(extras.nationality), icon: ICON.flag },
+    { label: 'Genre', value: genderLabel.value, icon: ICON.user },
+    { label: 'Langue(s) à la maison', value: dash(extras.homeLanguages), icon: ICON.file },
+    { label: 'Classe demandée', value: classOrLevelName.value, icon: ICON.school },
+    { label: 'Année scolaire', value: schoolYearLabel.value, icon: ICON.bag },
+    { label: 'Matricule', value: dash(extras.matricule), icon: ICON.file },
+    { label: 'Adresse de l’enfant', value: dash(extras.childAddress), icon: ICON.pin },
+    { label: 'École précédente', value: dash(extras.previousSchool), icon: ICON.school },
+  ]
+})
+
+const parentRows = computed((): InfoRow[] => [
+  { label: 'Profession', value: dash(wizard.value.parentExtras?.profession), icon: ICON.brief },
+  { label: 'Adresse', value: parentAddress.value, icon: ICON.pin },
+  { label: 'E-mail', value: dash(parentEmail.value), icon: ICON.mail },
+  { label: 'Numéro de téléphone', value: dash(parentPhone.value), icon: ICON.phone },
+])
+
+const familyRows = computed((): InfoRow[] => {
+  const g2 = wizard.value.guardian2
+  const em = wizard.value.emergency
+  const g2Line = [g2?.fullName, g2?.relation, g2?.phone, g2?.email].filter((x) => String(x ?? '').trim()).join('\n')
+  const emLine = [em?.fullName, em?.relation, em?.phone].filter((x) => String(x ?? '').trim()).join('\n')
+  return [
+    { label: 'Parent / responsable 1', value: `${parentName.value}${parentRelationLabel.value !== '—' ? ` · ${parentRelationLabel.value}` : ''}`, icon: ICON.user },
+    { label: 'Parent / responsable 2', value: dash(g2Line), icon: ICON.users },
+    { label: 'Contact d’urgence', value: dash(emLine), icon: ICON.phone },
+  ]
+})
+
+const healthRows = computed((): InfoRow[] => {
+  const h = enrollment.value?.child.healthRecord
+  const allergies = h?.knownAllergies?.trim() || enrollment.value?.child.allergies?.trim() || ''
+  return [
+    { label: 'Médecin référent', value: dash(h?.doctorName), icon: ICON.heart },
+    { label: 'Téléphone du cabinet', value: dash(h?.doctorPhone), icon: ICON.phone },
+    { label: 'Groupe sanguin', value: h?.bloodGroup ? bloodGroupLabel(h.bloodGroup) : '—', icon: ICON.heart },
+    { label: 'Allergies', value: dash(allergies), icon: ICON.heart },
+    { label: 'Traitements en cours', value: dash(h?.ongoingTreatments), icon: ICON.file },
+    { label: 'Régime alimentaire', value: dash(h?.dietaryRegime), icon: ICON.file },
+    { label: 'Consigne équipe', value: dash(h?.instructions), icon: ICON.file },
+  ]
+})
+
+const vaccinationRows = computed(() => {
+  const list = enrollment.value?.child.healthRecord?.vaccinations ?? []
+  return list.map((v) => {
+    const done = String(v.status ?? '').toUpperCase() === 'DONE' || Boolean(v.vaccinatedAt)
+    let dateLabel = ''
+    if (v.vaccinatedAt) {
+      const d = new Date(v.vaccinatedAt)
+      if (!Number.isNaN(d.getTime())) {
+        dateLabel = d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+      }
+    }
+    return { name: v.name, done, dateLabel }
+  })
+})
+
+const optionsRows = computed((): InfoRow[] => {
+  const e = enrollment.value
+  const scheduleLabel =
+    e?.schedule?.label ||
+    wizard.value.options?.scheduleLabel ||
+    ''
+  const scheduleTime = e?.schedule?.timeDescription?.trim()
+  const journee = [scheduleLabel, scheduleTime].filter(Boolean).join(' · ')
+  const services = (e?.serviceSubscriptions ?? []).map((s) =>
+    s.variant?.label ? `${s.serviceTariff.label} — ${s.variant.label}` : s.serviceTariff.label,
+  )
+  return [
+    { label: 'Formule / journée', value: dash(journee), icon: ICON.clock },
+    { label: 'Services choisis', value: services.length ? services.join('\n') : 'Aucun', icon: ICON.bag },
+    { label: 'Commentaire', value: dash(wizard.value.options?.comment), icon: ICON.file },
+  ]
+})
+
+const authorizationTags = computed(() => {
+  const auth = wizard.value.options?.authorizations
+  if (!auth) return []
+  return ENROLLMENT_AUTHORIZATIONS.map((a) => ({
+    label: a.title,
+    ok: Boolean(auth[a.key]),
+  }))
+})
+
+const engagementSignature = computed(() => mediaUrl(wizard.value.engagement?.parentSignatureUrl))
+
+const engagementRows = computed((): InfoRow[] => {
+  const eng = wizard.value.engagement
+  if (!eng) return []
+  const mode =
+    eng.signatureMode === 'handwritten' ? 'Manuscrite' : eng.signatureMode === 'upload' ? 'Importée' : dash(eng.signatureMode)
+  const signedAt = eng.signedAt ? formatDate(eng.signedAt) : '—'
+  return [
+    { label: 'Certifié exact', value: eng.certified ? 'Oui' : 'Non', icon: ICON.check },
+    { label: 'Lieu de signature', value: dash(eng.signedPlace), icon: ICON.pin },
+    { label: 'Date de signature', value: signedAt, icon: ICON.calendar },
+    { label: 'Mode de signature', value: mode, icon: ICON.file },
+  ]
 })
 
 const timelineSteps = computed(() => {
@@ -748,6 +1020,20 @@ async function loadDetail() {
     detail.value = null
   } finally {
     pending.value = false
+  }
+}
+
+function onDossierSaved(payload: { message: string; enrollment: unknown; stats?: unknown }) {
+  dossierEditOpen.value = false
+  actionError.value = null
+  actionMessage.value = payload.message
+  if (detail.value && payload.enrollment) {
+    detail.value = {
+      stats: (payload.stats as Stats | undefined) ?? detail.value.stats,
+      enrollment: payload.enrollment as EnrollmentDetail,
+    }
+  } else {
+    void loadDetail()
   }
 }
 

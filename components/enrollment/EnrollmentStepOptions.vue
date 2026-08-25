@@ -12,7 +12,7 @@
     </p>
 
     <template v-else>
-      <section v-if="schedules.length" class="space-y-3">
+      <section v-if="schedules.length" id="enrollment-schedule" class="space-y-3">
         <EnrollmentSectionTitle title="Formule horaire" />
         <div class="grid gap-3 sm:grid-cols-2">
           <button
@@ -45,7 +45,10 @@
                   {{ schedule.timeDescription }}
                 </span>
                 <span class="mt-1 block text-[11px] font-semibold text-[#216EC2]">
-                  Inscription {{ intFr.format(schedule.annualXof) }} XOF · {{ intFr.format(schedule.monthlyXof) }} XOF / mois
+                  Scolarité {{ intFr.format(schedule.annualXof) }} XOF / an
+                  <template v-if="schedule.monthlyXof">
+                    · mensualité {{ intFr.format(schedule.monthlyXof) }} XOF / mois
+                  </template>
                 </span>
               </span>
             </div>

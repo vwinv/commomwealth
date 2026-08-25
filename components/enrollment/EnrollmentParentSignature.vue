@@ -1,5 +1,5 @@
 <template>
-  <div class="parent-signature">
+  <div id="enrollment-signature" class="parent-signature">
     <p class="parent-signature__label">Signature parent / responsable</p>
 
     <div v-if="signatureDataUrl" class="parent-signature__box parent-signature__box--filled">

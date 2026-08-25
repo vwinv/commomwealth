@@ -122,7 +122,7 @@
           <p class="mt-3 line-clamp-2 text-xs leading-5 text-slate-500">{{ w.description }}</p>
 
           <div class="mt-3 flex flex-wrap gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-md bg-[#FFF1E8] px-2 py-1 text-[10px] font-medium text-[#E87A3A]">
+            <span class="inline-flex max-w-full items-center gap-1.5 rounded-md bg-[#FFF1E8] px-2 py-1 text-[10px] font-medium leading-tight text-[#E87A3A]">
               <svg viewBox="0 0 24 24" fill="none" class="h-3 w-3 shrink-0" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <rect x="3" y="5" width="18" height="16" rx="2" />
                 <path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round" />
@@ -243,6 +243,7 @@ type Workshop = {
   image: string
   date: string
   dateValue: string
+  endDateValue?: string
   time: string
   age: string
   price: string
@@ -297,7 +298,11 @@ const dateFilterLabel = computed(() => {
 const filtered = computed(() => {
   const q = search.value.trim().toLowerCase()
   let list = items.value.filter((w) => {
-    if (dateFilter.value && w.dateValue !== dateFilter.value) return false
+    if (dateFilter.value) {
+      const start = w.dateValue
+      const end = w.endDateValue || w.dateValue
+      if (dateFilter.value < start || dateFilter.value > end) return false
+    }
     if (!q) return true
     return `${w.title} ${w.description} ${w.age}`.toLowerCase().includes(q)
   })

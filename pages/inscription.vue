@@ -1,6 +1,11 @@
 <template>
   <div>
-    <EnrollmentWizardHeader :school-year-label="schoolYearLabel" :matricule="child.matricule" />
+    <EnrollmentWizardHeader
+      :school-year-label="schoolYearLabel"
+      :matricule="child.matricule"
+      :back-to="backTo"
+      :back-label="backLabel"
+    />
 
     <main class="mx-auto max-w-[920px] px-5 py-8">
       <div v-if="!submitted">
@@ -54,8 +59,11 @@
           <div class="px-6 py-6 sm:px-8">
             <div
               v-if="submitError"
-              class="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+              ref="errorAlert"
+              id="enrollment-submit-error"
+              class="mb-5 scroll-mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
               role="alert"
+              tabindex="-1"
             >
               {{ submitError }}
             </div>
@@ -90,9 +98,10 @@
             <EnrollmentNavFooter
               :current-step="step"
               :submitting="submitting"
+              :error="submitError"
               @prev="prev"
-              @next="next"
-              @submit="submit"
+              @next="onNext"
+              @submit="onSubmit"
             />
           </div>
         </div>
@@ -112,6 +121,15 @@
           Merci ! Votre demande a été enregistrée. L'administration vous contactera sous 48 h. Vous recevrez
           un e-mail récapitulatif.
         </p>
+        <NuxtLink
+          :to="backTo"
+          class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#216EC2] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-105"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ backLabel }}
+        </NuxtLink>
       </div>
     </main>
   </div>
@@ -148,6 +166,11 @@ const {
   goToStep,
   submit,
 } = useEnrollmentWizard();
+
+const route = useRoute();
+const fromParent = computed(() => String(route.query.from ?? '') === 'parent');
+const backTo = computed(() => (fromParent.value ? '/parent/enfants' : '/'));
+const backLabel = computed(() => (fromParent.value ? 'Retour à l\'espace parent' : 'Retour'));
 
 useHead({
   title: computed(() =>
@@ -200,4 +223,63 @@ const stepIcons: Record<EnrollmentStepId, FunctionalComponent> = {
 };
 
 const stepIcon = computed(() => stepIcons[step.value]);
+
+const errorAlert = ref<HTMLElement | null>(null);
+
+function fieldIdForError(message: string): string | null {
+  const m = message.toLowerCase();
+  if (m.includes('engagement')) return 'enrollment-certified';
+  if (m.includes('lieu de signature')) return 'enrollment-signed-place';
+  if (m.includes('date de signature')) return 'enrollment-signed-at';
+  if (m.includes('dessinez') || m.includes('importez votre signature') || m.includes('signature')) {
+    return 'enrollment-signature';
+  }
+  if (m.includes('classe demandée')) return 'enrollment-level';
+  if (m.includes('formule horaire')) return 'enrollment-schedule';
+  if (m.includes('date de naissance')) return 'enrollment-birth-date';
+  if (m.includes('prénom et le nom de famille')) return 'enrollment-child-first-name';
+  if (m.includes('responsable 1')) return 'enrollment-parent-name';
+  if (m.includes('lien avec')) return 'enrollment-parent-relation';
+  if (m.includes('adresse e-mail')) return 'enrollment-parent-email';
+  if (m.includes('numéro de téléphone')) return 'enrollment-parent-phone';
+  if (m.includes('contact d’urgence') || m.includes("contact d'urgence") || m.includes('responsable 2')) {
+    return 'enrollment-emergency';
+  }
+  if (m.includes('médecin')) return 'enrollment-doctor-name';
+  if (m.includes('téléphone du cabinet')) return 'enrollment-doctor-phone';
+  if (m.includes('groupe sanguin')) return 'enrollment-blood-group';
+  return null;
+}
+
+async function scrollToEnrollmentError() {
+  if (!submitError.value) return;
+  await nextTick();
+  await nextTick();
+  const fieldId = fieldIdForError(submitError.value);
+  const field = fieldId ? document.getElementById(fieldId) : null;
+  const target = field ?? errorAlert.value;
+  if (!target) return;
+  target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (!field) {
+    errorAlert.value?.focus({ preventScroll: true });
+  }
+}
+
+watch(submitError, (msg) => {
+  if (msg) void scrollToEnrollmentError();
+});
+
+watch(step, () => {
+  if (submitError.value) void scrollToEnrollmentError();
+});
+
+async function onNext() {
+  await next();
+  if (submitError.value) void scrollToEnrollmentError();
+}
+
+async function onSubmit() {
+  await submit();
+  if (submitError.value) void scrollToEnrollmentError();
+}
 </script>

@@ -106,15 +106,13 @@
               class="inline-flex h-12 w-full max-w-xs items-center justify-center rounded-xl px-4 text-sm font-bold text-white shadow-sm transition"
               :class="canPayTuition ? 'bg-emerald-500 hover:bg-emerald-600' : 'cursor-not-allowed bg-slate-300'"
               :disabled="!canPayTuition"
-              :title="
-                canPayTuition
-                  ? undefined
-                  : 'Aucune échéance impayée avec montant : vérifiez le paramétrage (niveau + année), que l’inscription est validée, puis rechargez la page.'
-              "
               @click="goPaymentScreen"
             >
               Payer la scolarité
             </button>
+            <p v-if="!pending && !canPayTuition" class="mt-2 max-w-xs text-xs leading-snug text-slate-500">
+              {{ paymentsEmptyLabel }}
+            </p>
             <p class="mt-3 text-xs text-slate-500">Paiement en ligne — moyens acceptés (selon activation) :</p>
             <div class="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-bold">
               <span class="rounded-md bg-[#00D4AA] px-2 py-1 text-white">Wave</span>
@@ -143,7 +141,7 @@
               </NuxtLink>
             </div>
             <p v-else class="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-3 py-6 text-center text-sm text-slate-500">
-              Aucune facture à payer pour le moment.
+              {{ paymentsEmptyLabel }}
             </p>
           </div>
         </div>
@@ -258,6 +256,8 @@ type MonthlyRow = {
   enrollment: { child: ChildRef };
 };
 
+type PaymentsEmptyReason = 'NO_ENROLLMENT' | 'NOT_APPROVED' | 'NO_TARIFF' | 'ALL_PAID' | null
+
 type OverviewChild = {
   id: string;
   firstName: string;
@@ -301,6 +301,8 @@ const notifPayload = ref<NotificationsPayload | null>(null);
 const legacyPayments = ref<LegacyPaymentRow[]>([]);
 const tuitionCharges = ref<TuitionRow[]>([]);
 const monthlyInstallments = ref<MonthlyRow[]>([]);
+const emptyReason = ref<PaymentsEmptyReason>(null);
+const monthlyPaymentPlanEnabled = ref(false);
 const apiDocs = ref<ApiDoc[]>([]);
 const pending = ref(true);
 const loadError = ref<string | null>(null);
@@ -314,7 +316,7 @@ function isPendingStatus(s: unknown): boolean {
   return String(s ?? '').toUpperCase() === 'PENDING';
 }
 
-/** Scolarité annuelle ou mensualités encore dues (montant > 0), après synchro API. */
+/** Scolarité, facture annuelle, ou mensualités encore dues (montant > 0). */
 const canPayTuition = computed(() => {
   const tuitionOk = tuitionCharges.value.some(
     (t) => isPendingStatus(t.status) && centsPositive(t.amountCents) > 0,
@@ -324,6 +326,20 @@ const canPayTuition = computed(() => {
   );
   return tuitionOk || monthlyOk;
 });
+
+function paymentsEmptyMessage(reason: PaymentsEmptyReason) {
+  if (reason === 'NO_ENROLLMENT') return 'Aucun dossier d’inscription n’est rattaché à ce compte.'
+  if (reason === 'NOT_APPROVED') {
+    return 'L’inscription est en attente de validation par l’école. Les factures apparaîtront ensuite.'
+  }
+  if (reason === 'NO_TARIFF') {
+    return 'L’inscription est validée, mais les tarifs (scolarité / mensualité) sont à 0 XOF dans le paramétrage.'
+  }
+  if (reason === 'ALL_PAID') return 'Toutes les factures sont réglées.'
+  return 'Aucune facture à payer pour le moment.'
+}
+
+const paymentsEmptyLabel = computed(() => paymentsEmptyMessage(emptyReason.value))
 
 const latestNotification = computed(() => notifPayload.value?.latest ?? null);
 
@@ -346,6 +362,13 @@ function childLabel(c: ChildRef) {
   return `${c.firstName} ${c.lastName}`;
 }
 
+function tuitionChargeLabel(schoolYear: string, child: ChildRef) {
+  const name = childLabel(child);
+  return monthlyPaymentPlanEnabled.value
+    ? `Scolarité — ${name} — ${schoolYear}`
+    : `Facture annuelle — ${name} — ${schoolYear}`;
+}
+
 function periodKeyTuition(schoolYear: string): number {
   const m = schoolYear.trim().match(/^(\d{4})-/);
   return m ? parseInt(m[1]!, 10) * 100 + 9 : 0;
@@ -365,7 +388,7 @@ const lastPaymentTeaser = computed(() => {
     if (t.status !== 'PAID') continue;
     cands.push({
       key: periodKeyTuition(t.schoolYear),
-      text: `Scolarité annuelle ${t.schoolYear} — Payée (${childLabel(t.enrollment.child)})`,
+      text: `${tuitionChargeLabel(t.schoolYear, t.enrollment.child)} — Payée`,
     });
   }
   for (const m of monthlyInstallments.value) {
@@ -403,7 +426,7 @@ const nextInvoiceToPay = computed((): { id: string; label: string; amountLabel: 
     cands.push({
       sort: periodKeyTuition(t.schoolYear),
       id: `t-${t.id}`,
-      label: `Scolarité annuelle — ${childLabel(t.enrollment.child)} — ${t.schoolYear}`,
+      label: tuitionChargeLabel(t.schoolYear, t.enrollment.child),
       cents: Number(t.amountCents),
     });
   }
@@ -486,6 +509,8 @@ onMounted(async () => {
         tuitionCharges?: TuitionRow[];
         monthlyInstallments?: MonthlyRow[];
         payments?: LegacyPaymentRow[];
+        emptyReason?: PaymentsEmptyReason;
+        monthlyPaymentPlanEnabled?: boolean;
       }>('/parent/payments'),
       authFetch<ApiDoc[]>('/parent/documents'),
     ]);
@@ -495,6 +520,8 @@ onMounted(async () => {
     legacyPayments.value = payRes?.legacyPayments ?? payRes?.payments ?? [];
     tuitionCharges.value = payRes?.tuitionCharges ?? [];
     monthlyInstallments.value = payRes?.monthlyInstallments ?? [];
+    emptyReason.value = payRes?.emptyReason ?? null;
+    monthlyPaymentPlanEnabled.value = Boolean(payRes?.monthlyPaymentPlanEnabled);
     apiDocs.value = docsRes ?? [];
   } catch (error: unknown) {
     const e = error as {

@@ -23,6 +23,7 @@ export const SiteFooter: typeof import("../components/SiteFooter.vue")['default'
 export const SiteHeader: typeof import("../components/SiteHeader.vue")['default']
 export const AdminAccountingTotalsBlocks: typeof import("../components/admin/AdminAccountingTotalsBlocks.vue")['default']
 export const AdminClassEditModal: typeof import("../components/admin/AdminClassEditModal.vue")['default']
+export const AdminEnrollmentDossierEdit: typeof import("../components/admin/AdminEnrollmentDossierEdit.vue")['default']
 export const AdminLevelEditModal: typeof import("../components/admin/AdminLevelEditModal.vue")['default']
 export const AdminServiceEditModal: typeof import("../components/admin/AdminServiceEditModal.vue")['default']
 export const AdminStudentCarnetSuivi: typeof import("../components/admin/AdminStudentCarnetSuivi.vue")['default']
@@ -104,6 +105,7 @@ export const LazySiteFooter: LazyComponent<typeof import("../components/SiteFoot
 export const LazySiteHeader: LazyComponent<typeof import("../components/SiteHeader.vue")['default']>
 export const LazyAdminAccountingTotalsBlocks: LazyComponent<typeof import("../components/admin/AdminAccountingTotalsBlocks.vue")['default']>
 export const LazyAdminClassEditModal: LazyComponent<typeof import("../components/admin/AdminClassEditModal.vue")['default']>
+export const LazyAdminEnrollmentDossierEdit: LazyComponent<typeof import("../components/admin/AdminEnrollmentDossierEdit.vue")['default']>
 export const LazyAdminLevelEditModal: LazyComponent<typeof import("../components/admin/AdminLevelEditModal.vue")['default']>
 export const LazyAdminServiceEditModal: LazyComponent<typeof import("../components/admin/AdminServiceEditModal.vue")['default']>
 export const LazyAdminStudentCarnetSuivi: LazyComponent<typeof import("../components/admin/AdminStudentCarnetSuivi.vue")['default']>

@@ -3,6 +3,7 @@
     <div class="grid gap-4 sm:grid-cols-2">
       <EnrollmentField label="Prénom usuel" required>
         <input
+          id="enrollment-child-first-name"
           v-model.trim="child.firstName"
           type="text"
           class="enrollment-input"
@@ -24,6 +25,7 @@
     <div class="grid gap-4 sm:grid-cols-3">
       <EnrollmentField label="Date de naissance" required>
         <input
+          id="enrollment-birth-date"
           v-model="child.birthDate"
           type="date"
           class="enrollment-input [color-scheme:light]"
@@ -65,7 +67,7 @@
       </EnrollmentField>
     </div>
 
-    <div>
+    <div id="enrollment-level">
       <EnrollmentSectionTitle title="Classe demandée" />
 
       <div

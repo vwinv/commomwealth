@@ -150,6 +150,18 @@
       </div>
     </header>
 
+    <div
+      v-if="me?.mustChangePassword && pathNorm !== '/parent/mot-de-passe'"
+      class="border-b border-amber-200 bg-amber-50"
+    >
+      <p class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm text-amber-950 sm:px-6">
+        <span>Un mot de passe provisoire vous a été envoyé. Pensez à le remplacer par un mot de passe personnel.</span>
+        <NuxtLink to="/parent/mot-de-passe" class="font-semibold text-brandBlue hover:underline">
+          Modifier maintenant
+        </NuxtLink>
+      </p>
+    </div>
+
     <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
       <slot />
     </main>
@@ -275,7 +287,12 @@ const isAteliers = computed(
   () => pathNorm.value === '/parent/ateliers' || pathNorm.value.startsWith('/parent/ateliers/'),
 );
 
-const me = ref<{ fullName: string | null; email: string; profilePhotoUrl: string | null } | null>(null);
+const me = ref<{
+  fullName: string | null;
+  email: string;
+  profilePhotoUrl: string | null;
+  mustChangePassword?: boolean;
+} | null>(null);
 const notifUnreadCount = ref(0);
 const notifDrawerOpen = ref(false);
 const notifItems = ref<ParentNotif[]>([]);
@@ -296,7 +313,12 @@ const initials = computed(() => {
 
 async function refreshShell() {
   try {
-    me.value = await authFetch<{ fullName: string | null; email: string; profilePhotoUrl: string | null }>('/parent/me');
+    me.value = await authFetch<{
+      fullName: string | null;
+      email: string;
+      profilePhotoUrl: string | null;
+      mustChangePassword?: boolean;
+    }>('/parent/me');
   } catch {
     me.value = null;
   }

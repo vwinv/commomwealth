@@ -3,6 +3,7 @@
     <div class="grid gap-4 sm:grid-cols-2">
       <EnrollmentField label="Médecin référent" required>
         <input
+          id="enrollment-doctor-name"
           v-model.trim="health.doctorName"
           type="text"
           class="enrollment-input"
@@ -11,6 +12,7 @@
       </EnrollmentField>
       <EnrollmentField label="Téléphone du cabinet" required>
         <input
+          id="enrollment-doctor-phone"
           v-model.trim="health.doctorPhone"
           type="tel"
           class="enrollment-input"
@@ -20,7 +22,7 @@
     </div>
 
     <div>
-      <EnrollmentField label="Groupe sanguin" required>
+      <EnrollmentField id="enrollment-blood-group" label="Groupe sanguin" required>
         <div class="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-9">
           <button
             v-for="group in bloodGroups"

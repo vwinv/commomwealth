@@ -78,7 +78,7 @@
         <span>Engagement & signature</span>
       </div>
 
-      <label class="recap-certification">
+      <label id="enrollment-certified" class="recap-certification">
         <input
           v-model="engagement.certified"
           type="checkbox"

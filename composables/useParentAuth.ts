@@ -25,6 +25,7 @@ export function useParentAuth() {
   async function login(email: string, password: string, rememberMe = false) {
     const res = await $fetch<{
       accessToken: string;
+      mustChangePassword?: boolean;
       user: { id: string; email: string; fullName: string | null; phone: string | null };
     }>(`${config.public.apiBase}/auth/parent/login`, {
       method: 'POST',
@@ -40,6 +41,16 @@ export function useParentAuth() {
       tokenLong.value = null;
     }
     return res;
+  }
+
+  async function requestPasswordReset(email: string) {
+    return $fetch<{ ok: boolean; message: string }>(
+      `${config.public.apiBase}/auth/parent/forgot-password`,
+      {
+        method: 'POST',
+        body: { email },
+      },
+    );
   }
 
   function logout() {
@@ -111,5 +122,5 @@ export function useParentAuth() {
     });
   }
 
-  return { token: activeToken, isLoggedIn, login, logout, authHeaders, authFetch, authFetchBlob };
+  return { token: activeToken, isLoggedIn, login, requestPasswordReset, logout, authHeaders, authFetch, authFetchBlob };
 }

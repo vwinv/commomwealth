@@ -37,6 +37,13 @@ export type TuitionChargeInvoiceDto = {
   createdAt?: string;
   paidAt?: string | null;
   transactionRef?: string | null;
+  lines?: Array<{
+    kind?: string;
+    label: string;
+    quantity?: number;
+    unitAmountCents?: number;
+    amountCents: number;
+  }>;
   enrollment: {
     id: string;
     schoolYear: string;
@@ -85,7 +92,7 @@ export type LegacyPaymentInvoiceDto = {
 
 /** Source facture (aperçu + PDF). */
 export type ParentInvoiceSource =
-  | { kind: 'tuition'; charge: TuitionChargeInvoiceDto }
+  | { kind: 'tuition'; charge: TuitionChargeInvoiceDto; annualPackage?: boolean }
   | { kind: 'monthly'; installment: MonthlyInstallmentInvoiceDto }
   | { kind: 'legacy'; payment: LegacyPaymentInvoiceDto };
 
@@ -119,6 +126,32 @@ function billedToTitle(contact: BillingContactDto): string {
 
 function billedAddress(contact: BillingContactDto): string {
   return contact.address?.trim() || '—';
+}
+
+function tuitionInvoiceLines(
+  charge: TuitionChargeInvoiceDto,
+  levelName: string,
+  annualPackage: boolean,
+): ParentInvoiceLine[] {
+  const stored = charge.lines ?? [];
+  if (stored.length) {
+    return stored.map((l) => ({
+      description: l.label,
+      qty: String(l.quantity ?? 1),
+      unitPrice: formatXofFromCents(l.unitAmountCents ?? l.amountCents),
+      amount: formatXofFromCents(l.amountCents),
+    }));
+  }
+  return [
+    {
+      description: annualPackage
+        ? `Scolarité + mensualités — ${levelName}`
+        : `Frais de scolarité — ${levelName}`,
+      qty: '1',
+      unitPrice: formatXofFromCents(charge.amountCents),
+      amount: formatXofFromCents(charge.amountCents),
+    },
+  ];
 }
 
 function parentContactLine(contact: BillingContactDto): string {
@@ -202,18 +235,15 @@ export function useParentSchoolInvoice() {
     if (source.kind === 'tuition') {
       const charge = source.charge;
       const levelName = charge.enrollment.level?.name?.trim() || '—';
+      const annualPackage =
+        source.annualPackage === true ||
+        (charge.lines ?? []).some((l) => l.kind === 'MONTHLY_BASE' || l.kind === 'SERVICE');
       const y = Number(charge.schoolYear.trim().match(/^(\d{4})/)?.[1] ?? new Date().getFullYear());
       const inv = stableInvoiceNumber(y, charge.id);
-      const lines: ParentInvoiceLine[] = [
-        {
-          description: `Frais de scolarité — ${levelName}`,
-          qty: '1',
-          unitPrice: formatXofFromCents(charge.amountCents),
-          amount: formatXofFromCents(charge.amountCents),
-        },
-      ];
+      const documentTitle = annualPackage ? 'Facture annuelle' : 'Facture de scolarité';
+      const lines = tuitionInvoiceLines(charge, levelName, annualPackage);
       const html = buildParentInvoiceHtml({
-        documentTitle: 'Facture de scolarité',
+        documentTitle,
         schoolDisplayName: b.schoolDisplayName,
         headerSubline: `${b.contactEmail} · Année scolaire ${charge.schoolYear}`,
         contactEmail: b.contactEmail,
@@ -235,8 +265,8 @@ export function useParentSchoolInvoice() {
         generatedDateFr: issueDateFr(),
       });
       return {
-        title: `Facture de scolarité — ${inv}`,
-        filenameBase: `Facture-scolarite-${inv}`,
+        title: `${documentTitle} — ${inv}`,
+        filenameBase: `${annualPackage ? 'Facture-annuelle' : 'Facture-scolarite'}-${inv}`,
         html,
       };
     }
@@ -344,13 +374,17 @@ export function useParentSchoolInvoice() {
     if (source.kind === 'tuition') {
       const charge = source.charge;
       const levelName = charge.enrollment.level?.name?.trim() || '—';
+      const annualPackage =
+        source.annualPackage === true ||
+        (charge.lines ?? []).some((l) => l.kind === 'MONTHLY_BASE' || l.kind === 'SERVICE');
       const y = Number(charge.schoolYear.trim().match(/^(\d{4})/)?.[1] ?? new Date().getFullYear());
       const inv = stableInvoiceNumber(y, charge.id);
       const rec = stableReceiptNumber(y, charge.id);
       const payIso = charge.paidAt ?? charge.createdAt;
-      const lines: ParentReceiptLine[] = [
-        { description: `Frais de scolarité — ${levelName}`, amount: formatXofFromCents(charge.amountCents) },
-      ];
+      const lines: ParentReceiptLine[] = tuitionInvoiceLines(charge, levelName, annualPackage).map((l) => ({
+        description: l.qty !== '1' ? `${l.description} × ${l.qty}` : l.description,
+        amount: l.amount,
+      }));
       const html = buildParentReceiptHtml({
         schoolDisplayName: b.schoolDisplayName,
         headerSubline: `${b.contactEmail} · Année scolaire ${charge.schoolYear}`,

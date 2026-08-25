@@ -50,6 +50,44 @@
         </ul>
       </section>
 
+      <section class="overflow-hidden rounded-3xl border-2 border-[#216EC2]/25 bg-white px-6 py-6 shadow-sm sm:px-8">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <h2 class="text-lg font-bold text-slate-900">Paiement de la scolarité</h2>
+            <p class="mt-1 text-sm leading-relaxed text-slate-600">
+              Par défaut, une
+              <strong class="font-semibold text-slate-800">facture annuelle</strong>
+              regroupe les frais de scolarité et les mensualités de l’année (septembre à juin).
+              L’échéancier ajoute des factures mois par mois, en conservant la facture de scolarité.
+            </p>
+            <p class="mt-2 text-sm font-medium" :class="detail.monthlyPaymentPlanEnabled ? 'text-[#216EC2]' : 'text-slate-500'">
+              {{
+                detail.monthlyPaymentPlanEnabled
+                  ? 'Échéancier activé : scolarité + factures mensuelles, pour tous les enfants de ce parent.'
+                  : 'Paiement annuel — une facture (scolarité + mensualités de l’année).'
+              }}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            :aria-checked="detail.monthlyPaymentPlanEnabled"
+            class="relative inline-flex h-7 w-[2.75rem] shrink-0 rounded-full transition focus:outline-none focus:ring-2 focus:ring-[#216EC2]/40 disabled:cursor-not-allowed disabled:opacity-50"
+            :class="detail.monthlyPaymentPlanEnabled ? 'bg-[#216EC2]' : 'bg-slate-300'"
+            :disabled="planPending"
+            @click="openPlanModal"
+          >
+            <span
+              class="pointer-events-none absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-[transform]"
+              :class="detail.monthlyPaymentPlanEnabled ? 'left-0.5 translate-x-[1.15rem]' : 'left-0.5 translate-x-0'"
+            />
+          </button>
+        </div>
+        <p v-if="planError" class="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          {{ planError }}
+        </p>
+      </section>
+
       <section class="overflow-hidden rounded-3xl border-2 border-[#216EC2]/25 bg-white shadow-sm">
         <h2 class="border-b border-slate-100 px-6 py-4 text-lg font-bold text-slate-900">Enfants inscrits</h2>
         <ul class="divide-y divide-slate-100">
@@ -82,6 +120,55 @@
         </ul>
       </section>
     </article>
+
+    <Teleport to="body">
+      <div
+        v-if="planModalOpen && detail"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+        role="presentation"
+      >
+        <div class="absolute inset-0 bg-slate-900/45 backdrop-blur-[2px]" aria-hidden="true" @click="planModalOpen = false" />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="plan-parent-title"
+          class="relative w-full max-w-[480px] rounded-[28px] bg-white px-7 pb-8 pt-6 shadow-xl"
+          @click.stop
+        >
+          <h2 id="plan-parent-title" class="text-xl font-bold tracking-tight text-slate-900">
+            {{ detail.monthlyPaymentPlanEnabled ? 'Revenir au paiement annuel' : 'Activer l’échéancier mensuel' }}
+          </h2>
+          <p class="mt-4 text-[15px] leading-relaxed text-slate-600">
+            {{
+              detail.monthlyPaymentPlanEnabled
+                ? 'Les mensualités encore impayées seront regroupées dans la facture annuelle (scolarité + mensualités de l’année). Les règlements déjà effectués sont conservés.'
+                : 'La facture annuelle impayée sera scindée : une facture de scolarité, plus une facture par mois (septembre à juin) avec les options. Les règlements déjà effectués sont conservés.'
+            }}
+          </p>
+          <p v-if="planError" class="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+            {{ planError }}
+          </p>
+          <div class="mt-6 flex gap-3">
+            <button
+              type="button"
+              class="inline-flex flex-1 items-center justify-center rounded-2xl bg-[#216EC2] py-3.5 text-sm font-bold text-white shadow-sm transition hover:brightness-105 disabled:opacity-50"
+              :disabled="planPending"
+              @click="confirmPlanChange"
+            >
+              {{ planPending ? 'Mise à jour…' : 'Confirmer' }}
+            </button>
+            <button
+              type="button"
+              class="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-200 py-3.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+              :disabled="planPending"
+              @click="planModalOpen = false"
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -99,6 +186,7 @@ type ParentDetailDto = {
   address: string | null
   relationLabel: string
   blocked: boolean
+  monthlyPaymentPlanEnabled: boolean
   createdAt: string
   children: Array<{
     childId: string
@@ -117,8 +205,44 @@ const parentId = computed(() => String(route.params.id ?? ''))
 const detail = ref<ParentDetailDto | null>(null)
 const loadError = ref<string | null>(null)
 const pending = ref(true)
+const planPending = ref(false)
+const planError = ref<string | null>(null)
+const planModalOpen = ref(false)
 
 const phoneRaw = computed(() => (detail.value?.phone ?? '').replace(/\s/g, ''))
+
+function openPlanModal() {
+  if (!detail.value || planPending.value) return
+  planError.value = null
+  planModalOpen.value = true
+}
+
+async function confirmPlanChange() {
+  const current = detail.value
+  const t = token.value
+  if (!current || !t) return
+  planPending.value = true
+  planError.value = null
+  try {
+    const res = await $fetch<{ monthlyPaymentPlanEnabled: boolean }>(
+      `${config.public.apiBase}/admin/parents/${current.id}`,
+      {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${t}` },
+        body: { monthlyPaymentPlanEnabled: !current.monthlyPaymentPlanEnabled },
+      },
+    )
+    current.monthlyPaymentPlanEnabled = res.monthlyPaymentPlanEnabled
+    planModalOpen.value = false
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string | string[] } }
+    const raw = err?.data?.message
+    planError.value =
+      typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0] : 'Impossible de mettre à jour l’échéancier.'
+  } finally {
+    planPending.value = false
+  }
+}
 
 async function load() {
   pending.value = true
@@ -131,9 +255,13 @@ async function load() {
     return
   }
   try {
-    detail.value = await $fetch<ParentDetailDto>(`${config.public.apiBase}/admin/parents/${id}`, {
+    const fetched = await $fetch<ParentDetailDto>(`${config.public.apiBase}/admin/parents/${id}`, {
       headers: { Authorization: `Bearer ${t}` },
     })
+    detail.value = {
+      ...fetched,
+      monthlyPaymentPlanEnabled: Boolean(fetched.monthlyPaymentPlanEnabled),
+    }
   } catch (e: unknown) {
     const err = e as { data?: { message?: string | string[] }; statusCode?: number }
     const raw = err?.data?.message
