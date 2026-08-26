@@ -20,10 +20,10 @@
           </div>
 
           <h1 class="text-[26px] font-extrabold leading-tight tracking-tight text-slate-900">
-            Nouvelle inscription
+            {{ isReenrollment ? 'Réinscription' : 'Nouvelle inscription' }}
           </h1>
           <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">
-            Dossier d'inscription de
+            Dossier {{ isReenrollment ? 'de réinscription' : "d'inscription" }} de
             <span class="font-semibold text-slate-700">{{ childDisplayName }}</span>
             pour l'année scolaire
             <span class="font-semibold text-slate-700">{{ schoolYearLabel }}</span>.
@@ -169,15 +169,17 @@ const {
 
 const route = useRoute();
 const fromParent = computed(() => String(route.query.from ?? '') === 'parent');
+const isReenrollment = computed(() => fromParent.value && Boolean(String(route.query.child ?? '').trim()));
 const backTo = computed(() => (fromParent.value ? '/parent/enfants' : '/'));
 const backLabel = computed(() => (fromParent.value ? 'Retour à l\'espace parent' : 'Retour'));
 
 useHead({
-  title: computed(() =>
-    childDisplayName.value !== 'votre enfant'
-      ? `Nouvelle inscription — ${childDisplayName.value}`
-      : 'Nouvelle inscription',
-  ),
+  title: computed(() => {
+    const kind = isReenrollment.value ? 'Réinscription' : 'Nouvelle inscription';
+    return childDisplayName.value !== 'votre enfant'
+      ? `${kind} — ${childDisplayName.value}`
+      : kind;
+  }),
 });
 
 const iconProps = {

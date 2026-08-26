@@ -82,6 +82,9 @@
           <div class="rounded-xl bg-sky-100/90 px-4 py-3 text-sm text-slate-800">
             <span class="font-semibold text-brandBlue">Événement</span>
             — {{ eventTeaser }}
+            <NuxtLink to="/parent/programme" class="mt-1 block text-xs font-semibold text-brandBlue hover:underline">
+              Voir le programme →
+            </NuxtLink>
           </div>
           <div class="rounded-xl bg-emerald-100/90 px-4 py-3 text-sm text-slate-800">
             <span class="font-semibold text-emerald-800">Dernier paiement</span>
@@ -304,6 +307,7 @@ const monthlyInstallments = ref<MonthlyRow[]>([]);
 const emptyReason = ref<PaymentsEmptyReason>(null);
 const monthlyPaymentPlanEnabled = ref(false);
 const apiDocs = ref<ApiDoc[]>([]);
+const nextProgrammeEvent = ref<{ title: string; dateLabel: string } | null>(null);
 const pending = ref(true);
 const loadError = ref<string | null>(null);
 
@@ -350,12 +354,10 @@ const greetingName = computed(() => {
 });
 
 const eventTeaser = computed(() => {
-  const approved = children.value?.flatMap((c) => c.enrollments).find((e) => e.status === 'APPROVED');
-  if (approved?.validationNote) {
-    const line = approved.validationNote.split('\n')[0];
-    if (line && line.length < 80) return line;
+  if (nextProgrammeEvent.value) {
+    return `${nextProgrammeEvent.value.title} — ${nextProgrammeEvent.value.dateLabel}`;
   }
-  return 'Pique-nique de Pâques — date communiquée par l’école.';
+  return 'Consultez le calendrier de l’école dans la rubrique Programme.';
 });
 
 function childLabel(c: ChildRef) {
@@ -500,7 +502,7 @@ onMounted(async () => {
   pending.value = true;
   loadError.value = null;
   try {
-    const [meRes, overview, notifRes, payRes, docsRes] = await Promise.all([
+    const [meRes, overview, notifRes, payRes, docsRes, programmeRes] = await Promise.all([
       authFetch<Me>('/parent/me'),
       authFetch<OverviewChild[]>('/parent/overview'),
       authFetch<NotificationsPayload>('/parent/notifications'),
@@ -513,6 +515,9 @@ onMounted(async () => {
         monthlyPaymentPlanEnabled?: boolean;
       }>('/parent/payments'),
       authFetch<ApiDoc[]>('/parent/documents'),
+      authFetch<{
+        items?: Array<{ title: string; dateLabel: string; eventDate: string; status: string }>;
+      }>('/parent/programme').catch(() => null),
     ]);
     me.value = meRes;
     children.value = overview;
@@ -523,6 +528,12 @@ onMounted(async () => {
     emptyReason.value = payRes?.emptyReason ?? null;
     monthlyPaymentPlanEnabled.value = Boolean(payRes?.monthlyPaymentPlanEnabled);
     apiDocs.value = docsRes ?? [];
+    const now = Date.now();
+    const upcoming = (programmeRes?.items ?? [])
+      .filter((e) => e.status !== 'COMPLETED' && new Date(e.eventDate).getTime() >= now - 86_400_000)
+      .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
+    const first = upcoming[0] ?? programmeRes?.items?.[0];
+    nextProgrammeEvent.value = first ? { title: first.title, dateLabel: first.dateLabel } : null;
   } catch (error: unknown) {
     const e = error as {
       statusCode?: number;

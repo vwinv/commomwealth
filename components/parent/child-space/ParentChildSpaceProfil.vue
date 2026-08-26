@@ -36,6 +36,16 @@
           </div>
         </div>
 
+        <div class="info-tile">
+          <span class="info-tile__icon" aria-hidden="true">
+            <component :is="iconTablet" />
+          </span>
+          <div class="info-tile__text">
+            <p class="info-tile__label">Année scolaire</p>
+            <p class="info-tile__value">{{ enrollment?.schoolYear || '—' }}</p>
+          </div>
+        </div>
+
         <div class="info-tile info-tile--address">
           <span class="info-tile__icon" aria-hidden="true">
             <component :is="iconPin" />
@@ -128,6 +138,13 @@ const iconGrad = () =>
     h('path', { d: 'M22 10v6M2 10l10-5 10 5-10 5z' }),
     h('path', { d: 'M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5' }),
   ]);
+const iconClass = () =>
+  h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }, [
+    h('rect', { x: '3', y: '3', width: '7', height: '7', rx: '1' }),
+    h('rect', { x: '14', y: '3', width: '7', height: '7', rx: '1' }),
+    h('rect', { x: '3', y: '14', width: '7', height: '7', rx: '1' }),
+    h('rect', { x: '14', y: '14', width: '7', height: '7', rx: '1' }),
+  ]);
 const iconTablet = () =>
   h('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }, [
     h('rect', { x: '5', y: '2', width: '14', height: '20', rx: '2' }),
@@ -158,8 +175,8 @@ const iconPhone = () =>
 const infoRowTop = computed(() => [
   { label: 'Date de naissance', value: props.child.birthDisplay, icon: iconCalendar },
   { label: 'Genre', value: props.child.genderLabel, icon: iconUser },
-  { label: 'Classe', value: props.enrollment?.className || '—', icon: iconGrad },
-  { label: 'Année scolaire', value: props.enrollment?.schoolYear || '—', icon: iconTablet },
+  { label: 'Niveau', value: props.enrollment?.levelName || '—', icon: iconGrad },
+  { label: 'Classe', value: props.enrollment?.className || '—', icon: iconClass },
 ]);
 
 const parentRows = computed(() => {
@@ -257,7 +274,7 @@ const healthNote = computed(() => {
 }
 
 .info-tile--address {
-  grid-column: span 3;
+  grid-column: span 2;
 }
 
 .info-tile__icon {

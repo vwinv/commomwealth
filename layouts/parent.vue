@@ -6,7 +6,7 @@
           <img class="h-11 w-auto object-contain" :src="logoUrl" alt="Commonwealth" />
         </NuxtLink>
 
-        <nav class="order-3 flex w-full justify-center gap-6 text-[15px] md:order-2 md:w-auto md:justify-center md:gap-10" aria-label="Espace parent">
+        <nav class="order-3 flex w-full justify-center gap-4 text-[15px] md:order-2 md:w-auto md:justify-center md:gap-8" aria-label="Espace parent">
           <NuxtLink
             to="/parent"
             class="border-b-2 py-1 font-medium transition-colors"
@@ -50,6 +50,17 @@
             "
           >
             Documents
+          </NuxtLink>
+          <NuxtLink
+            to="/parent/programme"
+            class="border-b-2 py-1 font-medium transition-colors"
+            :class="
+              isProgramme
+                ? 'border-brandOrange text-brandOrange'
+                : 'border-transparent text-slate-600 hover:text-brandBlue'
+            "
+          >
+            Programme
           </NuxtLink>
           <NuxtLink
             to="/parent/ateliers"
@@ -283,6 +294,7 @@ const isEnfants = computed(
 );
 const isPaiements = computed(() => pathNorm.value === '/parent/paiements');
 const isDocuments = computed(() => pathNorm.value === '/parent/documents');
+const isProgramme = computed(() => pathNorm.value === '/parent/programme');
 const isAteliers = computed(
   () => pathNorm.value === '/parent/ateliers' || pathNorm.value.startsWith('/parent/ateliers/'),
 );

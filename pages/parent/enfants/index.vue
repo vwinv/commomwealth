@@ -27,6 +27,8 @@
         :presence-label="presenceLabel(child)"
         :attendance-label="attendanceLabel(child)"
         :notes-label="notesLabel(child)"
+        :needs-reenrollment="needsReenrollment(child)"
+        :reenroll-href="reenrollHref(child)"
         @open="openChildSpace"
       />
 
@@ -79,12 +81,28 @@ const pending = ref(true);
 const loadError = ref<string | null>(null);
 const defaultSchoolYear = ref<string | null>(null);
 
+function needsReenrollment(child: OverviewChild): boolean {
+  const list = child.enrollments ?? [];
+  const year = defaultSchoolYear.value?.trim();
+  if (!list.length) return true;
+  const relevant = year ? list.filter((e) => e.schoolYear === year) : list;
+  if (!relevant.length) return true;
+  return !relevant.some((e) => e.status === 'PENDING' || e.status === 'APPROVED');
+}
+
+function reenrollHref(child: OverviewChild): string | null {
+  if (!needsReenrollment(child)) return null;
+  return `/inscription?from=parent&child=${encodeURIComponent(child.id)}`;
+}
+
 function schoolYearForChild(child: OverviewChild): string | null {
+  if (needsReenrollment(child)) return defaultSchoolYear.value;
   const year = child.enrollments?.[0]?.schoolYear?.trim();
   return year || defaultSchoolYear.value;
 }
 
 function presenceLabel(child: OverviewChild): string | null {
+  if (needsReenrollment(child)) return '• Non inscrit(e)';
   const status = child.enrollments?.[0]?.status;
   if (status === 'APPROVED') return '• Présent(e)';
   if (status === 'PENDING') return '• Dossier en cours';

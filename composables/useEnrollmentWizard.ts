@@ -352,6 +352,8 @@ function clearEnrollmentDraft() {
 
 export function useEnrollmentWizard() {
   const config = useRuntimeConfig();
+  const route = useRoute();
+  const parentAuth = useParentAuth();
   const step = ref<EnrollmentStepId>(1);
   const submitted = ref(false);
   const submitting = ref(false);
@@ -506,7 +508,7 @@ export function useEnrollmentWizard() {
   }
 
   async function applyLoggedInParentProfile() {
-    const { authFetch, isLoggedIn } = useParentAuth();
+    const { authFetch, isLoggedIn } = parentAuth;
     if (!isLoggedIn.value) return false;
 
     try {
@@ -531,6 +533,88 @@ export function useEnrollmentWizard() {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  async function applyExistingChildForReenrollment(id: string): Promise<string | null> {
+    const { authFetch } = parentAuth;
+    try {
+      const data = await authFetch<{
+        childId: string;
+        child: EnrollmentChildDraft;
+        parent: EnrollmentParentDraft;
+        guardian2: EnrollmentGuardian2Draft;
+        emergency: EnrollmentEmergencyDraft;
+        health: EnrollmentHealthDraft;
+        options?: EnrollmentOptionsDraft;
+      }>(`/parent/children/${id}/reenrollment-prefill`);
+
+      childId.value = data.childId;
+      enrollmentId.value = '';
+      resumeToken.value = '';
+      Object.assign(child, {
+        firstName: data.child.firstName ?? '',
+        lastName: data.child.lastName ?? '',
+        birthDate: String(data.child.birthDate ?? '').slice(0, 10),
+        birthPlace: data.child.birthPlace ?? '',
+        nationality: data.child.nationality ?? '',
+        gender: data.child.gender === 'Garçon' ? 'Garçon' : 'Fille',
+        homeLanguages: data.child.homeLanguages ?? '',
+        matricule: data.child.matricule || child.matricule,
+        levelId: data.child.levelId ?? '',
+        levelName: data.child.levelName ?? '',
+        levelEmoji: data.child.levelEmoji ?? '',
+        levelSubtitle: data.child.levelSubtitle ?? '',
+        childAddress: data.child.childAddress ?? '',
+        previousSchool: data.child.previousSchool ?? '',
+      });
+      Object.assign(parent, {
+        fullName: data.parent.fullName ?? parent.fullName,
+        firstName: data.parent.firstName ?? parent.firstName,
+        lastName: data.parent.lastName ?? parent.lastName,
+        relation: data.parent.relation === 'FATHER' || data.parent.relation === 'MOTHER'
+          ? data.parent.relation
+          : parent.relation,
+        phone: data.parent.phone || parent.phone,
+        email: data.parent.email || parent.email,
+        profession: data.parent.profession ?? '',
+        address: data.parent.address || parent.address,
+      });
+      syncParentNamesFromFullName(parent);
+      Object.assign(guardian2, {
+        fullName: data.guardian2?.fullName ?? '',
+        relation: data.guardian2?.relation ?? '',
+        phone: data.guardian2?.phone ?? '',
+        email: data.guardian2?.email ?? '',
+      });
+      Object.assign(emergency, {
+        source: data.emergency?.source ?? '',
+        fullName: data.emergency?.fullName ?? '',
+        relation: data.emergency?.relation ?? '',
+        phone: data.emergency?.phone ?? '',
+      });
+      Object.assign(health, {
+        doctorName: data.health?.doctorName ?? '',
+        doctorPhone: data.health?.doctorPhone ?? '',
+        bloodGroup: data.health?.bloodGroup ?? '',
+        knownAllergies: data.health?.knownAllergies ?? '',
+        ongoingTreatments: data.health?.ongoingTreatments ?? '',
+        dietaryRegime: data.health?.dietaryRegime ?? '',
+        instructions: data.health?.instructions ?? '',
+        vaccinations: ensureHealthVaccinations(data.health?.vaccinations),
+      });
+      if (data.options) {
+        Object.assign(options, normalizeOptionsDraft({
+          ...data.options,
+          scheduleId: '',
+          scheduleLabel: '',
+        }));
+      }
+      enrollmentFromParentAccount.value = true;
+      saveDraft();
+      return null;
+    } catch {
+      return 'Impossible de charger la fiche de cet enfant pour la réinscription.';
     }
   }
 
@@ -612,13 +696,46 @@ export function useEnrollmentWizard() {
     }
   }
 
+  const prefilledFor = ref('');
+
+  watch(
+    () =>
+      [
+        String(route.query.from ?? ''),
+        typeof route.query.child === 'string' ? route.query.child.trim() : '',
+        parentAuth.isLoggedIn.value,
+      ] as const,
+    async ([from, childQuery, loggedIn]) => {
+      if (from !== 'parent' || !loggedIn) return;
+      if (typeof route.query.resume === 'string' && route.query.resume.trim()) return;
+
+      if (childQuery) {
+        if (prefilledFor.value === childQuery) return;
+        prefilledFor.value = childQuery;
+        resetWizardForNewChild();
+        await applyLoggedInParentProfile();
+        const err = await applyExistingChildForReenrollment(childQuery);
+        if (err) {
+          prefilledFor.value = '';
+          submitError.value = err;
+        }
+        return;
+      }
+
+      if (prefilledFor.value === '__new__') return;
+      resetWizardForNewChild();
+      await applyLoggedInParentProfile();
+      prefilledFor.value = '__new__';
+    },
+    { immediate: true },
+  );
+
   onMounted(async () => {
     if (!activeYearFromApi.value) {
       const fromApi = await fetchActiveSchoolYearLabel(String(config.public.apiBase));
       if (fromApi) activeSchoolYearLabel.value = fromApi;
     }
 
-    const route = useRoute();
     const token = typeof route.query.resume === 'string' ? route.query.resume.trim() : '';
     if (token) {
       const err = await loadResumeFromToken(token);
@@ -626,12 +743,7 @@ export function useEnrollmentWizard() {
       return;
     }
 
-    const fromParent = route.query.from === 'parent';
-    if (fromParent && useParentAuth().isLoggedIn.value) {
-      resetWizardForNewChild();
-      await applyLoggedInParentProfile();
-      return;
-    }
+    if (route.query.from === 'parent') return;
 
     const draft = loadEnrollmentDraft();
     if (draft) applyDraft(draft);

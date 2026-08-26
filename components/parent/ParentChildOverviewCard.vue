@@ -10,7 +10,11 @@
         >
         <template v-else>{{ initials }}</template>
       </span>
-      <span v-if="presenceLabel" class="child-card__presence">
+      <span
+        v-if="presenceLabel"
+        class="child-card__presence"
+        :class="{ 'child-card__presence--alert': needsReenrollment }"
+      >
         <span class="child-card__presence-dot" aria-hidden="true" />
         {{ presenceLabel }}
       </span>
@@ -47,6 +51,13 @@
     </div>
 
     <div class="child-card__footer">
+      <NuxtLink
+        v-if="needsReenrollment && reenrollHref"
+        :to="reenrollHref"
+        class="child-card__cta child-card__cta--reenroll"
+      >
+        Réinscrire
+      </NuxtLink>
       <button
         type="button"
         class="child-card__cta"
@@ -85,6 +96,8 @@ const props = defineProps<{
   attendanceLabel?: string | null;
   notesLabel?: string | null;
   presenceLabel?: string | null;
+  needsReenrollment?: boolean;
+  reenrollHref?: string | null;
 }>();
 
 defineEmits<{
@@ -126,10 +139,12 @@ function genderLabel(g: Gender): string {
 
 const subtitleLine = computed(() => {
   const enr = props.child.enrollments?.[0];
-  const level = enr?.class?.name || enr?.level?.name || '—';
-  const parts = [level, ageLabel(props.child.birthDate), genderLabel(props.child.gender)].filter(
-    (p) => p && p !== '—',
-  );
+  const level = enr?.class?.name || enr?.level?.name;
+  const parts = [
+    level || (props.needsReenrollment ? 'Non inscrit(e)' : '—'),
+    ageLabel(props.child.birthDate),
+    genderLabel(props.child.gender),
+  ].filter((p) => p && p !== '—');
   return parts.length ? parts.join(' · ') : '—';
 });
 </script>
@@ -197,6 +212,10 @@ const subtitleLine = computed(() => {
   background: #22c55e;
 }
 
+.child-card__presence--alert .child-card__presence-dot {
+  background: #f99b4b;
+}
+
 .child-badge {
   display: inline-flex;
   align-items: center;
@@ -224,6 +243,9 @@ const subtitleLine = computed(() => {
 
 .child-card__footer {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
   justify-content: flex-start;
   border-top: 1px solid #e8edf2;
   padding: 0.75rem 1.25rem 1rem;
@@ -245,5 +267,14 @@ const subtitleLine = computed(() => {
 
 .child-card__cta:hover {
   background: rgb(33 110 194 / 0.16);
+}
+
+.child-card__cta--reenroll {
+  background: #f99b4b;
+  color: #fff;
+}
+
+.child-card__cta--reenroll:hover {
+  background: #e8872f;
 }
 </style>

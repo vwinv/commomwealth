@@ -7,7 +7,11 @@
       </p>
     </div>
 
-    <p v-if="loadError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ loadError }}</p>
+    <p
+      id="parametrage-feedback"
+      v-if="loadError"
+      class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+    >{{ loadError }}</p>
     <p v-if="actionNotice" class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{{ actionNotice }}</p>
 
     <div class="flex flex-wrap gap-2 border-b border-slate-200">
@@ -59,7 +63,7 @@
           </span>
           <div>
             <h2 class="text-base font-bold text-slate-900">Années scolaires</h2>
-            <p class="mt-0.5 text-xs leading-relaxed text-slate-500">Ouvrez, clôturez et consultez les années passées.</p>
+            <p class="mt-0.5 text-xs leading-relaxed text-slate-500">Ouvrez, clôturez, consultez ou supprimez les années passées.</p>
           </div>
         </div>
         <button
@@ -102,22 +106,32 @@
                 {{ formatDateDisplay(y.startDate) }} → {{ formatDateDisplay(y.endDate) }}
               </p>
             </button>
-            <button
-              v-if="y.status === 'OPEN'"
-              type="button"
-              class="mt-2 text-xs font-semibold text-[#F9994B] transition hover:underline"
-              @click="closeYear(y.id)"
-            >
-              Clôturer l'année
-            </button>
-            <button
-              v-else
-              type="button"
-              class="mt-2 text-xs font-semibold text-[#216EC2] transition hover:underline"
-              @click="openYear(y.id, y.label)"
-            >
-              Réouvrir
-            </button>
+            <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <button
+                v-if="y.status === 'OPEN'"
+                type="button"
+                class="text-xs font-semibold text-[#F9994B] transition hover:underline"
+                @click="closeYear(y.id)"
+              >
+                Clôturer l'année
+              </button>
+              <button
+                v-else
+                type="button"
+                class="text-xs font-semibold text-[#216EC2] transition hover:underline"
+                @click="openYear(y.id, y.label)"
+              >
+                Réouvrir
+              </button>
+              <button
+                type="button"
+                class="text-xs font-semibold text-red-600 transition hover:underline disabled:opacity-40"
+                :disabled="yearDeleting === y.id"
+                @click="removeYear(y)"
+              >
+                {{ yearDeleting === y.id ? 'Suppression…' : 'Supprimer' }}
+              </button>
+            </div>
           </li>
         </ol>
       </aside>
@@ -220,6 +234,17 @@
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 12a9 9 0 1 1-2.64-6.36" stroke-linecap="round" />
                         <path d="M21 3v6h-6" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-40"
+                      title="Supprimer"
+                      :disabled="levelDeleting === row.id"
+                      @click="removeLevel(row)"
+                    >
+                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                       </svg>
                     </button>
                   </div>
@@ -724,28 +749,48 @@
 
       <div
         v-if="confirmModalOpen"
-        class="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/45 px-4"
+        class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/45 px-4"
         role="dialog"
         aria-modal="true"
+        @click.self="resolveConfirmation(false)"
       >
-        <div class="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl">
-          <h3 class="text-base font-semibold text-slate-900">Confirmation</h3>
-          <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ confirmModalMessage }}</p>
+        <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl">
+          <h3 class="text-base font-semibold text-slate-900">{{ confirmModalTitle }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600 whitespace-pre-line">{{ confirmModalMessage }}</p>
+          <ul
+            v-if="confirmModalItems.length"
+            class="mt-3 list-disc space-y-1 rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-700"
+          >
+            <li v-for="item in confirmModalItems" :key="item">{{ item }}</li>
+          </ul>
+          <p v-if="confirmModalKeepNote" class="mt-3 text-xs leading-relaxed text-slate-500">{{ confirmModalKeepNote }}</p>
+          <p v-if="confirmModalWarning" class="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">{{ confirmModalWarning }}</p>
           <div class="mt-5 flex justify-end gap-2">
-            <button
-              type="button"
-              class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              @click="resolveConfirmation(false)"
-            >
-              Non
-            </button>
-            <button
-              type="button"
-              class="rounded-lg bg-[#216EC2] px-3 py-1.5 text-sm font-semibold text-white hover:brightness-110"
-              @click="resolveConfirmation(true)"
-            >
-              Oui
-            </button>
+            <template v-if="confirmModalMode === 'alert'">
+              <button
+                type="button"
+                class="rounded-lg bg-[#216EC2] px-3 py-1.5 text-sm font-semibold text-white hover:brightness-110"
+                @click="resolveConfirmation(true)"
+              >
+                OK
+              </button>
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                @click="resolveConfirmation(false)"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                class="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-red-700"
+                @click="resolveConfirmation(true)"
+              >
+                {{ confirmModalConfirmLabel }}
+              </button>
+            </template>
           </div>
         </div>
       </div>
@@ -754,7 +799,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import type { ClassEditPayload } from '~/components/admin/AdminClassEditModal.vue';
 import type { LevelEditPayload, ScheduleRowDraft } from '~/components/admin/AdminLevelEditModal.vue';
 import type { ServiceEditPayload, ServiceVariantDraft } from '~/components/admin/AdminServiceEditModal.vue';
@@ -788,6 +833,7 @@ type CatalogLevel = {
   id: string;
   name: string;
   order: number | null;
+  enrollmentCount?: number;
   classes: CatalogClass[];
   pricing: {
     id: string;
@@ -808,6 +854,23 @@ type SchoolYearDto = {
   startDate: string;
   endDate: string;
   status: 'OPEN' | 'CLOSED';
+};
+
+type YearDeletionImpact = {
+  id: string;
+  label: string;
+  status: 'OPEN' | 'CLOSED';
+  remainingYears: number;
+  willReopenLabel: string | null;
+  enrollments: number;
+  approvedEnrollments: number;
+  tuitionCharges: number;
+  monthlyInstallments: number;
+  monthlyPayments: number;
+  programEvents: number;
+  schedules: number;
+  pricings: number;
+  servicePrices: number;
 };
 
 type ServiceItem = {
@@ -853,6 +916,7 @@ const actionNotice = ref<string | null>(null);
 const schoolYears = ref<SchoolYearDto[]>([]);
 const yearsPending = ref(false);
 const yearSubmitting = ref(false);
+const yearDeleting = ref<string | null>(null);
 
 const newYear = reactive({
   label: '',
@@ -890,6 +954,7 @@ const newClass = reactive({
 const levelSubmitting = ref(false);
 const classSubmitting = ref(false);
 const classDeleting = ref<string | null>(null);
+const levelDeleting = ref<string | null>(null);
 const classEditSaving = ref(false);
 const classEditError = ref<string | null>(null);
 const editClassDraft = ref<{
@@ -937,7 +1002,13 @@ const newServiceVariants = ref<Array<{ code: string; label: string; amountXof: n
 
 const confirmModalOpen = ref(false);
 const confirmModalMessage = ref('');
-const confirmResolve = ref<((ok: boolean) => void) | null>(null);
+const confirmModalTitle = ref('Confirmation');
+const confirmModalMode = ref<'confirm' | 'alert'>('confirm');
+const confirmModalItems = ref<string[]>([]);
+const confirmModalKeepNote = ref('');
+const confirmModalWarning = ref('');
+const confirmModalConfirmLabel = ref('Supprimer');
+let confirmResolver: ((ok: boolean) => void) | null = null;
 
 const levelSearch = ref('');
 const levelSort = ref<'order' | 'name'>('order');
@@ -1139,6 +1210,44 @@ async function loadStaffOptions() {
 async function submitNewClassFromModal() {
   await submitNewClass();
   if (!loadError.value) addClassModal.value = false;
+}
+
+async function removeLevel(row: CatalogLevel) {
+  const attached =
+    row.enrollmentCount ?? row.classes.reduce((sum, c) => sum + (c.studentCount ?? 0), 0);
+  if (attached > 0) {
+    await askAlert(levelDeleteBlockedMessage(row.name, attached), 'Suppression impossible');
+    return;
+  }
+
+  const ok = await askConfirmation(
+    `Supprimer le niveau « ${row.name} » ? Les classes vides, horaires et tarifs associés seront aussi supprimés.`,
+  );
+  if (!ok) return;
+  const t = token.value;
+  if (!t) {
+    await askAlert('Session expirée. Reconnectez-vous pour supprimer un niveau.', 'Suppression impossible');
+    return;
+  }
+  levelDeleting.value = row.id;
+  loadError.value = null;
+  actionNotice.value = null;
+  try {
+    await $fetch(`${config.public.apiBase}/admin/settings/levels/${row.id}`, {
+      method: 'DELETE',
+      headers: api.value.headers,
+    });
+    await reloadCatalog();
+    actionNotice.value = `Niveau « ${row.name} » supprimé.`;
+  } catch (e: unknown) {
+    const message = apiErrorMessage(e, 'Suppression du niveau impossible.');
+    loadError.value = message;
+    await nextTick();
+    document.getElementById('parametrage-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    await askAlert(message, 'Suppression impossible');
+  } finally {
+    levelDeleting.value = null;
+  }
 }
 
 async function removeClass(id: string, name: string) {
@@ -1349,6 +1458,103 @@ async function openYear(id: string, label: string) {
     await reloadCatalog();
   } catch {
     loadError.value = "Ouverture de l'année impossible.";
+  }
+}
+
+function frCount(n: number, singular: string, plural: string) {
+  return `${intFr.format(n)} ${n > 1 ? plural : singular}`;
+}
+
+function yearDeletionItems(impact: YearDeletionImpact): string[] {
+  const items: string[] = [`L’année scolaire ${formatYearLabel(impact.label)} elle-même`];
+  if (impact.enrollments > 0) {
+    const extra =
+      impact.approvedEnrollments > 0
+        ? ` (dont ${frCount(impact.approvedEnrollments, 'dossier validé', 'dossiers validés')})`
+        : '';
+    items.push(`${frCount(impact.enrollments, 'dossier d’inscription', 'dossiers d’inscription')}${extra}`);
+  }
+  if (impact.tuitionCharges > 0) {
+    items.push(frCount(impact.tuitionCharges, 'facture de scolarité', 'factures de scolarité'));
+  }
+  if (impact.monthlyInstallments > 0) {
+    items.push(frCount(impact.monthlyInstallments, 'échéance mensuelle', 'échéances mensuelles'));
+  }
+  if (impact.monthlyPayments > 0) {
+    items.push(frCount(impact.monthlyPayments, 'paiement mensuel', 'paiements mensuels'));
+  }
+  if (impact.programEvents > 0) {
+    items.push(frCount(impact.programEvents, 'événement du programme', 'événements du programme'));
+  }
+  if (impact.schedules > 0) {
+    items.push(frCount(impact.schedules, 'horaire de niveau', 'horaires de niveau'));
+  }
+  if (impact.pricings > 0) {
+    items.push(frCount(impact.pricings, 'barème de scolarité', 'barèmes de scolarité'));
+  }
+  if (impact.servicePrices > 0) {
+    items.push(frCount(impact.servicePrices, 'tarif d’option (cantine, bus…)', 'tarifs d’options (cantine, bus…)'));
+  }
+  return items;
+}
+
+async function removeYear(year: SchoolYearDto) {
+  const t = token.value;
+  if (!t) {
+    await askAlert('Session expirée. Reconnectez-vous pour supprimer une année.', 'Suppression impossible');
+    return;
+  }
+  yearDeleting.value = year.id;
+  loadError.value = null;
+  actionNotice.value = null;
+  try {
+    const impact = await $fetch<YearDeletionImpact>(
+      `${config.public.apiBase}/admin/settings/school-years/${year.id}/deletion-impact`,
+      { headers: api.value.headers },
+    );
+    yearDeleting.value = null;
+    const warnings: string[] = [];
+    if (impact.remainingYears === 0) {
+      warnings.push('Ce sera la dernière année scolaire. Vous devrez en ouvrir une nouvelle pour continuer.');
+    } else if (impact.willReopenLabel) {
+      warnings.push(
+        `L’année ${formatYearLabel(impact.willReopenLabel)} sera rouverte automatiquement pour que le paramétrage reste utilisable.`,
+      );
+    }
+    const ok = await askConfirmation(
+      `Vous allez supprimer définitivement l’année ${formatYearLabel(impact.label)} (${impact.status === 'OPEN' ? 'ouverte' : 'clôturée'}). Tout ce qui est rattaché à cette année sera effacé. Cette action est irréversible.`,
+      {
+        title: 'Supprimer cette année scolaire ?',
+        items: yearDeletionItems(impact),
+        keepNote:
+          'Les comptes parents, les fiches élèves, les niveaux et les classes du catalogue sont conservés : ils ne dépendent pas d’une année.',
+        warning: warnings.join(' '),
+        confirmLabel: 'Supprimer définitivement',
+      },
+    );
+    if (!ok) return;
+
+    yearDeleting.value = year.id;
+    const res = await $fetch<{ ok: boolean; label: string; remainingLabel: string | null; reopenedLabel: string | null }>(
+      `${config.public.apiBase}/admin/settings/school-years/${year.id}`,
+      { method: 'DELETE', headers: api.value.headers },
+    );
+    await loadSchoolYears();
+    const nextLabel = res.reopenedLabel ?? res.remainingLabel ?? schoolYears.value[0]?.label ?? '';
+    schoolYear.value = nextLabel;
+    if (nextLabel) await reloadCatalog();
+    else catalog.value = null;
+    actionNotice.value = res.reopenedLabel
+      ? `Année ${formatYearLabel(impact.label)} supprimée. L’année ${formatYearLabel(res.reopenedLabel)} a été rouverte.`
+      : `Année ${formatYearLabel(impact.label)} supprimée.`;
+  } catch (e: unknown) {
+    const message = apiErrorMessage(e, "Suppression de l'année scolaire impossible.");
+    loadError.value = message;
+    await nextTick();
+    document.getElementById('parametrage-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    await askAlert(message, 'Suppression impossible');
+  } finally {
+    yearDeleting.value = null;
   }
 }
 
@@ -1755,19 +1961,68 @@ async function removeService(service: ServiceItem) {
   }
 }
 
-function askConfirmation(message: string): Promise<boolean> {
+function apiErrorMessage(e: unknown, fallback: string): string {
+  const err = e as { data?: { message?: string | string[] }; statusMessage?: string; message?: string };
+  const raw = err?.data?.message;
+  if (typeof raw === 'string' && raw.trim()) return raw;
+  if (Array.isArray(raw) && typeof raw[0] === 'string' && raw[0].trim()) return raw[0];
+  if (typeof err?.statusMessage === 'string' && err.statusMessage.trim()) return err.statusMessage;
+  return fallback;
+}
+
+function levelDeleteBlockedMessage(name: string, count: number): string {
+  if (count === 1) {
+    return `Impossible de supprimer « ${name} » : 1 dossier d’inscription y est encore rattaché. Réaffectez ou supprimez ce dossier d’abord.`;
+  }
+  return `Impossible de supprimer « ${name} » : ${count} dossiers d’inscription y sont encore rattachés. Réaffectez ou supprimez ces dossiers d’abord.`;
+}
+
+function resetConfirmModalExtras() {
+  confirmModalItems.value = [];
+  confirmModalKeepNote.value = '';
+  confirmModalWarning.value = '';
+  confirmModalConfirmLabel.value = 'Supprimer';
+}
+
+function askAlert(message: string, title = 'Information'): Promise<void> {
+  resetConfirmModalExtras();
+  confirmModalTitle.value = title;
+  confirmModalMode.value = 'alert';
   confirmModalMessage.value = message;
   confirmModalOpen.value = true;
+  return new Promise((resolve) => {
+    confirmResolver = () => resolve();
+  });
+}
+
+function askConfirmation(
+  message: string,
+  options?: {
+    title?: string;
+    items?: string[];
+    keepNote?: string;
+    warning?: string;
+    confirmLabel?: string;
+  },
+): Promise<boolean> {
+  confirmModalTitle.value = options?.title ?? 'Confirmation';
+  confirmModalMode.value = 'confirm';
+  confirmModalMessage.value = message;
+  confirmModalItems.value = options?.items ?? [];
+  confirmModalKeepNote.value = options?.keepNote ?? '';
+  confirmModalWarning.value = options?.warning ?? '';
+  confirmModalConfirmLabel.value = options?.confirmLabel ?? 'Supprimer';
+  confirmModalOpen.value = true;
   return new Promise<boolean>((resolve) => {
-    confirmResolve.value = resolve;
+    confirmResolver = resolve;
   });
 }
 
 function resolveConfirmation(ok: boolean) {
   confirmModalOpen.value = false;
-  const resolver = confirmResolve.value;
-  confirmResolve.value = null;
-  if (resolver) resolver(ok);
+  const resolver = confirmResolver;
+  confirmResolver = null;
+  resolver?.(ok);
 }
 
 watch(token, () => {

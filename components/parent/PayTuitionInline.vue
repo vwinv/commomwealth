@@ -79,7 +79,19 @@
         >
       </div>
 
-      <div v-if="paymentMethod !== 'card'" class="mt-4 grid gap-2 sm:grid-cols-2">
+      <div v-if="paymentMethod === 'wizall' && wizallTransactionId" class="mt-3">
+        <p class="mb-2 text-xs text-slate-600">Saisissez le code Wizall reçu par SMS pour confirmer le paiement.</p>
+        <input
+          v-model.trim="wizallOtp"
+          type="text"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="Code Wizall"
+          class="w-full max-w-xs rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-slate-400"
+        >
+      </div>
+
+      <div v-if="paymentMethod !== 'card' && paymentMethod !== 'western_union'" class="mt-4 grid gap-2 sm:grid-cols-2">
         <input
           v-model.trim="firstName"
           type="text"
@@ -109,29 +121,23 @@
         </div>
       </div>
 
-      <div v-else class="mt-4">
-        <p class="mb-2 text-sm font-semibold text-slate-800">Carte Bancaire</p>
-        <input
-          v-model.trim="cardNumber"
-          type="text"
-          placeholder="Numéro de la carte"
-          class="mb-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-slate-400"
-        >
-        <div class="grid grid-cols-2 gap-2">
-          <input
-            v-model.trim="cardExpiry"
-            type="text"
-            placeholder="Date d'expiration"
-            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-slate-400"
-          >
-          <input
-            v-model.trim="cardCvv"
-            type="text"
-            placeholder="CVV"
-            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-slate-400"
-          >
-        </div>
+      <div v-else-if="paymentMethod === 'western_union'" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+        Western Union n’est pas disponible en ligne. Rendez-vous à la caisse de l’école.
       </div>
+      <div v-else class="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+        Le paiement par carte bancaire sera bientôt disponible.
+      </div>
+
+      <p v-if="walletRedirectUrl" class="mt-4 text-sm">
+        <a
+          :href="walletRedirectUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-[#216EC2] underline"
+        >
+          Ouvrir la page de paiement Wave / Orange Money
+        </a>
+      </p>
 
       <p v-if="feedback" class="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
         {{ feedback }}
@@ -147,7 +153,7 @@
           :disabled="loading || submitting || !canSubmit"
           @click="submit"
         >
-          {{ submitting ? 'Envoi…' : 'Payer' }}
+          {{ submitting ? submitPhase : pendingCheckoutToken ? 'Vérifier le paiement' : 'Payer' }}
         </button>
       </div>
     </template>
@@ -182,10 +188,12 @@ const paymentMethod = ref<
   'wave' | 'orange_money' | 'wizall' | 'western_union' | 'mtn_money' | 'moov_money' | 'card' | null
 >(null);
 const orangeMoneyCiOtp = ref('');
+const wizallOtp = ref('');
+const wizallTransactionId = ref('');
+const pendingCheckoutToken = ref('');
+const walletRedirectUrl = ref('');
+const submitPhase = ref('Envoi…');
 const parentEmail = ref('');
-const cardNumber = ref('');
-const cardExpiry = ref('');
-const cardCvv = ref('');
 const feedback = ref('');
 const errorMsg = ref('');
 const overview = ref<OverviewChild[] | null>(null);
@@ -217,11 +225,12 @@ const rows = computed(() =>
 
 const canSubmit = computed(() => {
   if (!selectedIds.value.length || !paymentMethod.value) return false;
-  if (paymentMethod.value === 'card') {
-    return !!cardNumber.value.trim() && !!cardExpiry.value.trim() && !!cardCvv.value.trim();
-  }
+  if (paymentMethod.value === 'card' || paymentMethod.value === 'western_union') return false;
   if (paymentMethod.value === 'orange_money' && phoneCountry.value === '+225') {
     if (!orangeMoneyCiOtp.value.trim()) return false;
+  }
+  if (paymentMethod.value === 'wizall' && wizallTransactionId.value && !wizallOtp.value.trim()) {
+    return false;
   }
   return !!firstName.value.trim() && !!lastName.value.trim() && !!phoneLocal.value.trim();
 });
@@ -235,6 +244,13 @@ watch(phoneCountry, () => {
   }
 });
 
+watch([paymentMethod, phoneCountry], () => {
+  pendingCheckoutToken.value = '';
+  walletRedirectUrl.value = '';
+  wizallTransactionId.value = '';
+  wizallOtp.value = '';
+});
+
 function stripCountry(phone: string, dial: '+221' | '+225'): string {
   const p = phone.replace(/\s+/g, '');
   if (p.startsWith(dial)) return p.slice(dial.length);
@@ -243,144 +259,18 @@ function stripCountry(phone: string, dial: '+221' | '+225'): string {
   return p.replace(/^\+/, '');
 }
 
-/** Extrait le token depuis une URL PayDunya (live ou sandbox, avec ou sans segment `checkout`). */
-function tokenFromPaydunyaInvoiceUrl(s: string): string {
-  const m = s.trim().match(/\/invoice\/([^/?#]+)/i);
-  return (m?.[1] ?? '').trim();
-}
-
-function extractCheckoutToken(checkout: Record<string, unknown>): string {
-  const data = checkout?.data as Record<string, unknown> | undefined;
-  const direct = String(checkout?.token ?? data?.token ?? '').trim();
-  if (direct) return direct;
-  const rt = checkout?.response_text ?? data?.response_text;
-  if (typeof rt === 'object' && rt != null) {
-    const o = rt as Record<string, unknown>;
-    const nested = String(o.token ?? o.checkout_invoice_token ?? '').trim();
-    if (nested) return nested;
-  }
-  if (typeof rt === 'string') {
-    const fromUrl = tokenFromPaydunyaInvoiceUrl(rt);
-    if (fromUrl) return fromUrl;
-  }
-  return '';
-}
-
-function buildSoftpayPayload(
-  provider: string,
-  token: string,
-  opts: { fullName: string; email: string; phoneLocalDigits: string; dial: '+221' | '+225'; orangeOtp?: string },
-): Record<string, unknown> {
-  const fn = opts.fullName.trim() || 'Parent';
-  const email = opts.email.trim() || 'parent@commonwealth-school.local';
-  const local = opts.phoneLocalDigits.replace(/\D/g, '');
-
-  switch (provider) {
-    case 'wave_sn':
-      return {
-        wave_senegal_fullName: fn,
-        wave_senegal_email: email,
-        wave_senegal_phone: local,
-        wave_senegal_payment_token: token,
-      };
-    case 'wave_ci':
-      return {
-        wave_ci_fullName: fn,
-        wave_ci_email: email,
-        wave_ci_phone: local,
-        wave_ci_payment_token: token,
-      };
-    case 'orange_sn':
-      return {
-        customer_name: fn,
-        customer_email: email,
-        phone_number: local,
-        invoice_token: token,
-      };
-    case 'orange_ci':
-      return {
-        orange_money_ci_customer_fullname: fn,
-        orange_money_ci_email: email,
-        orange_money_ci_phone_number: local.startsWith('0') ? local : `0${local}`,
-        orange_money_ci_otp: String(opts.orangeOtp ?? '').trim(),
-        payment_token: token,
-      };
-    case 'wizall_sn':
-      return {
-        customer_name: fn,
-        customer_email: email,
-        phone_number: local,
-        invoice_token: token,
-      };
-    case 'mtn_ci':
-      return {
-        mtn_ci_customer_fullname: fn,
-        mtn_ci_email: email,
-        mtn_ci_phone_number: local,
-        mtn_ci_wallet_provider: 'MTNCI',
-        payment_token: token,
-      };
-    case 'moov_ci':
-      return {
-        moov_ci_customer_fullname: fn,
-        moov_ci_email: email,
-        moov_ci_phone_number: local,
-        payment_token: token,
-      };
-    case 'paydunya':
-      return {
-        customer_name: fn,
-        customer_email: email,
-        phone_phone: local,
-        password: '00000000',
-        invoice_token: token,
-      };
-    default:
-      return { payment_token: token, invoice_token: token };
-  }
-}
-
-function invoiceStatusFromConfirm(verify: Record<string, unknown>): string {
-  const data = verify?.data as Record<string, unknown> | undefined;
-  const inv = (data?.invoice ?? verify?.invoice) as Record<string, unknown> | undefined;
-  if (inv && typeof inv.status !== 'undefined') return String(inv.status);
-  return '';
-}
-
-function isCheckoutPaidPayload(verify: Record<string, unknown>): boolean {
-  const invStatus = invoiceStatusFromConfirm(verify).toLowerCase();
-  if (invStatus === 'completed' || invStatus === 'paid') return true;
-  const rt = verify?.response_text;
-  const rtObj = typeof rt === 'object' && rt != null ? (rt as Record<string, unknown>) : null;
-  const statusRaw = String(
-    verify?.status ??
-      rtObj?.status ??
-      rtObj?.payment_status ??
-      rtObj?.payment_status_text ??
-      (verify?.data as Record<string, unknown> | undefined)?.status ??
-      '',
-  ).toLowerCase();
-  return (
-    statusRaw.includes('completed') ||
-    statusRaw.includes('paid') ||
-    statusRaw.includes('success') ||
-    statusRaw.includes('successfully paid') ||
-    statusRaw === 'completed'
-  );
-}
-
 async function sleep(ms: number) {
   await new Promise((r) => setTimeout(r, ms));
 }
 
 async function waitCheckoutPaid(checkoutToken: string, hadRedirectUrl: boolean): Promise<boolean> {
-  const attempts = hadRedirectUrl ? 14 : 5;
-  const delayMs = hadRedirectUrl ? 2500 : 900;
+  const attempts = hadRedirectUrl ? 20 : 10;
+  const delayMs = hadRedirectUrl ? 3000 : 1500;
   for (let i = 0; i < attempts; i++) {
-    const verify = await authFetch<Record<string, unknown>>(
-      `/backoffice/paydunya/checkout-invoice/${encodeURIComponent(checkoutToken)}/status`,
+    const verify = await authFetch<{ paid?: boolean }>(
+      `/parent/payments/checkout/${encodeURIComponent(checkoutToken)}/status`,
     );
-    if (isCheckoutPaidPayload(verify)) return true;
+    if (verify?.paid) return true;
     if (i < attempts - 1) await sleep(delayMs);
   }
   return false;
@@ -497,45 +387,134 @@ async function loadData() {
   }
 }
 
+async function confirmPaidOnServer(checkoutToken: string, channel: string) {
+  const res = await authFetch<{ results: Array<{ ok: boolean; message?: string; kind?: string }> }>(
+    '/parent/payments/complete',
+    {
+      method: 'POST',
+      body: {
+        checkoutToken,
+        childIds: [...selectedIds.value],
+        phone: fullPhoneForWallet.value,
+        channel,
+        firstName: firstName.value.trim(),
+        lastName: lastName.value.trim(),
+      },
+    },
+  );
+  const ok = (res?.results ?? []).filter((r) => r.ok).length;
+  feedback.value = ok
+    ? `Paiement confirmé pour ${ok} élève${ok > 1 ? 's' : ''}.`
+    : 'Paiement confirmé.';
+  pendingCheckoutToken.value = '';
+  walletRedirectUrl.value = '';
+  wizallTransactionId.value = '';
+  emit('completed');
+}
+
 async function submit() {
   if (!canSubmit.value) return;
   submitting.value = true;
   errorMsg.value = '';
   feedback.value = '';
   try {
-    if (paymentMethod.value === 'card') {
-      errorMsg.value = 'Le paiement par carte bancaire sera bientôt disponible.';
-      return;
-    }
+    const pm = paymentMethod.value;
+    if (!pm || pm === 'card' || pm === 'western_union') return;
 
     if (monthlyAmountXof.value <= 0) {
       throw new Error('Aucune facture impayée disponible pour paiement.');
     }
 
-    const pm = paymentMethod.value;
-    if (!pm) return;
+    let checkoutToken = pendingCheckoutToken.value;
+    let hadRedirect = Boolean(walletRedirectUrl.value);
 
-    // TEMP TEST MODE: PayDunya désactivé pour permettre les tests.
-    // Le flux passerelle (checkout + softpay + confirmation) est volontairement court-circuité
-    // et on enregistre directement le paiement côté back via /parent/payments/complete.
+    const shouldConfirmWizall = Boolean(checkoutToken && wizallTransactionId.value && wizallOtp.value.trim());
+    const verifyOnly = Boolean(checkoutToken && !shouldConfirmWizall && !wizallTransactionId.value);
 
-    const res = await authFetch<{ results: Array<{ ok: boolean; message?: string; kind?: string }> }>('/parent/payments/complete', {
-      method: 'POST',
-      body: {
-        childIds: [...selectedIds.value],
-        phone: fullPhoneForWallet.value,
-        channel: pm,
-        firstName: firstName.value.trim(),
-        lastName: lastName.value.trim(),
-      },
-    });
-    const ok = (res?.results ?? []).filter((r) => r.ok).length;
-    feedback.value = `Paiement enregistré pour ${ok} élève${ok > 1 ? 's' : ''}.`;
-    emit('completed');
+    if (!checkoutToken || shouldConfirmWizall) {
+      if (!checkoutToken) {
+        submitPhase.value = 'Création de la facture…';
+        const checkout = await authFetch<{ token: string; amountXof?: number }>(
+          '/parent/payments/checkout',
+          {
+            method: 'POST',
+            body: {
+              childIds: [...selectedIds.value],
+              channel: pm,
+              description: `Scolarité Commonwealth — ${displayAmount.value}`,
+            },
+          },
+        );
+        checkoutToken = String(checkout?.token ?? '').trim();
+        if (!checkoutToken) throw new Error('PayDunya n’a pas renvoyé de token de paiement.');
+        pendingCheckoutToken.value = checkoutToken;
+        if (typeof checkout.amountXof === 'number' && checkout.amountXof > 0) {
+          monthlyAmountXof.value = checkout.amountXof;
+        }
+      }
+
+      submitPhase.value = 'Envoi vers Wave / Orange Money…';
+      const soft = await authFetch<{
+        success?: boolean;
+        paid?: boolean;
+        message?: string;
+        redirectUrl?: string;
+        wizallTransactionId?: string;
+        needsWizallOtp?: boolean;
+      }>('/parent/payments/softpay', {
+        method: 'POST',
+        body: {
+          checkoutToken,
+          channel: pm,
+          country: phoneCountry.value,
+          firstName: firstName.value.trim(),
+          lastName: lastName.value.trim(),
+          email: parentEmail.value,
+          phoneLocal: phoneLocal.value,
+          orangeOtp: orangeMoneyCiOtp.value,
+          wizallAuthorizationCode: wizallOtp.value,
+          wizallTransactionId: wizallTransactionId.value,
+        },
+      });
+
+      if (soft?.paid) {
+        submitPhase.value = 'Enregistrement…';
+        await confirmPaidOnServer(checkoutToken, pm);
+        return;
+      }
+
+      if (soft?.needsWizallOtp && soft.wizallTransactionId) {
+        wizallTransactionId.value = soft.wizallTransactionId;
+        feedback.value = 'Un code Wizall va arriver par SMS. Saisissez-le puis cliquez sur Payer.';
+        return;
+      }
+
+      const redirectUrl = String(soft?.redirectUrl ?? '').trim();
+      if (redirectUrl) {
+        walletRedirectUrl.value = redirectUrl;
+        hadRedirect = true;
+        window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+        feedback.value = 'Validez le paiement dans l’onglet Wave / Orange Money, puis patientez…';
+      } else {
+        feedback.value = String(soft?.message ?? 'Validez le paiement sur votre téléphone…');
+      }
+    }
+
+    submitPhase.value = verifyOnly ? 'Vérification…' : 'Confirmation du paiement…';
+    const paid = await waitCheckoutPaid(checkoutToken, hadRedirect);
+    if (!paid) {
+      throw new Error(
+        'Le paiement n’est pas encore confirmé. Si vous avez validé sur le téléphone, cliquez sur « Vérifier le paiement ».',
+      );
+    }
+
+    submitPhase.value = 'Enregistrement…';
+    await confirmPaidOnServer(checkoutToken, pm);
   } catch (e: unknown) {
     errorMsg.value = paydunyaErrorMessage(e);
   } finally {
     submitting.value = false;
+    submitPhase.value = 'Envoi…';
   }
 }
 

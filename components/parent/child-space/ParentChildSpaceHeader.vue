@@ -24,6 +24,13 @@
               <span class="child-badge__dot" aria-hidden="true" />
               {{ presenceLabel }}
             </span>
+            <span v-if="enrollment?.levelName" class="child-badge child-badge--level">
+              <svg class="child-badge__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5" />
+              </svg>
+              {{ enrollment.levelName }}
+            </span>
             <span v-if="enrollment?.schoolYear" class="child-badge child-badge--year">
               <svg class="child-badge__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
@@ -88,8 +95,12 @@ const initials = computed(() => {
 });
 
 const subtitleLine = computed(() => {
+  const level = props.enrollment?.levelName?.trim() || '';
+  const classroom = props.enrollment?.className?.trim() || '';
+  const classPart = classroom && classroom !== level ? classroom : '';
   const parts = [
-    props.enrollment?.className || props.enrollment?.levelName,
+    level || classPart || null,
+    classPart && level ? classPart : null,
     props.child.ageLabel,
     props.child.genderLabel,
     props.child.matricule,
@@ -197,6 +208,11 @@ const subtitleLine = computed(() => {
   height: 0.5rem;
   border-radius: 9999px;
   background: #10b981;
+}
+
+.child-badge--level {
+  background: #eff6ff;
+  color: #216ec2;
 }
 
 .child-badge--year {
